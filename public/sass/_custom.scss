@@ -1,0 +1,539 @@
+$font_path : '../fonts/';
+
+@font-face {
+    src: url("#{$font_path}/Inter/Inter-Regular.ttf") format("truetype");
+
+    font-family: "Inter";
+}
+@font-face {
+    src: url("#{$font_path}/Inter/Inter-Bold.ttf") format("truetype");
+
+    font-family: "InterBold";
+}
+@font-face {
+    src: url("#{$font_path}/Inter/Inter-ExtraBold.ttf") format("truetype");
+
+    font-family: "InterExtraBold";
+}
+
+@font-face {
+    src: url("#{$font_path}/PlayfairDisplay/PlayfairDisplay-Regular.ttf") format("truetype");
+
+    font-family: "PlayfairDisplay";
+}
+
+@font-face {
+    src: url("#{$font_path}/PlayfairDisplay/PlayfairDisplay-ExtraBold.ttf") format("truetype");
+
+    font-family: "PlayfairDisplayBold";
+}
+
+@font-face {
+    src: url("../vendor/font-awesome/webfonts/fa-solid-900.ttf") format("truetype");
+
+    font-family: "FASolid";
+}
+
+@font-face {
+    src: url("../vendor/bootstrap-icons-1.8.1/fonts/bootstrap-icons.woff");
+
+    font-family: "BootstrapIcon";
+}
+// @font-face {
+//     // This is parsed as a normal function call that takes a quoted string.
+//     src: url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
+
+//     font-family: "Playfair Display";
+// }
+
+// body{
+// 	color : $primary;
+// 	font-size: 18px;
+// 	outline: none !important;
+// 	outline-style: none !important;
+// 	box-shadow: none !important;
+// }
+
+html, body{
+	@include media-breakpoint-down(md){
+		max-width: 100% !important;
+		overflow-x: hidden !important;
+	}
+}
+body{
+	font-family: 'Inter';
+	color: #8A92A6;
+	background-color : #ECE8DD;
+	max-width: 100% !important;
+	overflow-x: hidden !important;
+	position: relative;
+}
+
+h1, h2, h3, h4, h5{
+	color: #232D42;
+}
+
+p{
+	font-family: 'Inter';
+	color: #8A92A6;
+}
+
+label{
+	font-family: 'Inter';
+}
+
+h2{
+	font-family : 'PlayfairDisplay'
+}
+
+.bg_eb{
+	background-color: #EBEFE2;
+}
+
+.ratio1{
+	width: 100%;
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-31{
+	width: 100%;
+	padding-bottom: calc(100% / 3);
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-11{
+	width: 100%;
+	padding-bottom: calc(100%);
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-43{
+	width: 100%;
+	padding-bottom: calc((100% / 4) * 3);
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-169{
+	width: 100%;
+	padding-bottom: calc((100% / 16)*9);
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-31-portrait{
+	height: 100%;
+	padding-bottom: calc((100%) * 3);
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-43-portrait{
+	height: 100%;
+	padding-bottom: calc((100% / 3) * 4);
+	background-position: center;
+	background-size: cover;
+}
+
+.ratio-169-portrait{
+	height: 100%;
+	padding-bottom: calc((100% / 9)*16);
+	background-position: center;
+	background-size: cover;
+}
+
+.nav_active{
+	font-weight: bold;
+	border-bottom: 4px solid #B1CF24;
+}
+
+.readonlyCheckbox{
+	&:before{
+		background-color: $primary !important;
+		border-radius: 0.25rem;
+	}
+	color : #413F3F !important;
+}
+
+input{
+	&::placeholder{
+		color : #777777 !important
+	}
+	&:focus{
+		outline: none !important;
+		box-shadow: none !important;
+	}
+}
+
+.lessonCheckbox{
+	&::before{
+		border-radius: .25rem;
+	}
+	color: #413F3F !important;
+}
+
+.bg-ea{
+	background-color: #EAEAEA !important;
+}
+
+.btn-accordion{
+	&:focus{
+		outline: none !important;
+		box-shadow: none !important;
+	}
+}
+
+@mixin button_calendar{
+    background-color: $secondary !important;
+    border-color: $secondary !important;
+}
+
+.fc-toolbar-chunk{
+    .fc-button-group{
+        >button{
+            // @include button_calendar;
+			// border-radius : 1.5rem !important;
+			width: 1.5rem;
+			height: 1.5rem;
+			margin-right: .5rem;
+			align-items: center !important;
+			justify-content: center !important;
+			display: flex !important;
+			>span{
+				font-family: "FASolid" !important;
+				background-color: white;
+				&.fc-icon-chevron-left{
+					&::before{
+						color : $secondary;
+						content: '\f137'
+					}
+				}
+				&.fc-icon-chevron-right{
+					&::before{
+						color : $secondary;
+						content: '\f138'
+					}
+				}
+			}
+        }
+    }
+    >button{
+        @include button_calendar;
+    }
+	margin-right: 3rem;
+}
+
+.fc-toolbar-title{
+	font-family: 'Inter';
+}
+.fc-col-header {
+	border: none !important;
+}
+.fc-scrollgrid {
+	border-top: none !important;
+} 
+
+.sidebar{
+	transition: all .3s ease;
+	-webkit-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	-moz-transition: all .3s ease;
+	height: 100vh;
+	width: 100vw;
+	z-index: 1000;
+	top: 0;
+	position: fixed;
+	background-color: white;
+	right: -100vw;
+
+	&.active {
+		right: 0;
+		animation: fadein .5s;
+	}
+}
+
+.dailyLesson{
+	background-color: #EBF8FF;
+	color : #608AA0;
+}
+
+.weeklyLesson{
+	background-color: #E9EAF4;
+	color : #4D56A2;
+}
+
+.position-absolute-lg{
+	@include media-breakpoint-up(lg){
+		position : absolute !important;
+	}
+}
+
+@include media-breakpoint-up(lg){
+	.background-left{
+		position : absolute !important;
+		top : 10rem;
+		left: -25rem;
+		>img{
+			height: 40rem;
+			transform: rotate(90deg);
+		}
+	}
+	.background-right{
+		position : absolute !important;
+		bottom : -10rem;
+		right: -20rem;
+		>img{
+			height: 40rem;
+			transform: rotate(-90deg);
+		}
+	}
+	.table-fixed-lg{
+		table-layout: fixed;
+	}
+}
+
+.profile_msg_picture{
+	position: absolute;
+	>img{
+		height: 22rem;
+	}
+	@include media-breakpoint-down(md){
+		>img{
+			height: 15rem;
+		}
+		position : unset;
+	}
+	@include media-breakpoint-up(lg){
+		right : 2rem;
+		top : -4rem;
+	}
+}
+
+@include media-breakpoint-down(md){
+	.background-left{
+		position : absolute !important;
+		top : 17rem;
+		left: -15rem;
+		>img{
+			height: 25rem;
+			transform: rotate(90deg);
+		}
+	}
+	.background-right{
+		position : absolute !important;
+		bottom : -30rem;
+		right: -14rem;
+		>img{
+			height: 25rem;
+			transform: rotate(-90deg);
+		}
+	}
+	.td-fit-content-sm{
+		width: 1%;
+		white-space: nowrap;
+	}
+}
+
+.td-fit-content{
+	width: 1%;
+	white-space: nowrap;
+}
+
+
+.rounded{
+	border-radius: .75rem !important;
+}
+
+#accordionLesson{
+	>.card {
+		border-radius: .75rem;
+		&:not(:last-of-type){
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		&:not(:first-of-type){
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+		}
+	}
+}
+
+.border{
+	border-color: #EAEAEA;
+}
+
+.chat{
+	>p{
+		color: black;
+	}
+	&.sender{
+		background-color: #EBEFE2;
+	}
+	&.receiver{
+		background-color: #F1F1F1;
+	}
+	max-width: 50%;
+	@include media-breakpoint-down(md){
+		max-width: 75%;
+	}
+}
+
+th{
+	font-family: 'Inter';
+	&.fc-col-header-cell{
+		border: none !important;
+		>.fc-scrollgrid-sync-inner{
+			padding: 0 .5rem;
+			>a{
+				&:hover{
+					text-decoration: none;
+				}
+				width: 100%;
+				border-radius: .5rem;
+				background-color: #E9EAF4;
+				color : #4D56A2
+			}
+		}
+	}
+}
+
+td{
+	font-family: 'Inter';
+	&.fc-daygrid-day{
+		border: none !important;
+	}
+	>.fc-daygrid-day-frame{
+		border: 1px dashed #eaeaea;
+	}
+}
+
+.fc-scrollgrid {
+	border: none !important;
+}
+
+.fc-theme-standard td, .fc-theme-standard th{
+	border: none !important;
+}
+
+.fc-scrollgrid-section-body{
+	>td{
+		padding-top: 1rem !important;
+	}
+}
+
+.fc-toolbar-title{
+	font-family: 'InterBold';
+}
+
+.fc-today-button{
+	text-transform: uppercase !important;
+	padding: .5rem 1.5rem !important
+}
+
+.fc-daygrid-block-event, .fc-event-title{
+	font-family: 'InterBold';
+	font-size: .75rem;
+	padding : .5rem
+}
+
+a{
+	&.fc-event{
+		border: none;
+		border-left: .25rem solid;
+	}
+}
+.fc-event{
+	background-color: #0EA5E91A;
+	>.fc-daygrid-event-dot{
+		border: none;
+	}
+	>.fc-event-time{
+		font-size: 12px;
+		font-family: 'Inter';
+		color : #0369A1
+	}
+	>.fc-event-title{
+		font-size: .75rem;
+		font-family: 'InterBold';
+		color : #0369A1
+	}
+}
+
+.fc-event-main-frame {
+    white-space: normal !important;
+}
+
+.dropdownAcademyYear{
+	font-family: 'InterBold';
+	padding: .375rem 2.5rem;
+	&::after{
+		font-family: 'BootstrapIcon';
+		content : '\F279';
+		border: none;
+		vertical-align: unset;
+		margin-left: .75rem;
+	}
+}
+
+.loginLogo{
+	@include media-breakpoint-down(md){
+		width: 20rem;
+	}
+	@include media-breakpoint-up(lg){
+		width: 20rem;
+	}
+}
+
+.dropdown-menu{
+	border-color: #EAEAEA;
+	border-radius: .75rem;
+	top: unset;
+	left: unset;
+}
+
+.gradePicker{
+	background-color: transparent;
+	border-radius: 1.5rem;
+	padding: .5rem 2rem;
+	border: 1px solid $secondary;
+	cursor: pointer;
+	>p{
+		color: $secondary;
+	}
+	&.selected{
+		background-color: $secondary;
+		>p{
+			color: white;
+		}
+		box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%) !important;
+	}
+}
+
+.badge-success{
+	background-color: #D5EBDF;
+	color : #608AA0;
+}
+.badge-info{
+	background-color: #EBF8FF;
+	color : #6F826E;
+}
+.badge-warning{
+	background-color: #FEEBC8;
+	color : #DD6B20;
+}
+
+.list_check_assignment{
+	padding: 1rem !important;
+	cursor: pointer;
+	border-bottom: 1px solid #EAEAEA;
+	&.border-right{
+		border-right: 1px solid #EAEAEA !important;
+	}
+
+	&:hover{
+		background-color: #EBEFE2;
+	}
+}
