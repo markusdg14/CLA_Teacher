@@ -18,6 +18,8 @@ import SubjectLessonDetail from '../teaching/subjectLesson/detail';
 import Announcement from '../teaching/announcement';
 import GradeBook from '../teaching/gradeBook';
 import GradeBookDetail from '../teaching/gradeBook/detail';
+import HomeroomIndex from '../homeroom';
+import HomeroomDetail from '../homeroom/detail';
 
 
 // import Navbar from './navbar'
@@ -61,6 +63,7 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/"} element={<HomeIndex />}></Route>
                     <Route exact path={"/check-assignment"} element={<CheckAssignment />}></Route>
                     <Route exact path={"/check-assignment/detail"} element={<CheckAssignmentDetail />}></Route>
+
                     <Route exact path={"/subject-lesson"} element={<SubjectLesson />}></Route>
                     <Route exact path={"/subject-lesson/detail"} element={<SubjectLessonDetail />}></Route>
 
@@ -72,6 +75,9 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/lessons"} element={<LessonsIndex />}></Route>
                     <Route exact path={"/lessons/detail"} element={<LessonsDetail />}></Route>
                     <Route exact path={"/lessons/chat"} element={<LessonsChat />}></Route>
+
+                    <Route exact path={"/homeroom"} element={<HomeroomIndex />}></Route>
+                    <Route exact path={"/homeroom/detail"} element={<HomeroomDetail />}></Route>
 
                     <Route exact path={"/calendar"} element={<CalendarIndex />}></Route>
                     <Route exact path={"/profile"} element={<ProfileIndex />}></Route>

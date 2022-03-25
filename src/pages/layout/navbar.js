@@ -15,10 +15,10 @@ export default function Navbar(){
             {title : 'Calendar', nav : '/calendar', icon : 'bi bi-calendar2-week-fill'},
             {title : 'Grade Book', nav : '/grade-book', icon : 'bi bi-folder-fill'},
         ]},
-        {title : 'Homeroom', icon : '', url : '#!', dropdown_arr : [
-            {title : 'Class & Student', nav : '', icon : 'bi bi-pie-chart-fill'},
-            {title : 'Attendance & Reward', nav : '', icon : 'bi bi-megaphone-fill'},
-            {title : 'Student Talent Bank', nav : '', icon : 'bi bi-file-earmark-bar-graph-fill'},
+        {title : 'Homeroom', icon : '', url : '/homeroom', dropdown_arr : [
+            // {title : 'Class & Student', nav : '', icon : 'bi bi-pie-chart-fill'},
+            // {title : 'Attendance & Reward', nav : '', icon : 'bi bi-megaphone-fill'},
+            // {title : 'Student Talent Bank', nav : '', icon : 'bi bi-file-earmark-bar-graph-fill'},
         ]},
         {title : 'Profile', icon : '', url : '/profile', dropdown_arr : []},
         {title : '', icon : 'bi bi-bell-fill', url : '/notification', dropdown_arr : []},

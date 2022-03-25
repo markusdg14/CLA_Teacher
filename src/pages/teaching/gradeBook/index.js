@@ -39,8 +39,15 @@ export default function GradeBook(){
         }
     }
 
-    function toDetail(index){
-        window.location.href = '/grade-book/detail?id=' + data_active_arr[index].id
+    function toDetail(index, type){
+        var id = ''
+        if(type === 'current'){
+            id = data_active_arr[index].id
+        }
+        else if(type === 'past'){
+            id = data_unactive_arr[index].id
+        }
+        window.location.href = '/grade-book/detail?id=' + id
     }
 
 
@@ -66,7 +73,7 @@ export default function GradeBook(){
                                             {
                                                 data_active_arr.map((data, index)=>(
                                                     <div className='col-6 col-lg-4 mb-3' key={index}>
-                                                        <CardSubject data={data} toDetail={()=>toDetail(index)} />
+                                                        <CardSubject data={data} toDetail={()=>toDetail(index, 'current')} />
                                                     </div>
                                                 ))
                                             }
@@ -80,7 +87,7 @@ export default function GradeBook(){
                                             {
                                                 data_unactive_arr.map((data, index)=>(
                                                     <div className='col-6 col-lg-4 mb-3' key={index}>
-                                                        <CardSubject data={data} toDetail={()=>toDetail(index)} />
+                                                        <CardSubject data={data} toDetail={()=>toDetail(index, 'past')} />
                                                     </div>
                                                 ))
                                             }

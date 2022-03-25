@@ -1,12 +1,15 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import Base from '../../../utils/base';
 import Header from '../../../components/header';
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
 import Select from 'react-select'
 import SelectOption from '../../../components/selectOption';
+import WebViewer from '@pdftron/webviewer'
+import ModalSubmit from './modalSubmit';
 
 export default function CheckAssignmentDetail(){
     var base = new Base()
+    const viewerDiv = useRef(null)
 
     function useQuery(){
         const {search} = useLocation()
@@ -16,11 +19,17 @@ export default function CheckAssignmentDetail(){
     let query = useQuery()
 
     const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : ''}})
+    const [assignment_submitted_id, set_assignment_submitted_id] = useState('')
 
     const [assignment_info_arr, set_assignment_info_arr] = useState([])
     const [student_data, set_student_data] = useState({id : '', name : '', image_display : base.img_no_profile})
     const [assignment_status, set_assignment_status] = useState('')
+    const [assignment_grade, set_assignment_grade] = useState('')
     const [grade, set_grade] = useState('')
+    const [rule_id, set_rule_id] = useState('')
+    const [rule_detail_arr, set_rule_detail_arr] = useState([])
+    const [rule_selected, set_rule_selected] = useState('')
+    const [teacher_notes, set_teacher_notes] = useState('')
 
     const [grade_arr, set_grade_arr] = useState([])
     const [grade_selected, set_grade_selected] = useState('')
@@ -32,6 +41,10 @@ export default function CheckAssignmentDetail(){
 
     const [is_loading_list, set_is_loading_list] = useState(false)
     const [is_filter, set_is_filter] = useState(false)
+
+    const [baseFile, set_baseFile] = useState('')
+    
+    const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -46,6 +59,19 @@ export default function CheckAssignmentDetail(){
         }
     }, [user_data])
 
+    useEffect(async ()=>{
+        if(baseFile !== ''){
+            base.$('#modalSubmit').modal('show')
+            // postPDF()
+        }
+    }, [baseFile])
+
+    useEffect(async ()=>{
+        if(rule_id !== ''){
+            get_rule()
+        }
+    }, [rule_id])
+
     async function get_data(){
         var url = '/assessment/assignment?id=' + query.get('id')
         var response = await base.request(url)
@@ -59,17 +85,80 @@ export default function CheckAssignmentDetail(){
                     data.user.image_display = base.url_photo('user', data.user.file_name)
                 }
 
+                set_assignment_submitted_id(data.id)
                 set_student_data(data.user)
                 set_assignment_status(data.assessment_status.name)
                 set_grade(data.assignment_agreement.assignment_group.grade.name)
+
+                if(data.assessment_rule_detail != null)
+                    set_assignment_grade(data.assessment_rule_detail.name)
+
 
                 set_assignment_info_arr([
                     {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.assignment_agreement.assignment_group.grade.name},
                     {title : 'Subject', value : data.assignment_agreement.assignment_group.subject.name}, {title : 'Lesson', value : data.assignment_agreement.assignment_group.lesson.name},
                     {title : 'Assignment Title', value : data.assignment_agreement.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
                 ])
+
+                set_rule_id(data.assignment_agreement.assessment_rule_id)
+
+                
+                if(data.file_submitted.length > 0){
+                    var file = data.file_submitted[0].file_name
+    
+                    if(data.file_name != null){
+                        file = data.file_name
+                    }
+                    WebViewer({
+                        path : '/lib', initialDoc : base.url_photo('assignment/submitted', file),
+                    }, viewerDiv.current).then((instance) => {
+                        const {docViewer} = instance
+                        const annotManager = docViewer.getAnnotationManager();
+
+                        instance.UI.setHeaderItems(header => {
+                            header.push({
+                              type: 'actionButton',
+                              img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+                              onClick: async () => {
+                                const doc = docViewer.getDocument()
+                                const xfdfString = await annotManager.exportAnnotations();
+                                const options = { xfdfString };
+                                const data = await doc.getFileData(options);
+                                const arr = new Uint8Array(data);
+                                const blob = new Blob([arr], { type: 'application/pdf' });
+
+                                await getBaseData(blob, (result)=>{
+                                    set_baseFile(result)
+                                })
+                              }
+                            });
+                        })
+                    })
+                }
             }
         }
+    }
+
+    async function get_rule(){
+        var url = '/assessment/rule?id=' + rule_id
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                set_rule_detail_arr(data.detail)
+            }
+        }
+    }
+
+    function getBaseData(file, callback){
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            callback(reader.result)
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
     }
 
     function backBtn(){
@@ -130,7 +219,40 @@ export default function CheckAssignmentDetail(){
     function viewDetail(index){
         window.location.href = '/check-assignment/detail?id=' + list_check_assignment_arr[index].id
     }
+    
+    function changeInputModal(val, type){
+        if(type === 'grade'){
+            set_rule_selected(val)
+        }
+        if(type === 'notes'){
+            set_teacher_notes(val)
+        }
+    }
 
+    async function submitGrading(){
+        set_is_modal_btn_disable(true)
+        var url = '/assessment/assignment'
+        var data_upload = {
+            id : assignment_submitted_id,
+            comment : teacher_notes,
+            file : {
+                file : baseFile,
+                file_name : assignment_submitted_id + '.pdf'
+            }
+        }
+
+        if(rule_selected !== ''){
+            data_upload.assessment_rule_detail = {id : rule_selected}
+        }
+
+        var response = await base.request(url, 'put', data_upload)
+        if(response != null){
+            if(response.status == 'success'){
+                window.location.reload()
+            }
+        }
+        set_is_modal_btn_disable(false)
+    }
 
     return(
         <div className='row'>
@@ -151,7 +273,7 @@ export default function CheckAssignmentDetail(){
                         <div className='h-100 row p-0 pr-0 pr-lg-4'>
                             <div className='col-12 p-4 bg-white rounded shadow-sm mb-2'>
                                 <p className='m-0 text-primary'>Score Grade</p>
-                                <p className='m-0 text-secondary' style={{fontFamily : 'InterBold'}}>{'-'}</p>
+                                <h4 className='m-0 text-secondary' style={{fontFamily : 'InterBold'}}>{assignment_grade === '' ? '-' : assignment_grade}</h4>
                             </div>
                             <div className='col-12 p-4 bg-white rounded shadow-sm mt-2'>
                                 <p className='m-0 text-primary'>Assignment Status</p>
@@ -179,6 +301,11 @@ export default function CheckAssignmentDetail(){
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div className='col-12 mt-5'>
+                {/* <a href={'/check-assignment/view-pdf?id=' + query.get('id')} className={'btn btn-primary'}>PDF</a> */}
+                <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
             </div>
 
             <div className='col-12 mt-5'>
@@ -274,6 +401,8 @@ export default function CheckAssignmentDetail(){
                     </div>
                 </div>
             </div>
+
+            <ModalSubmit rule_detail_arr={rule_detail_arr} rule_selected={rule_selected} changeInput={(val, type)=>changeInputModal(val, type)} submitGrading={()=>submitGrading()} is_modal_btn_disable={is_modal_btn_disable} />
             
         </div>
     )

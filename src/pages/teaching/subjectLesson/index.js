@@ -40,9 +40,15 @@ export default function SubjectLesson(){
         }
     }
 
-    function toDetail(index){
-        console.log(current_data_arr[index])
-        window.location.href = '/subject-lesson/detail?id=' + current_data_arr[index].id + '&subject_id=' + current_data_arr[index].subject.id + '&grade_id=' + current_data_arr[index].grade.id + '&academic_year_id=' + current_data_arr[index].academic_year_id
+    function toDetail(index, type){
+        var data = {}
+        if(type === 'current'){
+            data = current_data_arr[index]
+        }
+        else if(type === 'past'){
+            data = past_data_arr[index]
+        }
+        window.location.href = '/subject-lesson/detail?id=' + data.id + '&subject_id=' + data.subject.id + '&grade_id=' + data.grade.id + '&academic_year_id=' + data.academic_year_id
     }
 
 
@@ -68,7 +74,7 @@ export default function SubjectLesson(){
                                             {
                                                 current_data_arr.map((data, index)=>(
                                                     <div className='col-6 col-lg-4 mb-3' key={index}>
-                                                        <CardSubject data={data} toDetail={()=>toDetail(index)} />
+                                                        <CardSubject data={data} toDetail={()=>toDetail(index, 'current')} />
                                                     </div>
                                                 ))
                                             }
@@ -82,7 +88,7 @@ export default function SubjectLesson(){
                                             {
                                                 past_data_arr.map((data, index)=>(
                                                     <div className='col-6 col-lg-4 mb-3' key={index}>
-                                                        <CardSubject data={data} toDetail={()=>toDetail(index)} />
+                                                        <CardSubject data={data} toDetail={()=>toDetail(index, 'past')} />
                                                     </div>
                                                 ))
                                             }

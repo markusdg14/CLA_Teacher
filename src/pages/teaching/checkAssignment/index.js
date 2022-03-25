@@ -62,7 +62,7 @@ export default function CheckAssignment(){
             tab_arr[x].is_active = false
         }
         tab_arr[index].is_active = !initActive
-
+        set_data_arr([])
         set_tab_arr(tab_arr)
 
         if(tab_arr[index].is_active){

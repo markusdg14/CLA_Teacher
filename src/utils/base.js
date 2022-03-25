@@ -86,12 +86,19 @@ export default class Base extends Component{
 		temp[index] = data
 		set_state(temp)
 	}
+	
+	add_array(arr, set_state, data = {}){
+		var temp = [...arr]
+		temp.push(data)
+		set_state(temp)
+	}
 
 	update_object(data, set_state, variable = null, key = ''){
 		var temp = JSON.parse(JSON.stringify(data))
 		temp[key] = variable
 		set_state(temp)
 	}
+
 
 	url_photo(type, file_name){
 		var image_url = this.url_image + '/' + type + '?file_name=' + file_name + '&rnd=' + moment().format('HHmmss')
