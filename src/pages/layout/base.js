@@ -4,11 +4,8 @@ import Base from '../../utils/base';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeIndex from '../home';
 import Navbar from './navbar';
-import LessonsIndex from '../lessons';
 import CalendarIndex from '../teaching/calendar';
 import ProfileIndex from '../profile';
-import LessonsDetail from '../lessons/detail';
-import LessonsChat from '../lessons/chat';
 import AuthLogin from '../auth/login';
 import StudentProfileIndex from '../profile/studentProfile';
 import CheckAssignment from '../teaching/checkAssignment';
@@ -71,10 +68,6 @@ export default class BaseLayout extends Base{
 
                     <Route exact path={"/grade-book"} element={<GradeBook />}></Route>
                     <Route exact path={"/grade-book/detail"} element={<GradeBookDetail />}></Route>
-
-                    <Route exact path={"/lessons"} element={<LessonsIndex />}></Route>
-                    <Route exact path={"/lessons/detail"} element={<LessonsDetail />}></Route>
-                    <Route exact path={"/lessons/chat"} element={<LessonsChat />}></Route>
 
                     <Route exact path={"/homeroom"} element={<HomeroomIndex />}></Route>
                     <Route exact path={"/homeroom/detail"} element={<HomeroomDetail />}></Route>

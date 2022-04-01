@@ -20,6 +20,7 @@ export default function CheckAssignmentDetail(){
 
     const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : ''}})
     const [assignment_submitted_id, set_assignment_submitted_id] = useState('')
+    const [assignment_type, set_assignment_type] = useState('')
 
     const [assignment_info_arr, set_assignment_info_arr] = useState([])
     const [student_data, set_student_data] = useState({id : '', name : '', image_display : base.img_no_profile})
@@ -46,6 +47,12 @@ export default function CheckAssignmentDetail(){
     
     const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
 
+    const [grade_skill_arr, set_grade_skill_arr] = useState([])
+    const [assignment_agreement_id, set_assignment_agreement_id] = useState('')
+    const [subject_id, set_subject_id] = useState('')
+    const [class_student_id, set_class_student_id] = useState('')
+    const [project_id, set_project_id] = useState('')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -61,6 +68,9 @@ export default function CheckAssignmentDetail(){
 
     useEffect(async ()=>{
         if(baseFile !== ''){
+            if(assignment_type === 'discussion'){
+                get_grade_skill()
+            }
             base.$('#modalSubmit').modal('show')
             // postPDF()
         }
@@ -89,6 +99,12 @@ export default function CheckAssignmentDetail(){
                 set_student_data(data.user)
                 set_assignment_status(data.assessment_status.name)
                 set_grade(data.assignment_agreement.assignment_group.grade.name)
+
+                set_subject_id(data.assignment_agreement.assignment_group.subject.id)
+
+                set_assignment_agreement_id(data.assignment_agreement.id)
+                set_assignment_type(data.assignment_agreement.assignment_type.data)
+                // set_assignment_type('discussion')
 
                 if(data.assessment_rule_detail != null)
                     set_assignment_grade(data.assessment_rule_detail.name)
@@ -135,6 +151,26 @@ export default function CheckAssignmentDetail(){
                         })
                     })
                 }
+            }
+        }
+    }
+
+    async function get_grade_skill(){
+        var url = '/skill/category?id=&subject_id=' + subject_id + '&assignment_submitted_id=' + assignment_submitted_id
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+
+                for(var x in data){
+                    var arr_skill = data[x].arr_skill
+                    for(var y in arr_skill){
+                        arr_skill[y].score = ''
+                    }
+                }
+                
+                console.log(data)
+                set_grade_skill_arr(data)
             }
         }
     }
@@ -231,18 +267,41 @@ export default function CheckAssignmentDetail(){
 
     async function submitGrading(){
         set_is_modal_btn_disable(true)
-        var url = '/assessment/assignment'
-        var data_upload = {
-            id : assignment_submitted_id,
-            comment : teacher_notes,
-            file : {
-                file : baseFile,
-                file_name : assignment_submitted_id + '.pdf'
+        var url = ''
+        var data_upload = {}
+        if(assignment_type === 'quiz'){
+            url = '/assessment/assignment'
+            data_upload = {
+                id : assignment_submitted_id,
+                comment : teacher_notes,
+                file : {
+                    file : baseFile,
+                    file_name : assignment_submitted_id + '.pdf'
+                }
+            }
+    
+            if(rule_selected !== ''){
+                data_upload.assessment_rule_detail = {id : rule_selected}
             }
         }
-
-        if(rule_selected !== ''){
-            data_upload.assessment_rule_detail = {id : rule_selected}
+        else if(assignment_type === 'discussion'){
+            var arr_skill = []
+            for(var x in grade_skill_arr){
+                var skill_data = grade_skill_arr[x].arr_skill
+                for(var y in skill_data){
+                    arr_skill.push({
+                        skill : {id : skill_data[y].id},
+                        score : skill_data[y].score
+                    })
+                }
+            }
+            url = '/grade/skill'
+            data_upload = {
+                class_student : {id : class_student_id},
+                assignment_submitted : {id : assignment_submitted_id},
+                comment : teacher_notes,
+                arr_skill : arr_skill
+            }
         }
 
         var response = await base.request(url, 'put', data_upload)
@@ -252,6 +311,14 @@ export default function CheckAssignmentDetail(){
             }
         }
         set_is_modal_btn_disable(false)
+    }
+
+    function changeScore(index, index_skill, val){
+        var data_index = grade_skill_arr[index]
+        var skill_data = data_index.arr_skill
+        skill_data[index_skill].score = val
+
+        base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
     }
 
     return(
@@ -402,7 +469,16 @@ export default function CheckAssignmentDetail(){
                 </div>
             </div>
 
-            <ModalSubmit rule_detail_arr={rule_detail_arr} rule_selected={rule_selected} changeInput={(val, type)=>changeInputModal(val, type)} submitGrading={()=>submitGrading()} is_modal_btn_disable={is_modal_btn_disable} />
+            <ModalSubmit
+                assignment_type={assignment_type}
+                rule_detail_arr={rule_detail_arr}
+                rule_selected={rule_selected}
+                changeInput={(val, type)=>changeInputModal(val, type)}
+                submitGrading={()=>submitGrading()}
+                is_modal_btn_disable={is_modal_btn_disable}
+                grade_skill_arr={grade_skill_arr}
+                changeScore={(index, index_skill, val)=>changeScore(index, index_skill, val)}
+            />
             
         </div>
     )

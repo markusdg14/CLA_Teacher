@@ -56,7 +56,7 @@ export default function HomeroomReportGrade({grade_subject_arr, grade_student_ar
                                                                     <tbody>
                                                                         {
                                                                             grade_student_arr.map((data_student, index_student)=>(
-                                                                                <tr>
+                                                                                <tr key={index_student}>
                                                                                     <td className='td-fit-content'>{data_student.user.name}</td>
 
                                                                                     {

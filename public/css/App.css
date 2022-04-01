@@ -10191,6 +10191,16 @@ a.fc-event {
   color: #DD6B20;
 }
 
+.badge-danger {
+  background-color: #FFE0E0;
+  color: #FC5A5A;
+}
+
+.badge-dark {
+  background-color: #999999;
+  color: white;
+}
+
 .list_check_assignment {
   padding: 1rem !important;
   cursor: pointer;

@@ -40,14 +40,16 @@ export default function GradeBook(){
     }
 
     function toDetail(index, type){
-        var id = ''
+        var subject_id = '', grade_id = ''
         if(type === 'current'){
-            id = data_active_arr[index].id
+            subject_id = data_active_arr[index].subject_id
+            grade_id = data_active_arr[index].grade_id
         }
         else if(type === 'past'){
-            id = data_unactive_arr[index].id
+            subject_id = data_unactive_arr[index].subject_id
+            grade_id = data_unactive_arr[index].grade_id
         }
-        window.location.href = '/grade-book/detail?id=' + id
+        window.location.href = '/grade-book/detail?subject_id=' + subject_id + '&grade_id=' + grade_id
     }
 
 

@@ -164,7 +164,7 @@ export default function SubjectLessonDetail(){
                                                             <div className='col-auto d-flex align-items-center'>
                                                                 <h5 className='m-0 d-inline-block'>
                                                                     {
-                                                                        assignment.total_submitted == assignment.total_student ?
+                                                                        assignment.is_graded ?
                                                                         <i className="bi bi-check-square-fill text-secondary"></i>
                                                                         :
                                                                         <i className="bi bi-square" style={{color : '#8A92A6'}}></i>
@@ -177,10 +177,17 @@ export default function SubjectLessonDetail(){
                                                                     {assignment.name}
                                                                 </p>
                                                             </div>
-                                                            <div className='col-auto d-flex align-items-center px-5'>
-                                                                <div className='py-1 px-5' style={{border : '1px solid #008060', borderRadius : '1rem'}}>
-                                                                    <p className='m-0' style={{color : '#008060', fontSize : '.75rem'}}>Graded</p>
-                                                                </div>
+                                                            <div className='col d-flex align-items-center justify-content-center px-5'>
+                                                                {
+                                                                    assignment.is_graded ?
+                                                                    <div className='py-1 px-5' style={{border : '1px solid #008060', borderRadius : '1rem'}}>
+                                                                        <p className='m-0 text-uppercase' style={{color : '#008060', fontSize : '.75rem'}}>Graded</p>
+                                                                    </div>
+                                                                    :
+                                                                    <div className='py-1 px-4' style={{border : '1px solid #FD6540', borderRadius : '1rem'}}>
+                                                                        <p className='m-0 text-uppercase' style={{color : '#FD6540', fontSize : '.75rem'}}>Need to be Graded</p>
+                                                                    </div>
+                                                                }
                                                             </div>
                                                             <div className='col-auto text-right'>
                                                                 <p className='m-0' style={{fontFamily : 'InterBold', color : 'black', fontSize : '.75rem'}}>Terkumpul {assignment.total_submitted}/{assignment.total_student} Student</p>

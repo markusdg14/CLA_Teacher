@@ -3,7 +3,7 @@ import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
 
-export default function HomeroomReportSkill({skill_student_arr, skill_student_selected, skill_student_name_selected, changeStudent, filterBtn, skill_subject_arr, skill_ctg_arr, skill_list_arr, skill_project_arr, skill_grade_arr, legend_arr, toggleReportSkill}){
+export default function HomeroomReportSkill({skill_student_arr, skill_student_selected, skill_student_name_selected, changeStudent, filterBtn, skill_subject_arr, skill_ctg_arr, skill_list_arr, skill_project_arr, skill_grade_arr, legend_arr, toggleReportSkill, skill_grade_book_arr}){
 	var base = new Base()
 
 	return(
@@ -93,41 +93,141 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																	<>
 																		{
 																			skill_ctg_arr.map((data_category, index_category)=>(
+																				<>
 																				<tr key={index_category}>
 																					<td className='p-0' colSpan={skill_project_arr.length + 1}>
 																						<div className='px-2 py-0 d-flex align-items-center' style={{height : '3rem'}}>
 																							<p className='m-0' style={{fontFamily : 'InterBold'}}>{data_category.name}</p>
 																						</div>
-
-																							<table>
-																								{
-																									skill_list_arr.map((data_skill, index_skill)=>(
-																										<tr key={index_skill}>
-																											<td className='text-primary'><i class="bi bi-circle-fill mr-2" style={{fontSize : '.75rem'}}></i> {data_skill.name}</td> 
-																											
-																											{
-																												skill_project_arr.map((data_project, index_project)=>(
-																													<td className='text-center px-0' style={{width : '6rem'}} key={index_project}>
-																														<div className="">
-																															{
-																																skill_grade_arr[data.id] != null &&
-																																<>
-																																	{
-																																		skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id] &&
-																																		<span className={"badge badge-pill p-2 px-3 rounded badge-success"}>{skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id].score}</span>
-																																	}
-																																</>
-																															}
-																														</div>
-																													</td>
-																												))
-																											}
-																										</tr>
-																									))
-																								}
-																							</table>
 																					</td>
 																				</tr>
+																				{
+																					skill_list_arr.map((data_skill, index_skill)=>(
+																						<tr key={index_skill}>
+																							<td className='text-primary'><i class="bi bi-circle-fill mr-2" style={{fontSize : '.75rem'}}></i> {data_skill.name}</td> 
+																							
+																							{
+																								skill_project_arr.map((data_project, index_project)=>(
+																									<td className='text-center px-0' style={{width : '6rem'}} key={index_project}>
+																										<div className="">
+																											{
+																												skill_grade_arr[data.id] != null &&
+																												<>
+																													{
+																														skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id] &&
+																														<span className={"badge badge-pill p-2 px-3 rounded badge-success"}>{skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id].score}</span>
+																													}
+																												</>
+																											}
+																										</div>
+																									</td>
+																								))
+																							}
+																						</tr>
+																					))
+																				}
+																				<tr style={{backgroundColor : '#FFF8E5'}}>
+																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Average</td>
+																					{
+																						skill_project_arr.map((data_project, index_project)=>(
+																							<td className='text-center ' style={{width : '6rem'}} key={index_project}>
+																								{
+																									skill_grade_book_arr[data.id] != null &&
+																									<>
+																										{
+																											skill_grade_book_arr[data.id][data_project.id] != null &&
+																											<>
+																											<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data.id][data_project.id].average}</span>
+																											</>
+																										}
+																										{
+																										}
+																									</>
+																								}
+																							</td>
+																						))
+																					}
+																				</tr>
+
+																				<tr style={{backgroundColor : '#FFF8E5'}}>
+																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Score</td>
+																					{
+																						skill_project_arr.map((data_project, index_project)=>(
+																							<td className='text-center ' style={{width : '6rem'}} key={index_project}>
+																								{
+																									skill_grade_book_arr[data.id] != null &&
+																									<>
+																										{
+																											skill_grade_book_arr[data.id][data_project.id] != null &&
+																											<>
+																											{
+																												skill_grade_book_arr[data.id][data_project.id].grade_book != null &&
+																												<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.score}</span>
+																											}
+																											</>
+																										}
+																										{
+																										}
+																									</>
+																								}
+																							</td>
+																						))
+																					}
+																				</tr>
+
+																				<tr style={{backgroundColor : '#F7F7F7'}}>
+																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Legend of Mark</td>
+																					{
+																						skill_project_arr.map((data_project, index_project)=>(
+																							<td className='text-center ' style={{width : '6rem'}} key={index_project}>
+																								{
+																									skill_grade_book_arr[data.id] != null &&
+																									<>
+																										{
+																											skill_grade_book_arr[data.id][data_project.id] != null &&
+																											<>
+																											{
+																												skill_grade_book_arr[data.id][data_project.id].grade_book != null &&
+																												<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.assessment_range.legend}</span>
+																											}
+																											</>
+																										}
+																										{
+																										}
+																									</>
+																								}
+																							</td>
+																						))
+																					}
+																				</tr>
+																				<tr style={{backgroundColor : '#F7F7F7'}}>
+																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Teacher Notes</td>
+																					{
+																						skill_project_arr.map((data_project, index_project)=>(
+																							<td style={{width : '6rem'}} key={index_project}>
+																								{
+																									skill_grade_book_arr[data.id] != null &&
+																									<>
+																										{
+																											skill_grade_book_arr[data.id][data_project.id] != null &&
+																											<>
+																											{
+																												skill_grade_book_arr[data.id][data_project.id].grade_book != null &&
+																												<p className={"m-0"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.comment}</p>
+																											}
+																											</>
+																										}
+																										{
+																										}
+																									</>
+																								}
+																							</td>
+																						))
+																					}
+																				</tr>
+
+																				
+																				</>
 																			))
 																		}
 																	</>
