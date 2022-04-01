@@ -68,7 +68,7 @@ export default function HomeroomStudentHabitOnGoing({habit_student_selected, on_
                                                                     </div>
                                                                     <div className='col'>
                                                                         <p className='m-0 text-primary'>Goals</p>
-                                                                        <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{base.moment(data.end_date).format('DD/MM')}</p>
+                                                                        <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.history.length}/{data.duration_day}</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
