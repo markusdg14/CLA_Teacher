@@ -45,7 +45,16 @@ export default function CheckAssignment(){
                     if(data[x].user.file_name != null){
                         data[x].user.image_display = base.url_photo('user', data[x].user.file_name)
                     }
-                    data[x].subject_lesson = data[x].assignment_agreement.assignment_group.subject.name + ' ' + data[x].assignment_agreement.assignment_group.lesson.name
+
+                    data[x].grade = ''
+                    if(data[x].assignment_agreement != null){
+                        data[x].subject_lesson = data[x].assignment_agreement.assignment_group.subject.name + ' ' + data[x].assignment_agreement.assignment_group.lesson.name
+                        data[x].grade = data[x].assignment_agreement.assignment_group.grade.name
+                    }
+                    else {
+                        data[x].subject_lesson = data[x].task.project.subject.name
+                        data[x].grade = data[x].task.project.grade.name
+                    }
                     data[x].submitted_date_format = base.moment(data[x].created_at).format('DD/MM HH:mm')
                     data[x].checked_date_format = base.moment(data[x].updated_at).format('DD/MM HH:mm')
                 }
@@ -63,13 +72,13 @@ export default function CheckAssignment(){
         }
         tab_arr[index].is_active = !initActive
         set_data_arr([])
-        set_tab_arr(tab_arr)
+        // set_tab_arr(tab_arr)
 
         if(tab_arr[index].is_active){
             set_active_tab(tab_arr[index].id)
             set_data_type((tab_arr[index].id === 'all' ? '' : 'on_checking'))
         }
-        // base.update_array(tab_arr, set_tab_arr, data_index, index)
+        base.update_array(tab_arr, set_tab_arr, data_index, index)
     }
 
     function changeSearch(value){
@@ -145,24 +154,36 @@ export default function CheckAssignment(){
                                                                                 <p className='m-0 d-lg-inline-block text-capitalize'>{data.user.name}</p>
                                                                             </td>
                                                                             <td className='td-fit-content align-middle'>
-                                                                                <p className='m-0'>{data.assignment_agreement.assignment_group.grade.name}</p>
+                                                                                <p className='m-0'>{data.grade}</p>
                                                                             </td>
                                                                             <td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.subject_lesson}</p></td>
-                                                                            <td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.assignment_agreement.name}</p></td>
+                                                                            <td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{
+                                                                                data.assignment_agreement != null ? data.assignment_agreement.name : data.task.title + ' - ' + data.task.project.name}</p></td>
                                                                             <td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.submitted_date_format}</p></td>
                                                                             {
                                                                                 active_tab === 'all' &&
                                                                                 <td className='td-fit-content align-middle'>
                                                                                     {
-                                                                                        data.assignment_agreement.assign_teacher != null ?
-                                                                                        <p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.assignment_agreement.assign_teacher.user.name}</p>
-                                                                                        :
-                                                                                        <p className='m-0' style={{color : 'black'}}>-</p>
+                                                                                        <>
+                                                                                        {
+                                                                                            data.assignment_agreement != null ?
+                                                                                            <>
+                                                                                            {
+                                                                                                data.assignment_agreement.assign_teacher != null ?
+                                                                                                <p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.assignment_agreement.assign_teacher.user.name}</p>
+                                                                                                : 
+                                                                                                <p className='m-0' style={{color : 'black'}}>-</p>
+                                                                                            }
+                                                                                            </>
+                                                                                            :
+                                                                                            <p className='m-0' style={{color : 'black'}}>-</p>
+                                                                                        }
+                                                                                        </>
                                                                                     }
                                                                                 </td>
                                                                             }
                                                                             <td className='td-fit-content align-middle'>
-                                                                                <a href={'/check-assignment/detail?id=' + data.id} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
+                                                                                <a href={'/check-assignment/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
                                                                             </td>
                                                                         </tr>
                                                                     ))

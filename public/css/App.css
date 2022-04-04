@@ -9990,7 +9990,7 @@ input:focus {
 
   .background-right {
     position: absolute !important;
-    bottom: -30rem;
+    bottom: 5rem;
     right: -14rem;
   }
   .background-right > img {
@@ -10108,7 +10108,7 @@ a.fc-event {
 }
 
 .fc-event {
-  background-color: #0EA5E91A;
+  background-color: rgba(14, 165, 233, 0.1019607843);
 }
 .fc-event > .fc-daygrid-event-dot {
   border: none;

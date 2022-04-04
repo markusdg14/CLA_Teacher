@@ -53,6 +53,8 @@ export default function CheckAssignmentDetail(){
     const [class_student_id, set_class_student_id] = useState('')
     const [project_id, set_project_id] = useState('')
 
+    const [total_file, set_total_file] = useState(0)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -97,26 +99,37 @@ export default function CheckAssignmentDetail(){
 
                 set_assignment_submitted_id(data.id)
                 set_student_data(data.user)
+
                 set_assignment_status(data.assessment_status.name)
-                set_grade(data.assignment_agreement.assignment_group.grade.name)
+                
+                if(data.type === 'assignment'){
+                    set_grade(data.assignment_agreement.assignment_group.grade.name)
+                    set_subject_id(data.assignment_agreement.assignment_group.subject.id)
+                    set_assignment_agreement_id(data.assignment_agreement.id)
+                    set_assignment_type(data.assignment_agreement.assignment_type.data)
+                    // set_assignment_type('discussion')
+    
+                    if(data.assessment_rule_detail != null)
+                        set_assignment_grade(data.assessment_rule_detail.name)
+    
+    
+                    set_assignment_info_arr([
+                        {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.assignment_agreement.assignment_group.grade.name},
+                        {title : 'Subject', value : data.assignment_agreement.assignment_group.subject.name}, {title : 'Lesson', value : data.assignment_agreement.assignment_group.lesson.name},
+                        {title : 'Assignment Title', value : data.assignment_agreement.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
+                    ])
+    
+                    set_rule_id(data.assignment_agreement.assessment_rule_id)
+                }
+                else {
+                    set_assignment_info_arr([
+                        {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.task.project.grade.name},
+                        {title : 'Subject', value : data.task.project.subject.name},
+                        {title : 'Project Title', value : data.task.title + ' - ' + data.task.project.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
+                    ])
 
-                set_subject_id(data.assignment_agreement.assignment_group.subject.id)
-
-                set_assignment_agreement_id(data.assignment_agreement.id)
-                set_assignment_type(data.assignment_agreement.assignment_type.data)
-                // set_assignment_type('discussion')
-
-                if(data.assessment_rule_detail != null)
-                    set_assignment_grade(data.assessment_rule_detail.name)
-
-
-                set_assignment_info_arr([
-                    {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.assignment_agreement.assignment_group.grade.name},
-                    {title : 'Subject', value : data.assignment_agreement.assignment_group.subject.name}, {title : 'Lesson', value : data.assignment_agreement.assignment_group.lesson.name},
-                    {title : 'Assignment Title', value : data.assignment_agreement.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
-                ])
-
-                set_rule_id(data.assignment_agreement.assessment_rule_id)
+                    set_assignment_type('discussion')
+                }
 
                 
                 if(data.file_submitted.length > 0){
@@ -151,6 +164,8 @@ export default function CheckAssignmentDetail(){
                         })
                     })
                 }
+
+                set_total_file(data.file_submitted.length)
             }
         }
     }
@@ -370,10 +385,13 @@ export default function CheckAssignmentDetail(){
                 </div>
             </div>
 
-            <div className='col-12 mt-5'>
-                {/* <a href={'/check-assignment/view-pdf?id=' + query.get('id')} className={'btn btn-primary'}>PDF</a> */}
-                <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
-            </div>
+            {
+                total_file > 0 &&
+                <div className='col-12 mt-5'>
+                    {/* <a href={'/check-assignment/view-pdf?id=' + query.get('id')} className={'btn btn-primary'}>PDF</a> */}
+                    <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
+                </div>
+            }
 
             <div className='col-12 mt-5'>
                 <div className="card rounded shadow-sm">
