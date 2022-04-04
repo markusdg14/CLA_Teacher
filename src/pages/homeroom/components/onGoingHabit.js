@@ -48,7 +48,7 @@ export default function HomeroomStudentHabitOnGoing({habit_student_selected, on_
                                                                 <h5 className='m-0'>{data.habit.name}</h5>
                                                             </div>
                                                             <div className='col d-flex align-items-center justify-content-end'>
-                                                                <i className={"fas fa-chevron-up"}></i>
+                                                                <i className={"fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
                                                             </div>
                                                         </div>
                                                     </div>
