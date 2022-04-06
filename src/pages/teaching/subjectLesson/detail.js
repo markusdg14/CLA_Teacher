@@ -140,7 +140,7 @@ export default function SubjectLessonDetail(){
                         data_arr.map((data, index)=>(
                             <div className={'col-12' + (index != 0 ? ' mt-4' : '')} key={index}>
                                 <div className='row'>
-                                    <div className='col-3 py-3' style={{backgroundColor : '#EBEFE2'}}>
+                                    <div className='col-12 col-lg-3 py-3' style={{backgroundColor : '#EBEFE2'}}>
 
                                         <div className='row'>
                                             <div className='col-12 bg-white p-4'>
@@ -154,7 +154,7 @@ export default function SubjectLessonDetail(){
                                         </div>
 
                                     </div>
-                                    <div className='col-9 px-4 bg-white'>
+                                    <div className='col-12 col-lg-9 px-4 bg-white'>
                                         <div className='row'>
 
                                             {
@@ -177,23 +177,25 @@ export default function SubjectLessonDetail(){
                                                                     {assignment.name}
                                                                 </p>
                                                             </div>
-                                                            <div className='col d-flex align-items-center justify-content-center px-5'>
-                                                                {
-                                                                    assignment.is_graded ?
-                                                                    <div className='py-1 px-5' style={{border : '1px solid #008060', borderRadius : '1rem'}}>
-                                                                        <p className='m-0 text-uppercase' style={{color : '#008060', fontSize : '.75rem'}}>Graded</p>
-                                                                    </div>
-                                                                    :
-                                                                    <div className='py-1 px-4' style={{border : '1px solid #FD6540', borderRadius : '1rem'}}>
-                                                                        <p className='m-0 text-uppercase' style={{color : '#FD6540', fontSize : '.75rem'}}>Need to be Graded</p>
-                                                                    </div>
-                                                                }
+                                                            <div className='col-auto col-lg mt-2 mt-lg-0 px-5'>
+                                                                <div className='d-flex align-items-center justify-content-center h-100'>
+                                                                    {
+                                                                        assignment.is_graded ?
+                                                                        <div className='py-1 px-5' style={{border : '1px solid #008060', borderRadius : '1rem'}}>
+                                                                            <p className='m-0 text-uppercase' style={{color : '#008060', fontSize : '.75rem'}}>Graded</p>
+                                                                        </div>
+                                                                        :
+                                                                        <div className='py-1 px-4' style={{border : '1px solid #FD6540', borderRadius : '1rem'}}>
+                                                                            <p className='m-0 text-uppercase' style={{color : '#FD6540', fontSize : '.75rem'}}>Need to be Graded</p>
+                                                                        </div>
+                                                                    }
+                                                                </div>
                                                             </div>
-                                                            <div className='col-auto text-right'>
+                                                            <div className='col-auto text-left text-lg-right mt-2 mt-lg-0'>
                                                                 <p className='m-0' style={{fontFamily : 'InterBold', color : 'black', fontSize : '.75rem'}}>Terkumpul {assignment.total_submitted}/{assignment.total_student} Student</p>
                                                                 <p className='m-0' style={{color : 'black', fontSize : '.75rem'}}>DUE : {assignment.deadline_date != null ? base.moment(assignment.deadline_date).format('DD/MM/YY HH:mm') : '-'}</p>
                                                             </div>
-                                                            <div className='col-auto text-right d-flex align-items-center'>
+                                                            <div className='col col-lg-auto text-right mt-2 mt-lg-0 d-flex align-items-center justify-content-end'>
                                                                 <h4 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-pencil-square" style={{color : '#0085FF'}}></i></h4>
                                                             </div>
                                                         </div>

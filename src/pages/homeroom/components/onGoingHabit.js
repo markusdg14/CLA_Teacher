@@ -11,11 +11,11 @@ export default function HomeroomStudentHabitOnGoing({habit_student_selected, on_
 
             <div className='col-12'>
                 <div className='row'>
-                    <div className='col-auto'>
+                    <div className='col-12 col-lg-auto'>
                         <div className="card rounded shadow-sm">
                             <div className={"card-body p-3"}>
                                 <div className='row'>
-                                    <div className='col'>
+                                    <div className='col-auto'>
                                         <img src={habit_student_selected.image_display} style={{height : '4rem', width : '4rem', aspectRatio : 1, borderRadius : '4rem'}} />
                                     </div>
                                     <div className='col-auto pl-0 d-flex align-items-center'>
@@ -33,7 +33,7 @@ export default function HomeroomStudentHabitOnGoing({habit_student_selected, on_
 
                     {
                         on_goingHabit_arr.map((data, index)=>(
-                            <div className='col-6' key={index}>
+                            <div className='col-12 col-lg-6' key={index}>
                                 <div className="card rounded shadow-sm">
                                     <div className={"card-body p-3"}>
                                         <div className='row'>

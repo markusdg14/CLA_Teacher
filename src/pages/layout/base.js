@@ -39,8 +39,8 @@ export default class BaseLayout extends Base{
     return (
       <>
       <Router>
-        <div className='position-relative' id="wrapper" style={{width : '100wh'}}>
-            <div className="ratio-169" style={{width : '100%', height : '60rem', backgroundSize : 'cover', backgroundRepeat : 'no-repeat', backgroundImage : "url(" + this.img_background +")"}} ></div>
+        <div className='position-relative' id="wrapper" style={{width : '100wh', height : '100vh'}}>
+            <div className="ratio-169" style={{width : '100%',  backgroundSize : 'cover', backgroundRepeat : 'no-repeat', backgroundImage : "url(" + this.img_background +")"}} ></div>
             
             <div className='background-left'>
               <img src={this.img_logo_talent} />

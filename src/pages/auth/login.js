@@ -98,7 +98,7 @@ export default function AuthLogin(){
                 <div className='row m-0'>
                     <div className='col-12 px-0 px-lg-5'>
                         <div className="card rounded shadow-sm h-100 w-100">
-                            <div className="card-body p-5">
+                            <div className="card-body py-5 px-2 px-lg-5">
                                 <form className='row m-0'>
                                     <div className='col-12'>
                                         {

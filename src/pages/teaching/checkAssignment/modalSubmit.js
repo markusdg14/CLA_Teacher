@@ -53,7 +53,7 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
                                                                         <div className='col-auto' key={index}>
                                                                             <div className="form-check">
                                                                                 <input className="form-check-input" type="radio" name="exampleRadios" id={'radio-' + data.id} value={data.id} checked={data.is_checked} onChange={()=>changeRadio(index)} />
-                                                                                <label className="form-check-label" for={'radio-' + data.id} style={{color : 'black'}}>
+                                                                                <label className="form-check-label" htmlFor={'radio-' + data.id} style={{color : 'black'}}>
                                                                                     {data.title}
                                                                                 </label>
                                                                             </div>
@@ -138,11 +138,7 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
                                                 </div>
                                             </div>
                                             </>
-                                            : assignment_type === 'ungraded' ?
-                                            <>
-
-                                            </>
-                                            :
+                                            : 
                                             <></>
                                         }
 

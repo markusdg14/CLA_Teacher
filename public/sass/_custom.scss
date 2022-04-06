@@ -71,6 +71,7 @@ body{
 
 h1, h2, h3, h4, h5{
 	color: #232D42;
+	font-family: 'InterBold';
 }
 
 p{
@@ -297,6 +298,9 @@ input{
 
 .profile_msg_picture{
 	position: absolute;
+	.headerImg{
+		height: 60rem;
+	}
 	>img{
 		height: 22rem;
 	}
@@ -313,6 +317,9 @@ input{
 }
 
 @include media-breakpoint-down(md){
+	.headerImg{
+		height: auto;
+	}
 	.background-left{
 		position : absolute !important;
 		top : 17rem;
@@ -495,7 +502,7 @@ a{
 }
 
 .gradePicker{
-	background-color: transparent;
+	background-color: #F6FEE480;
 	border-radius: 1.5rem;
 	padding: .5rem 2rem;
 	border: 1px solid $secondary;

@@ -154,7 +154,7 @@ export default function HomeIndex(){
 					{
 						class_arr.map((data, index)=>(
 							<div className='col-auto' key={index}>
-								<div className={'gradePicker' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
+								<div className={'gradePicker mb-3' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
 									<p className='m-0'>{data.title}</p>
 								</div>
 							</div>

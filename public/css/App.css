@@ -9746,6 +9746,7 @@ body {
 
 h1, h2, h3, h4, h5 {
   color: #232D42;
+  font-family: "InterBold";
 }
 
 p {
@@ -9959,6 +9960,9 @@ input:focus {
 .profile_msg_picture {
   position: absolute;
 }
+.profile_msg_picture .headerImg {
+  height: 60rem;
+}
 .profile_msg_picture > img {
   height: 22rem;
 }
@@ -9978,6 +9982,10 @@ input:focus {
 }
 
 @media (max-width: 991.98px) {
+  .headerImg {
+    height: auto;
+  }
+
   .background-left {
     position: absolute !important;
     top: 17rem;
@@ -10108,7 +10116,7 @@ a.fc-event {
 }
 
 .fc-event {
-  background-color: rgba(14, 165, 233, 0.1019607843);
+  background-color: #0EA5E91A;
 }
 .fc-event > .fc-daygrid-event-dot {
   border: none;
@@ -10159,7 +10167,7 @@ a.fc-event {
 }
 
 .gradePicker {
-  background-color: transparent;
+  background-color: #F6FEE480;
   border-radius: 1.5rem;
   padding: 0.5rem 2rem;
   border: 1px solid #B1CF24;

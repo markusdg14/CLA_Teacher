@@ -299,6 +299,12 @@ export default function CheckAssignmentDetail(){
                 data_upload.assessment_rule_detail = {id : rule_selected}
             }
         }
+        else  if(assignment_type === 'ungraded'){
+            url = '/assessment/assignment'
+            data_upload = {
+                id : assignment_submitted_id,
+            }
+        }
         else if(assignment_type === 'discussion'){
             var arr_skill = []
             for(var x in grade_skill_arr){
@@ -351,7 +357,7 @@ export default function CheckAssignmentDetail(){
 
             <div className='col-12 mt-5'>
                 <div className='row m-0'>
-                    <div className='col-12 col-lg-auto'>
+                    <div className='col-12 col-lg-3'>
                         <div className='h-100 row p-0 pr-0 pr-lg-4'>
                             <div className='col-12 p-4 bg-white rounded shadow-sm mb-2'>
                                 <p className='m-0 text-primary'>Score Grade</p>
@@ -363,8 +369,11 @@ export default function CheckAssignmentDetail(){
                             </div>
                         </div>
                     </div>
-                    <div className='col bg-white rounded shadow-sm p-4 d-flex align-items-center mt-3 mt-lg-0'>
+                    <div className='col-12 col-lg-9 bg-white rounded shadow-sm p-4 d-flex align-items-center mt-3 mt-lg-0'>
                         <div className='row'>
+                            <div className='col-12 pr-5 d-block d-lg-none mb-3'>
+                                <img src={student_data.image_display} style={{height : '7rem', width : '7rem', aspectRatio : 1, borderRadius : '7rem'}} />
+                            </div>
                             <div className='col'>
                                 <div className='row'>
                                 {
@@ -377,18 +386,32 @@ export default function CheckAssignmentDetail(){
                                 }
                                 </div>
                             </div>
-                            <div className='col-auto pr-5'>
+                            <div className='col-auto pr-5 d-none d-lg-block'>
                                 <img src={student_data.image_display} style={{height : '7rem', width : '7rem', aspectRatio : 1, borderRadius : '7rem'}} />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>                
 
             {
-                total_file > 0 &&
+                assignment_type === 'undgraded' ?
+                <div className='col-12 mt-5 text-center'>
+                    <div className="card rounded shadow-sm">
+                        <div className={"card-body p-5"}>
+                            <div className='row'>
+                                <div className='col-12'>
+                                    <img src={base.img_study_2} style={{height : '20rem'}} />
+                                </div>
+                                <div className='col-12 pb-2'>
+                                    <button className='btn btn-primary rounded px-5 py-2 shadow-sm' onClick={()=>submitGrading()}>Confirm Submission</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                :
                 <div className='col-12 mt-5'>
-                    {/* <a href={'/check-assignment/view-pdf?id=' + query.get('id')} className={'btn btn-primary'}>PDF</a> */}
                     <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
                 </div>
             }
