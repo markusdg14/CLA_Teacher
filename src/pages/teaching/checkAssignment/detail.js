@@ -28,6 +28,7 @@ export default function CheckAssignmentDetail(){
     const [assignment_grade, set_assignment_grade] = useState('')
     const [grade, set_grade] = useState('')
     const [rule_id, set_rule_id] = useState('')
+    const [rule, set_rule] = useState('')
     const [rule_detail_arr, set_rule_detail_arr] = useState([])
     const [rule_selected, set_rule_selected] = useState('')
     const [teacher_notes, set_teacher_notes] = useState('')
@@ -54,6 +55,8 @@ export default function CheckAssignmentDetail(){
     const [project_id, set_project_id] = useState('')
 
     const [total_file, set_total_file] = useState(0)
+
+    const [numerical_score, set_numerical_score] = useState('')
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -113,6 +116,10 @@ export default function CheckAssignmentDetail(){
     
                     if(data.assessment_rule_detail != null)
                         set_assignment_grade(data.assessment_rule_detail.name)
+
+                    if(data.score != null){
+                        set_assignment_grade(data.score)
+                    }
     
     
                     set_assignment_info_arr([
@@ -198,6 +205,8 @@ export default function CheckAssignmentDetail(){
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
+                console.log(data)
+                set_rule(data.name)
                 set_rule_detail_arr(data.detail)
             }
         }
@@ -297,9 +306,14 @@ export default function CheckAssignmentDetail(){
                     file_name : assignment_submitted_id + '.pdf'
                 }
             }
-    
-            if(rule_selected !== ''){
-                data_upload.assessment_rule_detail = {id : rule_selected}
+
+            if(rule === 'Numerical'){
+                data_upload.score = numerical_score
+            }
+            else{
+                if(rule_selected !== ''){
+                    data_upload.assessment_rule_detail = {id : rule_selected}
+                }
             }
         }
         else  if(assignment_type === 'ungraded'){
@@ -344,6 +358,21 @@ export default function CheckAssignmentDetail(){
         skill_data[index_skill].score = val
 
         base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
+    }
+
+    function changeNumerical(value){
+        var indexValue = value.length - 1
+        var score = numerical_score
+        if(value.charCodeAt(indexValue) >= 48 && value.charCodeAt(indexValue) <= 57){
+            score = value
+        }
+        else if((indexValue < 0)){
+            score = ''
+        }
+        if(parseInt(value) > 100){
+            score = 100
+        }
+        set_numerical_score(score)
     }
 
     return(
@@ -523,6 +552,9 @@ export default function CheckAssignmentDetail(){
                 is_modal_btn_disable={is_modal_btn_disable}
                 grade_skill_arr={grade_skill_arr}
                 changeScore={(index, index_skill, val)=>changeScore(index, index_skill, val)}
+                rule={rule}
+                numerical_score={numerical_score}
+                changeNumerical={(value)=>changeNumerical(value)}
             />
             
         </div>
