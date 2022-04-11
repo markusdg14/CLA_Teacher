@@ -100,6 +100,8 @@ export default function CheckAssignmentDetail(){
                 set_assignment_submitted_id(data.id)
                 set_student_data(data.user)
 
+                set_class_student_id(data.class_student.id)
+
                 set_assignment_status(data.assessment_status.name)
                 
                 if(data.type === 'assignment'){
@@ -284,6 +286,7 @@ export default function CheckAssignmentDetail(){
         set_is_modal_btn_disable(true)
         var url = ''
         var data_upload = {}
+        var method = 'put'
         if(assignment_type === 'quiz'){
             url = '/assessment/assignment'
             data_upload = {
@@ -323,9 +326,10 @@ export default function CheckAssignmentDetail(){
                 comment : teacher_notes,
                 arr_skill : arr_skill
             }
+            method = 'post'
         }
 
-        var response = await base.request(url, 'put', data_upload)
+        var response = await base.request(url, method, data_upload)
         if(response != null){
             if(response.status == 'success'){
                 window.location.reload()
