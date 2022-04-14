@@ -100,6 +100,9 @@ export default function HomeroomDetail(){
     const [on_goingHabit_arr, set_on_goingHabit_arr] = useState([])
 
     const [attendance_reward_student_selected, set_attendance_reward_student_selected] = useState('')
+    const [attendance_score_arr] = useState([{id : 0, name : 0}, {id : 1, name : 1}, {id : 'P', name : 'P'}])
+    const [reward_score_arr] = useState([{id : 0, name : 0}, {id : 1, name : 1}])
+    const [reward_score, set_reward_score] = useState([])
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -276,6 +279,12 @@ export default function HomeroomDetail(){
                         data_student[x].is_show = false
                     }
                     data_student[0].is_show = true
+
+                    var arr_reward = data.arr_reward
+                    for(var x in arr_reward){
+                        arr_reward[x].score = ''
+                    }
+                    set_reward_score(arr_reward)
 
                     set_reward_arr(data.arr_reward)
                     set_date_arr(data.arr_date.arr)
@@ -570,6 +579,18 @@ export default function HomeroomDetail(){
         base.$('#attendanceRewardModal').modal('show')
     }
 
+    async function changeAttendance(value, type, index=0){
+        if(type === 'student'){
+            set_attendance_reward_student_selected(value)
+        }
+        else if(type === 'reward'){
+            var data_index = reward_score[index]
+            reward_score[index].score = value
+            console.log(reward_score[index])
+            base.update_array(reward_score, set_reward_score, data_index, index)
+        }
+    }
+
     return(
         <div className='row'>
 
@@ -715,7 +736,14 @@ export default function HomeroomDetail(){
                 : <></>
             }
 
-            <AttendanceRewardModal student_arr={student_arr} attendance_reward_student_selected={attendance_reward_student_selected} />
+            <AttendanceRewardModal
+                student_arr={student_arr}
+                attendance_reward_student_selected={attendance_reward_student_selected}
+                reward_arr={reward_score}
+                attendance_score_arr={attendance_score_arr}
+                reward_score_arr={reward_score_arr}
+                changeAttendance={(value, type, index)=>changeAttendance(value, type, index)}
+            />
 
         </div>
     )
