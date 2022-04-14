@@ -16,6 +16,7 @@ import HomeroomAttendanceReward from './components/attendanceReward';
 import HomeroomHabitChallengeTalent from './components/habitChallenge_talents';
 import HomeroomStudentHabitDetail from './components/studentDetailHabit';
 import HomeroomStudentHabitOnGoing from './components/onGoingHabit';
+import AttendanceRewardModal from './components/AttendanceRewardModal';
 
 
 export default function HomeroomDetail(){
@@ -97,6 +98,8 @@ export default function HomeroomDetail(){
     const [search_transaction, set_search_transaction] = useState('')
 
     const [on_goingHabit_arr, set_on_goingHabit_arr] = useState([])
+
+    const [attendance_reward_student_selected, set_attendance_reward_student_selected] = useState('')
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -563,6 +566,10 @@ export default function HomeroomDetail(){
         base.update_array(on_goingHabit_arr, set_on_goingHabit_arr, data_index, index)
     }
 
+    async function addAttendanceReward(){
+        base.$('#attendanceRewardModal').modal('show')
+    }
+
     return(
         <div className='row'>
 
@@ -663,6 +670,7 @@ export default function HomeroomDetail(){
                                 toggleStudent={(indexStudent)=>toggleStudent(indexStudent)}
                                 attendance_reward_nav_btn={attendance_reward_nav_btn}
                                 changeOffset={(type)=>changeOffset(type)}
+                                addAttendanceReward={()=>addAttendanceReward()}
                             />
                         </>
                         : header_selected === 'habit_tracker' ?
@@ -706,6 +714,8 @@ export default function HomeroomDetail(){
                 </div>
                 : <></>
             }
+
+            <AttendanceRewardModal student_arr={student_arr} attendance_reward_student_selected={attendance_reward_student_selected} />
 
         </div>
     )

@@ -3,7 +3,7 @@ import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
 
-export default function HomeroomAttendanceReward({term_arr, term_selected, changeTerm, reward_arr, date_arr, attendance_reward_month, class_student_arr, arr_point, toggleStudent, attendance_reward_nav_btn, changeOffset}){
+export default function HomeroomAttendanceReward({term_arr, term_selected, changeTerm, reward_arr, date_arr, attendance_reward_month, class_student_arr, arr_point, toggleStudent, attendance_reward_nav_btn, changeOffset, addAttendanceReward}){
 	var base = new Base()
 
 	return(
@@ -26,7 +26,7 @@ export default function HomeroomAttendanceReward({term_arr, term_selected, chang
 													changeInput={(value)=>changeTerm(value)}
 												/>
 											</div>
-											<div className='col-12 col-lg'>
+											<div className='col-12 col-lg mt-2 mt-lg-0'>
 												<div className='row h-100'>
 													{
 														attendance_reward_nav_btn.map((data, index)=>(
@@ -38,6 +38,9 @@ export default function HomeroomAttendanceReward({term_arr, term_selected, chang
 														))
 													}
 												</div>
+											</div>
+											<div className='col-12 col-lg mt-2 mt-lg-0 d-flex justify-content-end'>
+												<button className='btn btn-primary rounded shadow-sm' onClick={()=>addAttendanceReward()}>Add Record</button>
 											</div>
 										</div>
 									</div>
