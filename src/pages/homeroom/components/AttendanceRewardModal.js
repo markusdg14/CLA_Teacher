@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
-export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postAssignment, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr}){
+export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr}){
     var base = new Base()
 
     return(
@@ -49,7 +49,7 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                     <div className='col-12 mt-4'>
                                         <div className='row m-0'>
                                             <div className='col'>
-                                                <button className='btn btn-primary rounded shadow-sm px-5' onClick={postAssignment}>Submit</button>
+                                                <button className='btn btn-primary rounded shadow-sm px-5' onClick={postReward}>Submit</button>
                                             </div>
                                         </div>
                                     </div>

@@ -586,8 +586,53 @@ export default function HomeroomDetail(){
         else if(type === 'reward'){
             var data_index = reward_score[index]
             reward_score[index].score = value
-            console.log(reward_score[index])
             base.update_array(reward_score, set_reward_score, data_index, index)
+        }
+    }
+
+    async function postReward(){
+        var flag = 1
+        var class_student_id = ''
+
+        if(attendance_reward_student_selected === ''){
+            flag = 0
+        }
+
+        
+        var arr_reward = []
+        for(var x in reward_score){
+            if(reward_score[x].score != ''){
+                arr_reward.push({
+                    reward : {id : reward_score[x].id},
+                    amount : reward_score[x].score
+                })
+            }
+            else {
+                flag = 0
+                break
+            }
+        }
+
+        if(flag){
+            for(var x in class_student_arr){
+                if(class_student_arr[x].user_id === attendance_reward_student_selected){
+                    class_student_id = class_student_arr[x].id
+                }
+            }
+            var data_post = {
+                class_student : {id : class_student_id},
+                arr_attendance_reward : arr_reward
+            }
+
+            var url = '/point/transaction'
+        
+            var response = await base.request(url, 'post', data_post)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.reload()
+                }
+            }
+
         }
     }
 
@@ -743,6 +788,7 @@ export default function HomeroomDetail(){
                 attendance_score_arr={attendance_score_arr}
                 reward_score_arr={reward_score_arr}
                 changeAttendance={(value, type, index)=>changeAttendance(value, type, index)}
+                postReward={()=>postReward()}
             />
 
         </div>

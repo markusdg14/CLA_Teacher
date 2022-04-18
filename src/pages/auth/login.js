@@ -17,6 +17,10 @@ export default function AuthLogin(){
     const [login_alert, set_login_alert] = useState({type : '', message : ''})
     const [is_disable_btn, set_is_disable_btn] = useState(false)
 
+    useEffect(async ()=>{
+        await localStorage.clear()
+    }, [])
+
     function changeInput(value, index){
         set_error()
         set_error('', '', 'alert')
