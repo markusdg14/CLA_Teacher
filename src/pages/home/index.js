@@ -7,6 +7,8 @@ import Header from '../../components/header';
 import HomeList from '../../components/homeList';
 import LessonBadge from '../../components/lessonBadge';
 import CustomBadge from '../../components/customBadge';
+import NoData from '../../components/NoData';
+import SelectOption from '../../components/selectOption';
 
 
 export default function HomeIndex(){
@@ -16,6 +18,10 @@ export default function HomeIndex(){
 
 	const [class_arr, set_class_arr] = useState([])
 	const [selected_class, set_selected_class] = useState('')
+
+	const [academic_year_arr, set_academic_year_arr] = useState([])
+	const [selected_academic_year, set_selected_academic_year] = useState('')
+	const [selected_academic_year_name, set_selected_academic_year_name] = useState('')
 
 	const [tracker_btn_arr] = useState([
 		{icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2'},
@@ -30,6 +36,8 @@ export default function HomeIndex(){
 
 	const [submitted_data_arr, set_submitted_data_arr] = useState([])
 
+	const [is_loading, set_is_loading] = useState(true)
+
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
 		set_user_data(check_user.user_data)
@@ -37,29 +45,52 @@ export default function HomeIndex(){
 
 	useEffect(()=>{
 		if(user_data.id !== ''){
-			get_grade()
+			get_academic_year()
 		}
 	}, [user_data])
 
 	useEffect(()=>{
+		if(user_data.id !== ''){
+			get_grade()
+		}
+	}, [selected_academic_year])
+
+	useEffect(()=>{
 		if(selected_class !== ''){
+			set_is_loading(true)
 			get_data()
 		}
 	}, [selected_class])
 
-	async function get_grade(){
-		var url = '/academic-year/class'
+	async function get_academic_year(){
+		var url = '/academic-year/all'
 		var response = await base.request(url)
 		if(response != null){
 			if(response.status == 'success'){
-				var data = response.data.data
-				for(var x in data){
-					data[x].title = data[x].grade.name + ' ' + data[x].name
-					data[x].is_selected = false
-					data[0].is_selected = true
+				var data = response.data
+				set_academic_year_arr(data)
+				set_selected_academic_year('')
+			}
+		}
+	}
+
+	async function get_grade(){
+		if(selected_academic_year != ''){
+			var url = '/academic-year/class?academic_year_id=' + selected_academic_year
+			var response = await base.request(url)
+			if(response != null){
+				if(response.status == 'success'){
+					var data = response.data.data
+					for(var x in data){
+						data[x].title = data[x].grade.name + ' ' + data[x].name
+						data[x].is_selected = false
+						data[0].is_selected = true
+					}
+					set_selected_class(data[0].id)
+					set_class_arr(data)
+
+					set_is_loading(false)
 				}
-				set_selected_class(data[0].id)
-				set_class_arr(data)
 			}
 		}
 	}
@@ -72,7 +103,7 @@ export default function HomeIndex(){
 				var data = response.data
 
 				var lessonDate_arr = []
-				for(let lessonSchedule of data.arr_lesson_schedule){
+				for(let lessonSchedule of data.arr_lesson_schedule.arr){
 					var day_name = base.moment(lessonSchedule.date).format('DD dddd')
 					lessonDate_arr.push({id : lessonSchedule.id, day_name : day_name, lesson : lessonSchedule.lesson.name})
 				}
@@ -142,35 +173,53 @@ export default function HomeIndex(){
 		base.update_array(student_arr, set_student_arr, data_index, index)
 	}
 
+	function changeAcademicYear(value){
+		set_selected_academic_year(value)
+		var academic_year_selected = {id : '', name : ''}
+		for(var x in academic_year_arr){
+			if(academic_year_arr[x].id === value){
+				academic_year_selected = academic_year_arr[x]
+			}
+
+		}
+		set_selected_academic_year_name(academic_year_selected.name)
+	}
+
 	return(
 		<div className='row'>
 
 			<div className='col-12'>
 				<Header title={'Teacher Tracker'} user_data={user_data} />
 			</div>
-
+			
 			<div className='col-12 mt-5 pt-4'>
-				<div className='row'>
-					{
-						class_arr.map((data, index)=>(
-							<div className='col-auto' key={index}>
-								<div className={'gradePicker mb-3' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
-									<p className='m-0'>{data.title}</p>
-								</div>
+				<div className="card rounded shadow-sm h-100">
+					<div className={"card-body p-4"}>
+						<div className='row'>
+							<div className='col-12'>
+								<label>Academic Year</label>
 							</div>
-						))
-					}
+							<div className='col'>
+								<SelectOption 
+									data_arr={academic_year_arr} 
+									selected={selected_academic_year}
+									title={'Academic Year'}
+									changeInput={(value)=>changeAcademicYear(value)}
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div className='col-12 mt-5'>
+			<div className='col-12 mt-3'>
 				<div className="card rounded shadow-sm">
 					<div className={"card-body p-0"}>
 						<div className={'row m-0'}>
 							<div className='col-12 p-3'>
 								<div className='row m-0'>
 									<div className='col-12 col-lg d-flex align-items-center'>
-										<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Tracker for each Student ({user_data.current_academic_year.name})</h5>
+										<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Tracker for each Student ({selected_academic_year_name != '' ? selected_academic_year_name : ''})</h5>
 									</div>
 									{/* <div className='col-12 col-lg-auto'>
 										<div className='row m-0 mr-0'>
@@ -191,83 +240,115 @@ export default function HomeIndex(){
 				</div>
 			</div>
 
-			<div className='col-12 mt-5'>
-				<div className="card rounded shadow-sm">
-					<div className={"card-body p-0"}>
-						<div className={'row m-0'}>
-							<img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-							<div className='col-12 p-3 pt-4'>
-								<div className="table-responsive">
-									<table className="table table-borderless w-100">
-										<thead>
-											<tr>
-												<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
-													<h5 className='text-primary m-0'>{base.moment().format('MMMM')}</h5>
-												</th>
-												{
-													day_arr.map((data, index)=>(
-														<th className='border-0 px-0 text-center' style={{color : '#8A92A6', width : '6rem'}} key={index}>
-															<p className='m-0'>{data.day_name}</p>
-															<p className='mb-0 text-secondary' style={{fontSize : '.75rem'}}>{data.lesson}</p>
-														</th>
-													))
-												}
-											</tr>
-										</thead>
-										<tbody>
-											{
-												student_arr.map((data, index)=>(
-													<tr key={index}>
-														<td className='px-0' colSpan={day_arr.length + 1}>
-															<div className='p-2 d-flex align-items-center' onClick={()=>toggle_table(index)} style={{height : '3rem', backgroundColor : '#EBEFE2', cursor : 'pointer', color : '9FA2B4'}}>
-																{data.name}
-																<i className={"ml-3 fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
-															</div>
+			{
+				class_arr.length > 0 ?
+				<>
+					<div className='col-12 mt-3'>
+						<div className='row'>
+							{
+								class_arr.map((data, index)=>(
+									<div className='col-auto' key={index}>
+										<div className={'gradePicker mb-3' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
+											<p className='m-0'>{data.title}</p>
+										</div>
+									</div>
+								))
+							}
+						</div>
+					</div>
 
-															{
-																data.is_show &&
-																<>
-																	{
-																		subject_arr.map((dataSubject, indexSubject)=>(
-																			<tr key={indexSubject}>
-																				<td className='text-primary'><i class="bi bi-circle-fill mr-2"></i> {dataSubject.name}</td> 
-																				
-																				{
-																					day_arr.map((dataSubmitted, indexSubmitted)=>(
-																						<td className='text-center px-0' style={{width : '6rem'}} key={indexSubmitted}>
-																							<div className="">
-																								{
-																									submitted_data_arr[data.id] != null &&
-																									<>
-																										{
-																											submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id] != null &&
-																											<span className={"badge badge-pill p-2 px-3 rounded badge-" + (submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.badge_type)}>{submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.name}</span>
-																										}
-																									</>
-																								}
-																							</div>
-																						</td>
-																					))
-																				}
-																			</tr>
-																		))
-																	}
-																</>
-															}
-														</td>
+					<div className='col-12 mt-4'>
+						<div className="card rounded shadow-sm">
+							<div className={"card-body p-0"}>
+								<div className={'row m-0'}>
+									<img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+									<div className='col-12 p-3 pt-4'>
+										<div className="table-responsive">
+											<table className="table table-borderless w-100">
+												<thead>
+													<tr>
+														<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
+															<h5 className='text-primary m-0'>{base.moment().format('MMMM')}</h5>
+														</th>
+														{
+															day_arr.map((data, index)=>(
+																<th className='border-0 px-0 text-center' style={{color : '#8A92A6', width : '6rem'}} key={index}>
+																	<p className='m-0'>{data.day_name}</p>
+																	<p className='mb-0 text-secondary' style={{fontSize : '.75rem'}}>{data.lesson}</p>
+																</th>
+															))
+														}
 													</tr>
-												))
-											}
-										</tbody>
-									</table>
+												</thead>
+												<tbody>
+													{
+														student_arr.map((data, index)=>(
+															<tr key={index}>
+																<td className='px-0 pt-0' colSpan={day_arr.length + 1}>
+																	<div className='p-2 d-flex align-items-center' onClick={()=>toggle_table(index)} style={{height : '3rem', backgroundColor : '#EBEFE2', cursor : 'pointer', color : '9FA2B4'}}>
+																		{data.name}
+																		<i className={"ml-3 fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
+																	</div>
+
+																	{
+																		data.is_show &&
+																		<>
+																			{
+																				subject_arr.map((dataSubject, indexSubject)=>(
+																					<tr key={indexSubject}>
+																						<td className='text-primary'><i class="bi bi-circle-fill mr-2"></i> {dataSubject.name}</td> 
+																						
+																						{
+																							day_arr.map((dataSubmitted, indexSubmitted)=>(
+																								<td className='text-center px-0' style={{width : '6rem'}} key={indexSubmitted}>
+																									<div className="">
+																										{
+																											submitted_data_arr[data.id] != null &&
+																											<>
+																												{
+																													submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id] != null &&
+																													<span className={"badge badge-pill p-2 px-3 rounded badge-" + (submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.badge_type)}>{submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.name}</span>
+																												}
+																											</>
+																										}
+																									</div>
+																								</td>
+																							))
+																						}
+																					</tr>
+																				))
+																			}
+																		</>
+																	}
+																</td>
+															</tr>
+														))
+													}
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
+								
 							</div>
 						</div>
-						
-					</div>
-				</div>
 
-			</div>
+					</div>
+				</>
+				:
+				<>
+				{
+					selected_academic_year !== '' &&
+					<div className='col-12 mt-5 pt-5'>
+						{
+							!is_loading &&
+							<NoData />
+						}
+					</div>
+				}
+				</>
+			}
+
 
 		</div>
 	)

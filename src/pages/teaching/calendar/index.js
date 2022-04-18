@@ -129,6 +129,7 @@ export default function CalendarIndex(){
                                                 right : ''
                                             }}
                                             firstDay={'1'}
+                                            height={'auto'}
                                             dayHeaderFormat={{weekday : 'long'}}
                                             eventTimeFormat={{hour : '2-digit', minute : '2-digit'}}
                                             eventSources={[
@@ -185,7 +186,7 @@ export default function CalendarIndex(){
                                                     </div>
                                                     :
                                                     <div className='h-100 d-flex align-items-center justify-content-center'>
-                                                        <h4>No Data</h4>
+                                                        <h2 className='m-0 mt-2' style={{color : '#575A89', fontSize : '1.75rem'}}>No Data Available</h2>
                                                     </div>
                                                 }
                                             </>

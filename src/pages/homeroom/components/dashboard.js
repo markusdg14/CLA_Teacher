@@ -232,7 +232,7 @@ function DashboardList({title, data_arr, type}){
                                 </>
                                 :
                                 <div className='col-12 text-center'>
-                                    <h4>No Data</h4>
+                                    <h6 className='m-0' style={{color : 'black'}}>No Data</h6>
                                 </div>
                             }
                         </div>

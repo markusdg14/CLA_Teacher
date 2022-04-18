@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Base from '../../../utils/base';
 import Header from '../../../components/header';
+import NoData from '../../../components/NoData';
 
 
 export default function Announcement(){
@@ -31,11 +32,11 @@ export default function Announcement(){
     }, [selected_grade])
 
     async function get_grade(){
-        var url = '/grade/all'
+        var url = '/grade'
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
-                var data = response.data
+                var data = response.data.data
                 for(var x in data){
                     data[x].is_selected = false
                 }
@@ -124,42 +125,50 @@ export default function Announcement(){
                                                 </div>
                                             </div>
 
-                                            <div className='col-12 mt-3'>
-                                                <div className='table-responsive'>
-                                                    <table className="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announcement</th>
-                                                                <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Created</th>
-                                                                <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announced</th>
-                                                                <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Status</th>
-                                                                <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                data_arr.map((data, index)=>(
-                                                                    <tr key={index}>
-                                                                        <td className='align-middle'>{data.title}</td>
-                                                                        <td className='align-middle'>{data.created}</td>
-                                                                        <td className='align-middle'>{data.announced}</td>
-                                                                        <td className='align-middle text-capitalize'>{data.status}</td>
-                                                                        <td className='td-fit-content'>
-                                                                            {
-                                                                                data.status === 'scheduled' &&
-                                                                                <>
-                                                                                    <button className='btn btn-danger mr-2' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>announcementBtn(index, 'delete')}><i className="bi bi-trash-fill text-white" style={{fontSize : '.75rem'}}></i></button>
-                                                                                    <button className='btn btn-secondary' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>announcementBtn(index, 'edit')}><i className="bi bi-pen-fill text-white" style={{fontSize : '.75rem'}}></i></button>
-                                                                                </>
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
-                                                                ))
-                                                            }
-                                                        </tbody>
-                                                    </table>
+                                            {
+                                                data_arr.length > 0 ?
+                                                <div className='col-12 mt-3'>
+                                                    <div className='table-responsive'>
+                                                        <table className="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announcement</th>
+                                                                    <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Created</th>
+                                                                    <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announced</th>
+                                                                    <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Status</th>
+                                                                    <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    data_arr.map((data, index)=>(
+                                                                        <tr key={index}>
+                                                                            <td className='align-middle'>{data.title}</td>
+                                                                            <td className='align-middle'>{data.created}</td>
+                                                                            <td className='align-middle'>{data.announced}</td>
+                                                                            <td className='align-middle text-capitalize'>{data.status}</td>
+                                                                            <td className='td-fit-content'>
+                                                                                {
+                                                                                    data.status === 'scheduled' &&
+                                                                                    <>
+                                                                                        <button className='btn btn-danger mr-2' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>announcementBtn(index, 'delete')}><i className="bi bi-trash-fill text-white" style={{fontSize : '.75rem'}}></i></button>
+                                                                                        <button className='btn btn-secondary' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>announcementBtn(index, 'edit')}><i className="bi bi-pen-fill text-white" style={{fontSize : '.75rem'}}></i></button>
+                                                                                    </>
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    ))
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                :
+                                                <div className='col-12 mt-5 pt-5'>
+                                                    <NoData bg={'none'} />
+                                                </div>
+                                            }
+
                                         </div>
                                     </div>
                                 </div>

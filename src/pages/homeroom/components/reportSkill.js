@@ -114,8 +114,13 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																												skill_grade_arr[data.id] != null &&
 																												<>
 																													{
-																														skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id] &&
-																														<span className={"badge badge-pill p-2 px-3 rounded badge-success"}>{skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id].score}</span>
+																														skill_grade_arr[data.id][data_category.id][data_skill.id] != null &&
+																														<>
+																														{
+																															skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id] &&
+																															<span className={"badge badge-pill p-2 px-3 rounded badge-success"}>{skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id].score}</span>
+																														}
+																														</>
 																													}
 																												</>
 																											}
@@ -211,10 +216,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																										{
 																											skill_grade_book_arr[data.id][data_project.id] != null &&
 																											<>
-																											{
-																												skill_grade_book_arr[data.id][data_project.id].grade_book != null &&
-																												<p className={"m-0"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.comment}</p>
-																											}
+																											<p className={"m-0"}>{skill_grade_book_arr[data.id][data_project.id].grade_book != null ? skill_grade_book_arr[data.id][data_project.id].grade_book.comment : '-'}</p>
 																											</>
 																										}
 																										{

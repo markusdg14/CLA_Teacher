@@ -160,7 +160,12 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																							skill_grade_book_arr[data_assignment.id] != null &&
 																							<>
 																								{
-																									<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].grade_book.score}</span>
+																									skill_grade_book_arr[data_assignment.id].grade_book != null &&
+																									<>
+																									{
+																										<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].grade_book.score}</span>
+																									}
+																									</>
 																								}
 																							</>
 																						}
@@ -178,7 +183,12 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																							skill_grade_book_arr[data_assignment.id] != null &&
 																							<>
 																								{
-																									<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].grade_book.assessment_range.legend}</span>
+																									skill_grade_book_arr[data_assignment.id].grade_book != null &&
+																									<>
+																										{
+																											<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].grade_book.assessment_range.legend}</span>
+																										}
+																									</>
 																								}
 																							</>
 																						}
@@ -194,9 +204,9 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																						{
 																							skill_grade_book_arr[data_assignment.id] != null &&
 																							<>
-																								{
-																									<p className={"m-0"}>{skill_grade_book_arr[data_assignment.id].grade_book.comment}</p>
-																								}
+																								<p className={"m-0"}>
+																									{skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-'}
+																								</p>
 																							</>
 																						}
 																					</td>

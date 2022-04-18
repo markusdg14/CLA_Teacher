@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Base from '../../../utils/base';
 import Header from '../../../components/header';
+import NoData from '../../../components/NoData';
 
 
 export default function CheckAssignment(){
@@ -112,87 +113,96 @@ export default function CheckAssignment(){
 										<div className={'row m-0'}>
 											<img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
 											<div className='col-12 p-3 pt-4'>
-												<div className='row m-0'>
-													<div className='col-12 mb-3'>
-														<div className='row'>
-															<div className='col'>
-																<div className="input-group border rounded">
-																	<div className="input-group-prepend">
-																		<span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
+												{
+													data_arr.length > 0 ?
+													<>
+													<div className='row m-0'>
+														<div className='col-12 mb-3'>
+															<div className='row'>
+																<div className='col'>
+																	<div className="input-group border rounded">
+																		<div className="input-group-prepend">
+																			<span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
+																		</div>
+																		<input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" value={search} onChange={(e)=>changeSearch(e.target.value)} />
 																	</div>
-																	<input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" value={search} onChange={(e)=>changeSearch(e.target.value)} />
+																</div>
+																<div className='col-auto d-flex align-items-center'>
+																	<p className='m-0' style={{color : 'black'}}><i className="bi bi-sort-up"></i> Sort</p>
 																</div>
 															</div>
-															<div className='col-auto d-flex align-items-center'>
-																<p className='m-0' style={{color : 'black'}}><i className="bi bi-sort-up"></i> Sort</p>
-															</div>
 														</div>
-													</div>
-													<div className='col-12'>
-														<div className="table-responsive">
-															<table className="table table-striped">
-																<thead>
-																	<tr>
-																	<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Nama Student</th>
-																	<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Grade</th>
-																	<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Subject Lesson</th>
-																	<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Assignment</th>
-																	<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Submitted</th>
+														<div className='col-12'>
+															<div className="table-responsive">
+																<table className="table table-striped">
+																	<thead>
+																		<tr>
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Nama Student</th>
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Grade</th>
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Subject Lesson</th>
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Assignment</th>
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Submitted</th>
+																		{
+																			active_tab === 'all' &&
+																			<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Checked</th>
+																		}
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
+																		</tr>
+																	</thead>
+																	<tbody>
 																	{
-																		active_tab === 'all' &&
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Checked</th>
-																	}
-																	<th style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
-																	</tr>
-																</thead>
-																<tbody>
-																{
-																	data_arr.map((data, index)=>(
-																		<tr key={index}>
-																			<td className='td-fit-content align-middle'>
-																				<img src={data.user.image_display} className={'d-none d-lg-inline-block mr-3'} style={{height : '3rem', width : '3rem', aspectRatio : 1}} />
-																				<p className='m-0 d-lg-inline-block text-capitalize'>{data.user.name}</p>
-																			</td>
-																			<td className='td-fit-content align-middle'>
-																				<p className='m-0'>{data.grade}</p>
-																			</td>
-																			<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.subject_lesson}</p></td>
-																			<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{
-																				data.assignment_agreement != null ? data.assignment_agreement.name : data.task.title + ' - ' + data.task.project.name}</p></td>
-																			<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.submitted_date_format}</p></td>
-																			{
-																				active_tab === 'all' &&
+																		data_arr.map((data, index)=>(
+																			<tr key={index}>
 																				<td className='td-fit-content align-middle'>
-																					{
-																						<>
+																					<img src={data.user.image_display} className={'d-none d-lg-inline-block mr-3'} style={{height : '3rem', width : '3rem', aspectRatio : 1}} />
+																					<p className='m-0 d-lg-inline-block text-capitalize'>{data.user.name}</p>
+																				</td>
+																				<td className='td-fit-content align-middle'>
+																					<p className='m-0'>{data.grade}</p>
+																				</td>
+																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.subject_lesson}</p></td>
+																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{
+																					data.assignment_agreement != null ? data.assignment_agreement.name : data.task.title + ' - ' + data.task.project.name}</p></td>
+																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.submitted_date_format}</p></td>
+																				{
+																					active_tab === 'all' &&
+																					<td className='td-fit-content align-middle'>
 																						{
-																							data.assignment_agreement != null ?
 																							<>
 																							{
-																								data.assignment_agreement.assign_teacher != null ?
-																								<p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.assignment_agreement.assign_teacher.user.name}</p>
-																								: 
+																								data.assignment_agreement != null ?
+																								<>
+																								{
+																									data.assignment_agreement.assign_teacher != null ?
+																									<p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.assignment_agreement.assign_teacher.user.name}</p>
+																									: 
+																									<p className='m-0' style={{color : 'black'}}>-</p>
+																								}
+																								</>
+																								:
 																								<p className='m-0' style={{color : 'black'}}>-</p>
 																							}
 																							</>
-																							:
-																							<p className='m-0' style={{color : 'black'}}>-</p>
 																						}
-																						</>
-																					}
+																					</td>
+																				}
+																				<td className='td-fit-content align-middle'>
+																					<a href={'/check-assignment/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
 																				</td>
-																			}
-																			<td className='td-fit-content align-middle'>
-																				<a href={'/check-assignment/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
-																			</td>
-																		</tr>
-																	))
-																}
-																</tbody>
-															</table>
+																			</tr>
+																		))
+																	}
+																	</tbody>
+																</table>
+															</div>
 														</div>
 													</div>
-												</div>
+													</>
+													:
+													<div className='mt-5 pt-3'>
+														<NoData bg={'none'} />
+													</div>
+												}
 											</div>
 										</div>
 										
