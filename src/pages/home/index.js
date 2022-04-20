@@ -156,19 +156,30 @@ export default function HomeIndex(){
                                                                 </td>
                                                                 {
                                                                     schedule_lesson_day_arr.map((data_day, index_day)=>(
-                                                                        <td className='border-0 p-0 pb-2' key={index_day}>
+                                                                        <td className='border-0 p-0 pb-2 align-middle' key={index_day}>
                                                                             {
-                                                                                user_data.arr_schedule[data_day.id] != null && user_data.arr_schedule[data_day.id][data_time.name] != null && user_data.arr_schedule[data_day.id][data_time.name].start_time != null ?
-                                                                                <div className='h-100 px-2'>
-                                                                                    <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#EBEFE2'}}>
-                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem', fontSize : '.75rem'}}>{user_data.arr_schedule[data_day.id][data_time.name].class_model.grade.name} {user_data.arr_schedule[data_day.id][data_time.name].class_model.name}</p>
-                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem', fontSize : '.75rem'}}>{user_data.arr_schedule[data_day.id][data_time.name].subject.name}</p>
-                                                                                    </div>
-                                                                                </div>
+                                                                                user_data.arr_schedule != null ?
+                                                                                <>
+                                                                                    {
+                                                                                        user_data.arr_schedule[data_day.id] != null && user_data.arr_schedule[data_day.id][data_time.name] != null && user_data.arr_schedule[data_day.id][data_time.name].start_time != null ?
+                                                                                        <div className='h-100 px-2'>
+                                                                                            <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#EBEFE2'}}>
+                                                                                                <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem', fontSize : '.75rem'}}>{user_data.arr_schedule[data_day.id][data_time.name].class_model.grade.name} {user_data.arr_schedule[data_day.id][data_time.name].class_model.name}</p>
+                                                                                                <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem', fontSize : '.75rem'}}>{user_data.arr_schedule[data_day.id][data_time.name].subject.name}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        :
+                                                                                        <div className='h-100 px-2'>
+                                                                                            <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#F7F7F7'}}>
+                                                                                                <p className='m-0 schedule_subject text-center' style={{color : '#F7F7F7', fontFamily : 'InterBold', lineHeight : '1rem', userSelect : 'none', fontSize : '.75rem'}}>-</p>
+                                                                                                <p className='m-0 schedule_subject text-center' style={{color : '#F7F7F7', fontFamily : 'InterBold', lineHeight : '1rem', userSelect : 'none', fontSize : '.75rem'}}>-</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    }
+                                                                                </>
                                                                                 :
                                                                                 <div className='h-100 px-2'>
                                                                                     <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#F7F7F7'}}>
-                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#F7F7F7', fontFamily : 'InterBold', lineHeight : '1rem', userSelect : 'none', fontSize : '.75rem'}}>-</p>
                                                                                         <p className='m-0 schedule_subject text-center' style={{color : '#F7F7F7', fontFamily : 'InterBold', lineHeight : '1rem', userSelect : 'none', fontSize : '.75rem'}}>-</p>
                                                                                     </div>
                                                                                 </div>
