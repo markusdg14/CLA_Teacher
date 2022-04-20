@@ -553,3 +553,26 @@ a{
 		background-color: #EBEFE2;
 	}
 }
+
+.formInput{
+	background-color: #FFFFFF;
+	border: 1px solid #EAEAEA;
+}
+
+.react-datepicker__input-container{
+	>input{
+		background-color: #FFFFFF;
+		border: 1px solid #EAEAEA;
+		border-radius: .75rem;
+		height: calc(1.5em + 1rem + 2px);
+		padding: 0.5rem 1rem;
+		font-size: 1.25rem;
+		line-height: 1.5;
+		display: block;
+		width: 100%;
+		font-weight: 400;
+		color: #2F2F2F;
+		background-clip: padding-box;
+		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	}
+}

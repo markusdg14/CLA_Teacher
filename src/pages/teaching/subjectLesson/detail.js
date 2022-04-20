@@ -3,6 +3,9 @@ import Base from '../../../utils/base';
 import Header from '../../../components/header';
 import Select from 'react-select'
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
+import ModalConfirm from './components/confirmModal';
+import LessonList from './components/lessonList';
+import EditAssignment from './components/editAssignment';
 
 export default function SubjectLessonDetail(){
     var base = new Base()
@@ -26,6 +29,22 @@ export default function SubjectLessonDetail(){
     const [subject_arr, set_subject_arr] = useState([])
     const [header, set_header] = useState('')
 
+    const [selected_lesson_index, set_selected_lesson_index] = useState('')
+
+    const [viewType, set_viewType] = useState('lesson_list')
+    const [selected_assignment, set_selected_assignment] = useState({})
+    const [selected_lesson, set_selected_lesson] = useState({})
+    const [img_data_base, set_img_data_base] = useState('')
+
+    const [assignment_image_data, set_assignment_image_data] = useState({
+        image_display : base.img_no_image,
+        image : '',
+        original_rotation : 0,
+        type : ''
+    })
+
+    const [is_disable_btn_modal, set_is_disable_btn_modal] = useState(false)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -45,6 +64,22 @@ export default function SubjectLessonDetail(){
             if(response.status == 'success'){
                 var data = response.data.data
                 set_header(response.assignment_group.grade.name + ' ' + response.assignment_group.subject.name)
+
+                for(var x in data){
+                    var data_agreement = data[x].assignment_agreement
+                    data[x].is_confirm = true
+
+                    for(var y in data_agreement){
+                        data_agreement[y].icon = (data_agreement[y].assignment_type.data === 'quiz' ? 'bi bi-puzzle-fill' : data_agreement[y].assignment_type.data === 'discussion' ? 'bi bi-easel-fill' : data_agreement[y].assignment_type.data === 'ungraded' ? 'bi bi-book-half' : '')
+                    }
+
+                    for(var y in data_agreement){
+                        if(data_agreement[y].confirmed_at == null){
+                            data[x].is_confirm = false
+                            break
+                        }
+                    }
+                }
                 set_data_arr(data)
             }
         }
@@ -52,7 +87,13 @@ export default function SubjectLessonDetail(){
 
 
     function backBtn(){
-        window.history.back()
+        if(viewType === 'lesson_list'){
+            window.location.href = '/subject-lesson'
+        }
+        else {
+            window.scrollTo(0,0)
+            set_viewType('lesson_list') 
+        }
     }
 
     function changeFilter(val, type){
@@ -64,6 +105,94 @@ export default function SubjectLessonDetail(){
         console.log(grade_selected)
     }
 
+    async function confirmLesson(type='view', index=0){
+        if(type === 'view'){
+            set_selected_lesson_index(index)
+            base.$('#modalConfirm').modal('show')
+        }
+        else if(type === 'modal'){
+            var url = '/assignment/agreement/confirm'
+
+            var data_post = {
+                id : data_arr[selected_lesson_index].id,
+            }
+
+            set_is_disable_btn_modal(true)
+
+            var response = await base.request(url, 'put', data_post)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.reload()
+                }
+            }
+        }
+    }
+
+    function changeView(type, index=0, index_assignment=0){
+        set_viewType(type)
+        if(type === 'edit_assignment'){
+            data_arr[index].assignment_agreement[index_assignment].image_display = base.img_no_image
+            if(data_arr[index].assignment_agreement[index_assignment].file_name != null){
+                data_arr[index].assignment_agreement[index_assignment].image_display = base.url_photo('assignment', data_arr[index].assignment_agreement[index_assignment].file_name)
+            }
+            set_selected_lesson(data_arr[index])
+            set_selected_assignment(data_arr[index].assignment_agreement[index_assignment])
+
+            base.update_object(assignment_image_data, set_assignment_image_data, data_arr[index].assignment_agreement[index_assignment].image_display, 'image_display')
+
+        }
+        window.scrollTo(0,0)
+    }
+
+    function getImgBase(file, callback){
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            callback(reader.result)
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    }
+
+    async function changeInput(value, type){
+        if(type !== 'image'){
+            base.update_object(selected_assignment, set_selected_assignment, value, type)
+        }
+        else {
+            await getImgBase(value.target.files[0], (result)=>{
+                set_img_data_base(result)
+            })
+    
+            var img_data = assignment_image_data
+            img_data.image_display = URL.createObjectURL(value.target.files[0])
+            img_data.type = 'new'
+
+            base.update_object(assignment_image_data, set_assignment_image_data, img_data.image_display, 'image_display')
+        }
+    }
+
+    async function saveAssignment(){
+        var url = '/assignment/agreement'
+
+        var image = assignment_image_data
+        image.image = img_data_base
+
+        var data_post = {
+            id : selected_assignment.id,
+            name : selected_assignment.name,
+            description : selected_assignment.description,
+            deadline_date : base.moment(selected_assignment.deadline_date).format('YYYY-MM-DD'),
+            image : image,
+        }
+
+        var response = await base.request(url, 'put', data_post)
+        if(response != null){
+            if(response.status == 'success'){
+                window.location.reload()
+            }
+        }
+    }
 
     return(
         <div className='row'>
@@ -79,139 +208,78 @@ export default function SubjectLessonDetail(){
                             <h3 className='m-0'><i className="bi bi-arrow-left-short" style={{color : '#6F826E'}}></i></h3>
                         </div>
                     </div>
-                    <div className='col-auto text-right d-flex align-items-center justify-content-center mt-3 mt-lg-0'>
-                        <div className='bg-white rounded shadow-sm px-4 py-3'>
-                            <p className='m-0'>Academy Year / {header}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* <div className='col-12 mt-5'>
-                <div className="card rounded shadow-sm">
-                    <div className={"card-body p-0"}>
-                        <div className={'row m-0'}>
-                            <div className='col-12 p-3 pt-4'>
-                                <div className='row m-0'>
-                                    <div className='col'>
-                                        <label>Grade</label>
-                                        <Select
-                                            name='grade_selected'
-                                            value={1}
-                                            options={grade_arr}
-                                            onChange={(val)=>changeFilter(JSON.stringify(val), 'grade')}
-                                        />
-                                    </div>
-                                    <div className='col'>
-                                        <label>Academic Year</label>
-                                        <Select
-                                            name='academic_year_selected'
-                                            value={academic_year_selected}
-                                            options={academic_year_arr}
-                                        />
-                                    </div>
-                                    <div className='col'>
-                                        <label>Subject</label>
-                                        <Select
-                                            name='subject_selected'
-                                            value={subject_selected}
-                                            options={subject_arr}
-                                        />
-                                    </div>
-                                    <div className='col d-flex align-items-end'>
-                                        <button className='btn btn-primary rounded w-100' onClick={()=>applyFilter()}>Filter</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div> */}
-
-            <div className='col-12 mt-4 text-right'>
-                <button className='btn btn-outline-primary rounded px-5'>Student View</button>
-            </div>
-
-            <div className='col-12 mt-5'>
-                <div className='row'>
-
                     {
-                        data_arr.map((data, index)=>(
-                            <div className={'col-12' + (index != 0 ? ' mt-4' : '')} key={index}>
-                                <div className='row'>
-                                    <div className='col-12 col-lg-3 py-3' style={{backgroundColor : '#EBEFE2'}}>
-
-                                        <div className='row'>
-                                            <div className='col-12 bg-white p-4'>
-                                                <h5 className='m-0 text-primary'>{data.lesson.name}</h5>
-                                            </div>
-                                            <div className='col-12 p-4'>
-                                                <p className='m-0'>Confirmed by {data.created_user.name}</p>
-                                                <p className='m-0'>Last Update by {data.updated_user.name}</p>
-                                                <p className='m-0'>Last Updated at {base.moment(data.updated_at_format).format('DD/MM/YY')}</p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className='col-12 col-lg-9 px-4 bg-white'>
-                                        <div className='row'>
-
-                                            {
-                                                data.assignment_agreement.map((assignment, index_assignment)=>(
-                                                    <div className='col-12 py-3 rounded' style={{borderBottom : '1px solid #EAEAEA'}} key={index_assignment}>
-                                                        <div className='row'>
-                                                            <div className='col-auto d-flex align-items-center'>
-                                                                <h5 className='m-0 d-inline-block'>
-                                                                    {
-                                                                        assignment.is_graded ?
-                                                                        <i className="bi bi-check-square-fill text-secondary"></i>
-                                                                        :
-                                                                        <i className="bi bi-square" style={{color : '#8A92A6'}}></i>
-                                                                    }
-                                                                </h5>
-                                                            </div>
-                                                            <div className='col d-flex align-items-center'>
-                                                                <p className='m-0 d-inline-block'>
-                                                                    <i className="bi bi-puzzle-fill mr-4" style={{fontSize : 18}}></i>
-                                                                    {assignment.name}
-                                                                </p>
-                                                            </div>
-                                                            <div className='col-auto col-lg mt-2 mt-lg-0 px-5'>
-                                                                <div className='d-flex align-items-center justify-content-center h-100'>
-                                                                    {
-                                                                        assignment.is_graded ?
-                                                                        <div className='py-1 px-5' style={{border : '1px solid #008060', borderRadius : '1rem'}}>
-                                                                            <p className='m-0 text-uppercase' style={{color : '#008060', fontSize : '.75rem'}}>Graded</p>
-                                                                        </div>
-                                                                        :
-                                                                        <div className='py-1 px-4' style={{border : '1px solid #FD6540', borderRadius : '1rem'}}>
-                                                                            <p className='m-0 text-uppercase' style={{color : '#FD6540', fontSize : '.75rem'}}>Need to be Graded</p>
-                                                                        </div>
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                            <div className='col-auto text-left text-lg-right mt-2 mt-lg-0'>
-                                                                <p className='m-0' style={{fontFamily : 'InterBold', color : 'black', fontSize : '.75rem'}}>Terkumpul {assignment.total_submitted}/{assignment.total_student} Student</p>
-                                                                <p className='m-0' style={{color : 'black', fontSize : '.75rem'}}>DUE : {assignment.deadline_date != null ? base.moment(assignment.deadline_date).format('DD/MM/YY HH:mm') : '-'}</p>
-                                                            </div>
-                                                            <div className='col col-lg-auto text-right mt-2 mt-lg-0 d-flex align-items-center justify-content-end'>
-                                                                <h4 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-pencil-square" style={{color : '#0085FF'}}></i></h4>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                ))
-                                            }
-
-                                        </div>
-                                    </div>
-                                </div>
+                        viewType === 'lesson_list' &&
+                        <div className='col-auto text-right d-flex align-items-center justify-content-center mt-3 mt-lg-0'>
+                            <div className='bg-white rounded shadow-sm px-4 py-3'>
+                                <p className='m-0'>Academy Year / {header}</p>
                             </div>
-                        ))
+                        </div>
                     }
                 </div>
             </div>
+
+            {
+                viewType === 'lesson_list' &&
+                <>
+                    {/* <div className='col-12 mt-5'>
+                        <div className="card rounded shadow-sm">
+                            <div className={"card-body p-0"}>
+                                <div className={'row m-0'}>
+                                    <div className='col-12 p-3 pt-4'>
+                                        <div className='row m-0'>
+                                            <div className='col'>
+                                                <label>Grade</label>
+                                                <Select
+                                                    name='grade_selected'
+                                                    value={1}
+                                                    options={grade_arr}
+                                                    onChange={(val)=>changeFilter(JSON.stringify(val), 'grade')}
+                                                />
+                                            </div>
+                                            <div className='col'>
+                                                <label>Academic Year</label>
+                                                <Select
+                                                    name='academic_year_selected'
+                                                    value={academic_year_selected}
+                                                    options={academic_year_arr}
+                                                />
+                                            </div>
+                                            <div className='col'>
+                                                <label>Subject</label>
+                                                <Select
+                                                    name='subject_selected'
+                                                    value={subject_selected}
+                                                    options={subject_arr}
+                                                />
+                                            </div>
+                                            <div className='col d-flex align-items-end'>
+                                                <button className='btn btn-primary rounded w-100' onClick={()=>applyFilter()}>Filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div> */}
+
+                    <div className='col-12 mt-4 text-right'>
+                        <button className='btn btn-outline-primary rounded px-5'>Student View</button>
+                    </div>
+                </>
+            }
+
+            <div className='col-12 mt-5'>
+            {
+                viewType === 'lesson_list' ?
+                <LessonList data_arr={data_arr} confirmLesson={(index)=>confirmLesson('view', index)} changeView={(index, index_assignment)=>changeView('edit_assignment', index, index_assignment)} />
+                :
+                <EditAssignment selected_lesson={selected_lesson} selected_assignment={selected_assignment} changeInput={(value, type)=>changeInput(value, type)} assignment_image_data={assignment_image_data} saveAssignment={()=>saveAssignment()} />
+            }
+            </div>
+
+            <ModalConfirm confirmLesson={()=>confirmLesson('modal')} is_disable_btn_modal={is_disable_btn_modal} />
             
         </div>
     )

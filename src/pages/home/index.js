@@ -5,363 +5,197 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from '../../components/header';
 
 import HomeList from '../../components/homeList';
-import LessonBadge from '../../components/lessonBadge';
-import CustomBadge from '../../components/customBadge';
-import NoData from '../../components/NoData';
-import SelectOption from '../../components/selectOption';
 
 
 export default function HomeIndex(){
-	var base = new Base()
+    var base = new Base()
 
-	const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}})
+    const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}, arr_schedule : {}})
+    
+    const [to_do_list_arr, set_to_do_list_arr] = useState([])
 
-	const [class_arr, set_class_arr] = useState([])
-	const [selected_class, set_selected_class] = useState('')
+    const [schedule_lesson_day_arr, set_schedule_lesson_day_arr] = useState([])
+    const [schedule_lesson_time_arr, set_schedule_lesson_time_arr] = useState([])
+    const [schedule_arr, set_schedule_arr] = useState([])
 
-	const [academic_year_arr, set_academic_year_arr] = useState([])
-	const [selected_academic_year, set_selected_academic_year] = useState('')
-	const [selected_academic_year_name, set_selected_academic_year_name] = useState('')
+    useEffect(async ()=>{
+        var check_user = await base.checkAuth()
+        set_user_data(check_user.user_data)
+    }, [])
 
-	const [tracker_btn_arr] = useState([
-		{icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2'},
-		{icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'ml-2'},
-	])
+    useEffect(async ()=>{
+        if(user_data.id !== ''){
+            get_todo()
+            get_schedule()
+        }
+    }, [user_data])
 
-	const [student_arr, set_student_arr] = useState([])
+    async function get_todo(){
+        var url = '/todo?type=today'
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+                for(var x in data){
+                    console.log(data[x])
+                    data[x].title = data[x].todo
+                }
+                set_to_do_list_arr(data)
+            }
+        }
+    }
 
-	const [subject_arr, set_subject_arr] = useState([])
+    async function get_todo(){
+        var url = '/todo?type=today'
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+                for(var x in data){
+                    console.log(data[x])
+                    data[x].title = data[x].todo
+                }
+                set_to_do_list_arr(data)
+            }
+        }
+    }
 
-	const [day_arr, set_day_arr] = useState([])
+    async function get_schedule(){
+        var counter_time = base.moment('08:00', 'HH:mm')
+        var limit_time = base.moment('13:45', 'HH:mm')
+        var arr_time = []
 
-	const [submitted_data_arr, set_submitted_data_arr] = useState([])
+        while(counter_time.isSameOrBefore(limit_time)){
+            arr_time.push({
+                id: counter_time.format('HH:mm'),
+                name: counter_time.format('HH:mm'),
+                name_sm: counter_time.format('HH:mm'),
+            })
+            counter_time.add(15, 'm')
+        }
+        set_schedule_lesson_time_arr(arr_time)
 
-	const [is_loading, set_is_loading] = useState(true)
+        var day_arr = []
 
-	useEffect(async ()=>{
-		var check_user = await base.checkAuth()
-		set_user_data(check_user.user_data)
-	}, [])
+        for(var x=1;x<=5;x++){
+            var weekStartDate = base.moment().day(x)
+            day_arr.push({id : x, title : base.moment(weekStartDate).format('dddd')})
+        }
+        await set_schedule_lesson_day_arr(day_arr)
 
-	useEffect(()=>{
-		if(user_data.id !== ''){
-			get_academic_year()
-		}
-	}, [user_data])
+        // var arr_schedule = []
+        // for(let day of day_arr){
+        //     for(let time of arr_time){
+        //         var time_moment = base.moment(time.id, 'HH:mm')
+        //         if(arr_schedule[day.id] == null)
+        //             arr_schedule[day.id] = []
+                    
+        //         if(arr_schedule[day.id][time.name] == null)
+        //             arr_schedule[day.id][time.name] = {}
+                    
+        //         var start_time = base.moment(data.start_time_format, 'HH:mm')
+        //         var end_time = base.moment(data.end_time_format, 'HH:mm')
+        //         if(data.day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
+        //             arr_schedule[day.id][time.name] = data
+        //             break
+        //         }
+        //     }
+        // }
+        // console.log(arr_schedule)
+        // set_schedule_arr(arr_schedule)
+    }
 
-	useEffect(()=>{
-		if(user_data.id !== ''){
-			get_grade()
-		}
-	}, [selected_academic_year])
+    return(
+        <div className='row'>
 
-	useEffect(()=>{
-		if(selected_class !== ''){
-			set_is_loading(true)
-			get_data()
-		}
-	}, [selected_class])
+            <div className='col-12'>
+                <Header title={'Homeroom'} user_data={user_data} />
+            </div>
 
-	async function get_academic_year(){
-		var url = '/academic-year/all'
-		var response = await base.request(url)
-		if(response != null){
-			if(response.status == 'success'){
-				var data = response.data
-				set_academic_year_arr(data)
-				set_selected_academic_year('')
-			}
-		}
-	}
+            <div className='col-12 mt-5 pt-4'>
+                <HomeList
+                    data_arr={to_do_list_arr}
+                    title={'To Do List & Annoucement'}
+                    icon={'fas fa-folder'}
 
-	async function get_grade(){
-		if(selected_academic_year != ''){
-			var url = '/academic-year/class?academic_year_id=' + selected_academic_year
-			var response = await base.request(url)
-			if(response != null){
-				if(response.status == 'success'){
-					var data = response.data.data
-					for(var x in data){
-						data[x].title = data[x].grade.name + ' ' + data[x].name
-						data[x].is_selected = false
-						data[0].is_selected = true
-					}
-					set_selected_class(data[0].id)
-					set_class_arr(data)
+                />
+            </div>
 
-					set_is_loading(false)
-				}
-			}
-		}
-	}
+            <div className='col-12 mt-5'>
+                <div className="card rounded shadow-sm">
+                    <div className={"card-body p-0"}>
+                        <div className={'row m-0'}>
+                            <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+                            <div className='col-12 p-0 p-lg-3 pt-2 pt-lg-4 pb-2 pb-lg-5'>
+                                <img className='position-absolute d-none d-lg-block' src={base.img_leaves} style={{height : '5rem', right : 0, top : '-.75rem'}} />
+                                <div className='row m-0'>
+                                    <div className='col-12 mb-0 mb-lg-3 pr-3'>
+                                        <div className='row m-0'>
+                                            <div className='col-12 col-lg px-0'>
+                                                <h5 className='m-0 homeListTitle'><i className="bi bi-chat-square-dots-fill mr-2 mr-lg-3" style={{color : '#00000066'}}></i>Teaching Schedule</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='col-12'>
+                                        <div className="table-responsive">
+                                            <table className="table table-fixed-lg">
+                                                <tbody>
+                                                    <tr>
+                                                        <td className='border-0'></td>
+                                                        {
+                                                            schedule_lesson_day_arr.map((day_data, day_index)=>(
+                                                                <th className='text-center border-0 schedule_day' style={{color : '#8A92A6'}} key={day_index}>{day_data.title}</th>
+                                                            ))
+                                                        }
+                                                    </tr>
+                                                    {
+                                                        schedule_lesson_time_arr.map((data_time, index_time)=>(
+                                                            <tr key={index_time}>
+                                                                <td className='border-0 pb-2 p-0 mb-2 text-center align-middle td-fit-content-sm'>
+                                                                    <p className='m-0 p-1 px-1 px-lg-3 schedule_time'>{data_time.name}</p>
+                                                                </td>
+                                                                {
+                                                                    schedule_lesson_day_arr.map((data_day, index_day)=>(
+                                                                        <td className='border-0 p-0 pb-2' key={index_day}>
+                                                                            {
+                                                                                user_data.arr_schedule[data_day.id] != null && user_data.arr_schedule[data_day.id][data_time.name] != null && user_data.arr_schedule[data_day.id][data_time.name].start_time != null ?
+                                                                                <div className='h-100 px-2'>
+                                                                                    <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#EBEFE2'}}>
+                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem', fontSize : '.75rem'}}>{user_data.arr_schedule[data_day.id][data_time.name].class_model.grade.name} {user_data.arr_schedule[data_day.id][data_time.name].class_model.name}</p>
+                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem', fontSize : '.75rem'}}>{user_data.arr_schedule[data_day.id][data_time.name].subject.name}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                                :
+                                                                                <div className='h-100 px-2'>
+                                                                                    <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#F7F7F7'}}>
+                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#F7F7F7', fontFamily : 'InterBold', lineHeight : '1rem', userSelect : 'none', fontSize : '.75rem'}}>-</p>
+                                                                                        <p className='m-0 schedule_subject text-center' style={{color : '#F7F7F7', fontFamily : 'InterBold', lineHeight : '1rem', userSelect : 'none', fontSize : '.75rem'}}>-</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                        </td>
+                                                                    ))
+                                                                }
+                                                            </tr>
+                                                        ))
+                                                    }
 
-	async function get_data(){
-		var url = '/class/student-tracker?id=' + selected_class
-		var response = await base.request(url)
-		if(response != null){
-			if(response.status == 'success'){
-				var data = response.data
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
 
-				var lessonDate_arr = []
-				for(let lessonSchedule of data.arr_lesson_schedule.arr){
-					var day_name = base.moment(lessonSchedule.date).format('DD dddd')
-					lessonDate_arr.push({id : lessonSchedule.id, day_name : day_name, lesson : lessonSchedule.lesson.name})
-				}
+                                    <div className='col-12 d-block d-lg-none text-right mt-2'>
+                                        <img className='' src={base.img_leaves} style={{height : '2.75rem'}} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
 
-				set_day_arr(lessonDate_arr)
-
-				var student_arr = [], count_student = 0
-				for(let student of data.arr_student){
-					student.is_show = (count_student == 0 ? true : false)
-					student_arr.push({id : student.id, name : student.name, is_show : student.is_show})
-					count_student++
-				}
-				set_student_arr(student_arr)
-
-				var subject_data_arr = []
-				for(let subject of data.arr_subject){
-					subject_data_arr.push({id : subject.id, name : subject.name})
-				}
-				set_subject_arr(subject_data_arr)
-
-				var submitted_arr = []
-				var assignment_submitted = data.arr_assignment_submitted
-				for(var x in assignment_submitted){
-					submitted_arr[x] = {}
-					var submitted = assignment_submitted[x]
-					for(var y in submitted){
-						submitted_arr[x][y] = {}
-						var lesson = submitted[y]
-						for(var z in lesson){
-							console.log(lesson[z])
-							if(lesson[z] != null){
-								lesson[z].assessment_status.badge_type = (lesson[z].assessment_status.data === 'done' ? 'success' : lesson[z].assessment_status.data === 'on_checking' ? 'warning' : lesson[z].assessment_status.data === 'need_correction' ? 'info' : '')
-							}
-							submitted_arr[x][y][z] = lesson[z]
-						}
-					}
-				}
-				set_submitted_data_arr(submitted_arr)
-			}
-		}
-	}
-
-	function chooseGrade(index){
-		var data_index = class_arr[index]
-		var initSelected = data_index.is_selected
-		for(var x in class_arr){
-			class_arr[x].is_selected = false
-		}
-		class_arr[index].is_selected = true
-		if(class_arr[index].is_selected)
-			set_selected_class(class_arr[index].id)
-
-		base.update_array(class_arr, set_class_arr, data_index, index)
-	}
-
-	function trackerBtn(type){
-
-	}
-
-	function toggle_table(index){
-		var data_index = student_arr[index]
-		var initShow = data_index.is_show
-		for(var x in student_arr){
-			student_arr[x].is_show = false
-		}
-		student_arr[index].is_show = !initShow
-		base.update_array(student_arr, set_student_arr, data_index, index)
-	}
-
-	function changeAcademicYear(value){
-		set_selected_academic_year(value)
-		var academic_year_selected = {id : '', name : ''}
-		for(var x in academic_year_arr){
-			if(academic_year_arr[x].id === value){
-				academic_year_selected = academic_year_arr[x]
-			}
-
-		}
-		set_selected_academic_year_name(academic_year_selected.name)
-	}
-
-	return(
-		<div className='row'>
-
-			<div className='col-12'>
-				<Header title={'Teacher Tracker'} user_data={user_data} />
-			</div>
-			
-			<div className='col-12 mt-5 pt-4'>
-				<div className="card rounded shadow-sm h-100">
-					<div className={"card-body p-4"}>
-						<div className='row'>
-							<div className='col-12'>
-								<label>Academic Year</label>
-							</div>
-							<div className='col'>
-								<SelectOption 
-									data_arr={academic_year_arr} 
-									selected={selected_academic_year}
-									title={'Academic Year'}
-									changeInput={(value)=>changeAcademicYear(value)}
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div className='col-12 mt-3'>
-				<div className="card rounded shadow-sm">
-					<div className={"card-body p-0"}>
-						<div className={'row m-0'}>
-							<div className='col-12 p-3'>
-								<div className='row m-0'>
-									<div className='col-12 col-lg d-flex align-items-center'>
-										<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Tracker for each Student ({selected_academic_year_name != '' ? selected_academic_year_name : ''})</h5>
-									</div>
-									{/* <div className='col-12 col-lg-auto'>
-										<div className='row m-0 mr-0'>
-											{
-												tracker_btn_arr.map((data, index)=>(
-													<div className={'col-auto p-0 ' + data.margin}>
-														<h4 className='m-0' style={{cursor : 'pointer'}} onClick={()=>trackerBtn(data.type)}><i className={data.icon + " text-primary"}></i></h4>
-													</div>
-												))
-											}
-										</div>
-									</div> */}
-								</div>
-							</div>
-						</div>
-						
-					</div>
-				</div>
-			</div>
-
-			{
-				class_arr.length > 0 ?
-				<>
-					<div className='col-12 mt-3'>
-						<div className='row'>
-							{
-								class_arr.map((data, index)=>(
-									<div className='col-auto' key={index}>
-										<div className={'gradePicker mb-3' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
-											<p className='m-0'>{data.title}</p>
-										</div>
-									</div>
-								))
-							}
-						</div>
-					</div>
-
-					<div className='col-12 mt-4'>
-						<div className="card rounded shadow-sm">
-							<div className={"card-body p-0"}>
-								<div className={'row m-0'}>
-									<img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-									<div className='col-12 p-3 pt-4'>
-										<div className="table-responsive">
-											<table className="table table-borderless w-100">
-												<thead>
-													<tr>
-														<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
-															<h5 className='text-primary m-0'>{base.moment().format('MMMM')}</h5>
-														</th>
-														{
-															day_arr.map((data, index)=>(
-																<th className='border-0 px-0 text-center' style={{color : '#8A92A6', width : '6rem'}} key={index}>
-																	<p className='m-0'>{data.day_name}</p>
-																	<p className='mb-0 text-secondary' style={{fontSize : '.75rem'}}>{data.lesson}</p>
-																</th>
-															))
-														}
-													</tr>
-												</thead>
-												<tbody>
-													{
-														student_arr.map((data, index)=>(
-															<tr key={index}>
-																<td className='px-0 pt-0' colSpan={day_arr.length + 1}>
-																	<div className='p-2 d-flex align-items-center' onClick={()=>toggle_table(index)} style={{height : '3rem', backgroundColor : '#EBEFE2', cursor : 'pointer', color : '9FA2B4'}}>
-																		{data.name}
-																		<i className={"ml-3 fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
-																	</div>
-
-																	{
-																		data.is_show &&
-																		<>
-																			{
-																				subject_arr.map((dataSubject, indexSubject)=>(
-																					<tr key={indexSubject}>
-																						<td className='text-primary'><i class="bi bi-circle-fill mr-2"></i> {dataSubject.name}</td> 
-																						
-																						{
-																							day_arr.map((dataSubmitted, indexSubmitted)=>(
-																								<td className='text-center px-0' style={{width : '6rem'}} key={indexSubmitted}>
-																									<div className="">
-																										{
-																											submitted_data_arr[data.id] != null &&
-																											<>
-																												{
-																													submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id] != null &&
-																													<span className={"badge badge-pill p-2 px-3 rounded badge-" + (submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.badge_type)}>{submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.name}</span>
-																												}
-																											</>
-																										}
-																									</div>
-																								</td>
-																							))
-																						}
-																					</tr>
-																				))
-																			}
-																		</>
-																	}
-																</td>
-															</tr>
-														))
-													}
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-								
-							</div>
-						</div>
-
-					</div>
-				</>
-				:
-				<>
-				{
-					selected_academic_year !== '' &&
-					<div className='col-12 mt-5 pt-5'>
-						{
-							!is_loading &&
-							<NoData />
-						}
-					</div>
-				}
-				</>
-			}
-
-
-		</div>
-	)
-}
-
-function BadgeTable({title, type}){
-	const bgColor = (type === 'success' ? '#CEF2CE' : type === 'warning' ? '#FFF2CA' : '')
-	const textColor = (type === 'success' ? '#44A244' : type === 'warning' ? '#E6BA34' : '')
-	return (
-		<div className='h-100 px-2'>
-			<div className='m-0 p-2 px-3' style={{backgroundColor : bgColor, borderRadius : '1rem'}}>
-				<p className='m-0 font-weight-bold text-center' style={{color : textColor, fontSize : '.75rem', lineHeight : '1rem'}}>{title}</p>
-			</div>
-		</div>
-	)
+        </div>
+    )
 }

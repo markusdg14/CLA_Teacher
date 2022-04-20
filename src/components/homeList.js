@@ -16,9 +16,12 @@ export default function HomeList({data_arr, title, icon}){
                         <div className='row m-0'>
                             <div className='col-12 mb-4'>
                                 <div className='row m-0'>
-                                    <div className='col-auto p-0 d-flex align-items-center justify-content-center'>
-                                        <h5 className='m-0'><i className={"mr-3 " + icon} style={{color : '#00000066'}}></i></h5>
-                                    </div>
+                                    {
+                                        icon != '' &&
+                                        <div className='col-auto p-0 d-flex align-items-center justify-content-center'>
+                                            <h5 className='m-0'><i className={"mr-3 " + icon} style={{color : '#00000066'}}></i></h5>
+                                        </div>
+                                    }
                                     <div className='col p-0 d-flex align-items-center'>
                                         <h5 className='m-0'>{title}</h5>
                                     </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import Base from '../../utils/base';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomeIndex from '../home';
+// import HomeIndex from '../home';
 import Navbar from './navbar';
 import CalendarIndex from '../teaching/calendar';
 import ProfileIndex from '../profile';
@@ -17,6 +17,8 @@ import GradeBook from '../teaching/gradeBook';
 import GradeBookDetail from '../teaching/gradeBook/detail';
 import HomeroomIndex from '../homeroom';
 import HomeroomDetail from '../homeroom/detail';
+import TrackerIndex from '../teaching/tracker';
+import HomeIndex from '../home';
 
 
 // import Navbar from './navbar'
@@ -58,6 +60,8 @@ export default class BaseLayout extends Base{
               <div className='container mt-5 pb-5 mb-5'>
                 <Routes>
                     <Route exact path={"/"} element={<HomeIndex />}></Route>
+
+                    <Route exact path={"/teacher-tracker"} element={<TrackerIndex />}></Route>
                     <Route exact path={"/check-assignment"} element={<CheckAssignment />}></Route>
                     <Route exact path={"/check-assignment/detail"} element={<CheckAssignmentDetail />}></Route>
 

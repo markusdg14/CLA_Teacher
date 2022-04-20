@@ -116,6 +116,11 @@ export default class Base extends Component{
 			var response = await this.request(url)
 			if(response != null){
 				if(response.status == 'success'){
+					if(response.data.type.name !== 'teacher'){
+						localStorage.clear()
+						window.location.href = '/auth/login'
+					}
+
 					var image_display = this.img_no_profile
 					
 					if(response.data.file_name != null){

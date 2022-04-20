@@ -54,7 +54,7 @@ export default function SubjectLesson(){
         else if(type === 'past'){
             data = past_data_arr[index]
         }
-        window.location.href = '/subject-lesson/detail?id=' + data.id + '&subject_id=' + data.subject.id + '&grade_id=' + data.grade.id + '&academic_year_id=' + data.academic_year_id
+        window.location.href = '/subject-lesson/detail?subject_id=' + data.subject.id + '&grade_id=' + data.grade.id + '&academic_year_id=' + data.academic_year_id
     }
 
     async function collapseType(index){
