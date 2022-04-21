@@ -73,11 +73,8 @@ export default function SubjectLessonDetail(){
                         data_agreement[y].icon = (data_agreement[y].assignment_type.data === 'quiz' ? 'bi bi-puzzle-fill' : data_agreement[y].assignment_type.data === 'discussion' ? 'bi bi-easel-fill' : data_agreement[y].assignment_type.data === 'ungraded' ? 'bi bi-book-half' : '')
                     }
 
-                    for(var y in data_agreement){
-                        if(data_agreement[y].confirmed_at == null){
-                            data[x].is_confirm = false
-                            break
-                        }
+                    if(data[x].confirmed_user == null){
+                        data[x].is_confirm = false
                     }
                 }
                 set_data_arr(data)

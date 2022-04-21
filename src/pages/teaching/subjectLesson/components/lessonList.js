@@ -19,7 +19,7 @@ export default function LessonList({data_arr, confirmLesson, changeView}){
                                         <h5 className='m-0 text-primary'>{data.lesson.name}</h5>
                                     </div>
                                     <div className='col-12 p-4'>
-                                        <p className='m-0'>Confirmed by {data.created_user.name}</p>
+                                        <p className='m-0'>Confirmed by {data.confirmed_user == null ? '-' : data.confirmed_user.name}</p>
                                         <p className='m-0'>Last Update by {data.updated_user.name}</p>
                                         <p className='m-0'>Last Updated at {base.moment(data.updated_at_format).format('DD/MM/YY')}</p>
 

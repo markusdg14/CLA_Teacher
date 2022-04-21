@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import Base from '../../utils/base';
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from '../../components/header';
+import { getToken } from '../../firebaseInit.js';
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 
 export default function AuthLogin(){
     var base = new Base()
@@ -16,9 +17,17 @@ export default function AuthLogin(){
 
     const [login_alert, set_login_alert] = useState({type : '', message : ''})
     const [is_disable_btn, set_is_disable_btn] = useState(false)
+    const [firebaseToken, set_firebaseToken] = useState('')
 
     useEffect(async ()=>{
         await localStorage.clear()
+
+        if(firebase.messaging.isSupported()){
+            await getToken(token=>{
+                console.log(token)
+                set_firebaseToken(token)
+            })
+        }
     }, [])
 
     function changeInput(value, index){
@@ -34,7 +43,7 @@ export default function AuthLogin(){
     async function signInBtn(){
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         var flag = 1
-        var data_login = {email : '', password : ''}
+        var data_login = {email : '', password : '', token : firebaseToken}
         
         for(var x in form_login_arr){
             if(form_login_arr[x].value === ''){
@@ -64,6 +73,7 @@ export default function AuthLogin(){
                     if(response.type.name === 'teacher'){
                         set_error('success', 'Login Success!!', 'alert')
                         localStorage.setItem('token', response.token)
+                        await localStorage.setItem('firebaseToken', firebaseToken)
     
                         setTimeout(() => {
                             window.location.href = '/'

@@ -4,7 +4,6 @@ import Base from '../../utils/base';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from '../../components/header';
 
-
 export default function ProfileIndex(){
     var base = new Base()
 
@@ -20,9 +19,16 @@ export default function ProfileIndex(){
         {title : 'Student Profile', desc : 'View & Edit your profile', icon : 'fas fa-user-friends', nav : '/profile/student-profile/edit'},
     ])
 
-    function logout(){
-        localStorage.clear()
-        window.location.href = '/auth/login'
+    async function logout(){
+        var firebaseToken = await localStorage.getItem('firebaseToken')
+
+        var response = await base.request('/auth/logout', 'post', {token : firebaseToken})
+        if(response != null){
+            if(response.status == 'success'){
+                localStorage.clear()
+                window.location.href = '/auth/login'
+            }
+        }
     }
 
     useEffect(async ()=>{

@@ -16,6 +16,7 @@
     "axios": "^0.25.0",
     "bootstrap": "^4.6.1",
     "bootstrap-icons": "^1.8.1",
+    "firebase": "^8.2.0",
     "image-to-base64": "^2.0.1",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",

@@ -144,7 +144,7 @@ export default function HomeIndex(){
                                                         <td className='border-0'></td>
                                                         {
                                                             schedule_lesson_day_arr.map((day_data, day_index)=>(
-                                                                <th className='text-center border-0 schedule_day' style={{color : '#8A92A6'}} key={day_index}>{day_data.title}</th>
+                                                                <td className='text-center border-0 schedule_day' style={{color : '#8A92A6'}} key={day_index}>{day_data.title}</td>
                                                             ))
                                                         }
                                                     </tr>
