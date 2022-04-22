@@ -14,7 +14,7 @@ export default function HomeList({data_arr, title, icon}){
                     <div className='col-12 p-3 pt-4 pb-5'>
                         <img className='position-absolute' src={base.img_leaves} style={{height : '5rem', right : 0, top : '-.5rem'}} />
                         <div className='row m-0'>
-                            <div className='col-12 mb-4'>
+                            <div className='col-12 mb-3 mb-lg-4'>
                                 <div className='row m-0'>
                                     {
                                         icon != '' &&

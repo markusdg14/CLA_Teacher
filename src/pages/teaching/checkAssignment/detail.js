@@ -58,6 +58,8 @@ export default function CheckAssignmentDetail(){
 
     const [numerical_score, set_numerical_score] = useState('')
 
+    const [student_submission, set_student_submission] = useState('')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -139,6 +141,8 @@ export default function CheckAssignmentDetail(){
 
                     set_assignment_type('discussion')
                 }
+
+                set_student_submission(data.description)
 
                 
                 if(data.file_submitted.length > 0){
@@ -377,6 +381,11 @@ export default function CheckAssignmentDetail(){
         set_numerical_score(score)
     }
 
+    function modalSubmit(){
+        get_grade_skill()
+        base.$('#modalSubmit').modal('show')
+    }
+
     return(
         <div className='row'>
 
@@ -446,9 +455,34 @@ export default function CheckAssignmentDetail(){
                     </div>
                 </div>
                 :
-                <div className='col-12 mt-5'>
-                    <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
-                </div>
+                <>
+                    <div className={'col-12 mt-5 ' + (total_file > 0 ? 'd-block' : 'd-none')}>
+                        <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
+                    </div>
+                </>
+            }
+
+            {
+                student_submission !== '' &&
+                <>
+                    <div className='col-12 mt-5'>
+                        <div className="card rounded shadow-sm">
+                            <div className={"card-body p-3 pt-4"}>
+                                <div className='row m-0'>
+                                    <div className='col-12 pb-3'>
+                                        <p className='m-0' style={{fontFamily : 'InterBold', fontSize : '1.25rem'}}>Student Submission</p>
+                                        <div className='p-2 p-lg-3 border rounded mt-3'>
+                                            <p className='m-0'>{student_submission}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='col-12 mt-3 text-right'>
+                        <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
+                    </div>
+                </>
             }
 
             <div className='col-12 mt-5'>
