@@ -153,24 +153,26 @@ export default function CheckAssignmentDetail(){
                         const {docViewer} = instance
                         const annotManager = docViewer.getAnnotationManager();
 
-                        instance.UI.setHeaderItems(header => {
-                            header.push({
-                              type: 'actionButton',
-                              img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
-                              onClick: async () => {
-                                const doc = docViewer.getDocument()
-                                const xfdfString = await annotManager.exportAnnotations();
-                                const options = { xfdfString };
-                                const data = await doc.getFileData(options);
-                                const arr = new Uint8Array(data);
-                                const blob = new Blob([arr], { type: 'application/pdf' });
-
-                                await getBaseData(blob, (result)=>{
-                                    set_baseFile(result)
-                                })
-                              }
-                            });
-                        })
+                        if(data.assessment_status.data != 'done'){
+                            instance.UI.setHeaderItems(header => {
+                                header.push({
+                                  type: 'actionButton',
+                                  img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+                                  onClick: async () => {
+                                    const doc = docViewer.getDocument()
+                                    const xfdfString = await annotManager.exportAnnotations();
+                                    const options = { xfdfString };
+                                    const data = await doc.getFileData(options);
+                                    const arr = new Uint8Array(data);
+                                    const blob = new Blob([arr], { type: 'application/pdf' });
+    
+                                    await getBaseData(blob, (result)=>{
+                                        set_baseFile(result)
+                                    })
+                                  }
+                                });
+                            })
+                        }
                     })
                 }
 
@@ -346,7 +348,7 @@ export default function CheckAssignmentDetail(){
         var response = await base.request(url, method, data_upload)
         if(response != null){
             if(response.status == 'success'){
-                window.location.reload()
+                window.location.href = '/check-assignment'
             }
         }
         set_is_modal_btn_disable(false)

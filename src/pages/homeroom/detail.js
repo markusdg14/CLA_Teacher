@@ -104,6 +104,8 @@ export default function HomeroomDetail(){
     const [reward_score_arr] = useState([{id : 0, name : 0}, {id : 1, name : 1}])
     const [reward_score, set_reward_score] = useState([])
 
+    const [attendance_all_one, set_attendance_all_one] = useState(false)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -586,7 +588,20 @@ export default function HomeroomDetail(){
         else if(type === 'reward'){
             var data_index = reward_score[index]
             reward_score[index].score = value
+
+            var attendance_all_one = true
+            for(var x in reward_score){
+                if(reward_score[x].name !== 'Spiritual Growth'){
+                    if(reward_score[x].score !== '1') {
+                        attendance_all_one = false
+                        break
+                    }
+                }
+            }
+
+            set_attendance_all_one(attendance_all_one)
             base.update_array(reward_score, set_reward_score, data_index, index)
+
         }
     }
 
@@ -601,6 +616,14 @@ export default function HomeroomDetail(){
         
         var arr_reward = []
         for(var x in reward_score){
+            if(reward_score[x].name === 'Spiritual Growth'){
+                if(attendance_all_one){
+                    reward_score[x].score = '1'
+                }
+                else {
+                    reward_score[x].score = '0'
+                }
+            }
             if(reward_score[x].score != ''){
                 arr_reward.push({
                     reward : {id : reward_score[x].id},
@@ -789,6 +812,7 @@ export default function HomeroomDetail(){
                 reward_score_arr={reward_score_arr}
                 changeAttendance={(value, type, index)=>changeAttendance(value, type, index)}
                 postReward={()=>postReward()}
+                attendance_all_one={attendance_all_one}
             />
 
         </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
-export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr}){
+export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr, attendance_all_one}){
     var base = new Base()
 
     return(
@@ -36,7 +36,12 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                                                 <p className='m-0'>{data.name}</p>
                                                             </div>
                                                             <div className='col-6'>
-                                                                <SelectOption data_arr={(data.name === 'Attendance' ? attendance_score_arr : reward_score_arr)} selected={data.score} title={''} changeInput={(value)=>changeAttendance(value, 'reward', index)} />
+                                                                {
+                                                                    data.name === 'Spiritual Growth' ?
+                                                                    <input type={'number'} className='form-control rounded' style={{borderColor : '#EAEAEA'}} value={(attendance_all_one ? '1' : '0')} readOnly />
+                                                                    :
+                                                                    <SelectOption data_arr={(data.name === 'Attendance' ? attendance_score_arr : reward_score_arr)} selected={data.score} title={''} changeInput={(value)=>changeAttendance(value, 'reward', index)} />
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
