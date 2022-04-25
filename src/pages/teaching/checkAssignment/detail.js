@@ -25,6 +25,7 @@ export default function CheckAssignmentDetail(){
     const [assignment_info_arr, set_assignment_info_arr] = useState([])
     const [student_data, set_student_data] = useState({id : '', name : '', image_display : base.img_no_profile})
     const [assignment_status, set_assignment_status] = useState('')
+    const [assignment_status_data, set_assignment_status_data] = useState('')
     const [assignment_grade, set_assignment_grade] = useState('')
     const [grade, set_grade] = useState('')
     const [rule_id, set_rule_id] = useState('')
@@ -108,6 +109,23 @@ export default function CheckAssignmentDetail(){
                 set_class_student_id(data.class_student.id)
 
                 set_assignment_status(data.assessment_status.name)
+                set_assignment_status_data(data.assessment_status.data)
+
+                if(data.assessment_status.data === 'done'){
+                    var skill_category = data.arr_skill_category
+                    var notes = ''
+                    for(var x in skill_category){
+                        var skill = skill_category[x].arr_skill
+                        for(var y in skill){
+                            skill[y].score = skill[y].grade_skill.score
+                        }
+                    }
+                    notes = skill_category[0].arr_skill[0].grade_skill.comment
+                    set_grade_skill_arr(skill_category)
+                    set_teacher_notes(notes)
+                }
+
+                data.assignment_score = '-'
                 
                 if(data.type === 'assignment'){
                     set_grade(data.assignment_agreement.assignment_group.grade.name)
@@ -115,13 +133,20 @@ export default function CheckAssignmentDetail(){
                     set_assignment_agreement_id(data.assignment_agreement.id)
                     set_assignment_type(data.assignment_agreement.assignment_type.data)
                     // set_assignment_type('discussion')
-    
-                    if(data.assessment_rule_detail != null)
-                        set_assignment_grade(data.assessment_rule_detail.name)
 
-                    if(data.score != null){
-                        set_assignment_grade(data.score)
+                    if(data.assignment_agreement.assignment_type.data === 'discussion'){
+                        data.assignment_score = 'Graded'
                     }
+                    else{
+                        if(data.assessment_rule_detail != null)
+                            data.assignment_score = data.assessment_rule_detail.name
+    
+                        if(data.score != null){
+                            data.assignment_score = data.score
+                        }
+                    }
+
+
     
     
                     set_assignment_info_arr([
@@ -140,7 +165,10 @@ export default function CheckAssignmentDetail(){
                     ])
 
                     set_assignment_type('discussion')
+                    data.assignment_score = 'Graded'
                 }
+
+                set_assignment_grade(data.assignment_score)
 
                 set_student_submission(data.description)
 
@@ -157,26 +185,26 @@ export default function CheckAssignmentDetail(){
                         const {docViewer} = instance
                         const annotManager = docViewer.getAnnotationManager();
 
-                        if(data.assessment_status.data != 'done'){
-                            instance.UI.setHeaderItems(header => {
-                                header.push({
-                                  type: 'actionButton',
-                                  img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
-                                  onClick: async () => {
-                                    const doc = docViewer.getDocument()
-                                    const xfdfString = await annotManager.exportAnnotations();
-                                    const options = { xfdfString };
-                                    const data = await doc.getFileData(options);
-                                    const arr = new Uint8Array(data);
-                                    const blob = new Blob([arr], { type: 'application/pdf' });
+                        // if(data.assessment_status.data != 'done'){
+                        //     instance.UI.setHeaderItems(header => {
+                        //         header.push({
+                        //           type: 'actionButton',
+                        //           img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+                        //           onClick: async () => {
+                        //             const doc = docViewer.getDocument()
+                        //             const xfdfString = await annotManager.exportAnnotations();
+                        //             const options = { xfdfString };
+                        //             const data = await doc.getFileData(options);
+                        //             const arr = new Uint8Array(data);
+                        //             const blob = new Blob([arr], { type: 'application/pdf' });
     
-                                    await getBaseData(blob, (result)=>{
-                                        set_baseFile(result)
-                                    })
-                                  }
-                                });
-                            })
-                        }
+                        //             await getBaseData(blob, (result)=>{
+                        //                 set_baseFile(result)
+                        //             })
+                        //           }
+                        //         });
+                        //     })
+                        // }
                     })
                 }
 
@@ -386,6 +414,10 @@ export default function CheckAssignmentDetail(){
         base.$('#modalSubmit').modal('show')
     }
 
+    function viewGradeSkill(){
+        base.$('#modalSubmit').modal('show')
+    }
+
     return(
         <div className='row'>
 
@@ -405,7 +437,19 @@ export default function CheckAssignmentDetail(){
                         <div className='h-100 row p-0 pr-0 pr-lg-4'>
                             <div className='col-12 p-4 bg-white rounded shadow-sm mb-2'>
                                 <p className='m-0 text-primary'>Score Grade</p>
-                                <h4 className='m-0 text-secondary' style={{fontFamily : 'InterBold'}}>{assignment_grade === '' ? '-' : assignment_grade}</h4>
+                                
+                                {
+                                    assignment_type !== 'discussion' ?
+                                    <h4 className='m-0 text-secondary' style={{fontFamily : 'InterBold'}}>{assignment_grade === '' ? '-' : assignment_grade}</h4>
+                                    :
+                                    <p className='m-0 text-secondary' style={{fontFamily : 'InterBold'}}>{assignment_grade === '' ? '-' : assignment_grade}</p>
+                                }
+
+                                {
+                                    assignment_status_data === 'done' && assignment_type === 'discussion' &&
+                                    <button className='btn btn-primary rounded shadow-sm mt-2' onClick={()=>viewGradeSkill()}>View More</button>
+                                }
+
                             </div>
                             <div className='col-12 p-4 bg-white rounded shadow-sm mt-2'>
                                 <p className='m-0 text-primary'>Assignment Status</p>
@@ -479,10 +523,14 @@ export default function CheckAssignmentDetail(){
                             </div>
                         </div>
                     </div>
-                    <div className='col-12 mt-3 text-right'>
-                        <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
-                    </div>
                 </>
+            }
+
+            {
+                assignment_status_data !== 'done' &&
+                <div className='col-12 mt-3 text-right'>
+                    <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
+                </div>
             }
 
             <div className='col-12 mt-5'>
@@ -591,6 +639,8 @@ export default function CheckAssignmentDetail(){
                 rule={rule}
                 numerical_score={numerical_score}
                 changeNumerical={(value)=>changeNumerical(value)}
+                assignment_status_data={assignment_status_data}
+                teacher_notes={teacher_notes}
             />
             
         </div>

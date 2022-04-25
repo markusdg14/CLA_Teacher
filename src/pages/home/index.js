@@ -45,21 +45,6 @@ export default function HomeIndex(){
         }
     }
 
-    async function get_todo(){
-        var url = '/todo?type=today'
-        var response = await base.request(url)
-        if(response != null){
-            if(response.status == 'success'){
-                var data = response.data.data
-                for(var x in data){
-                    console.log(data[x])
-                    data[x].title = data[x].todo
-                }
-                set_to_do_list_arr(data)
-            }
-        }
-    }
-
     async function get_schedule(){
         var counter_time = base.moment('08:00', 'HH:mm')
         var limit_time = base.moment('13:45', 'HH:mm')

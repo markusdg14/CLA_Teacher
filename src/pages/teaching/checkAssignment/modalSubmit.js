@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
-export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical}){
+export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes}){
 	var base = new Base()
 
 	const [modal_radio_arr, set_modal_radio_arr] = useState([
@@ -36,7 +36,12 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 								<div className='col-12 p-3 pt-4 pb-5'>
 									<div className='row m-0'>
 										<div className='col-12 mb-3'>
-											<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>{assignment_type === 'quiz' ? 'Grading Assignment' : assignment_type === 'discussion' ? 'Input Grade Skill' : ''}</h5>
+											{
+												assignment_status_data === 'done' ?
+												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Grade Skill</h5>
+												:
+												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>{assignment_type === 'quiz' ? 'Grading Assignment' : assignment_type === 'discussion' ? 'Input Grade Skill' : ''}</h5>
+											}
 										</div>
 
 
@@ -85,7 +90,7 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 																:
 																radio_selected === 'revision' &&
 																<>
-																<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+																<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
 																</>
 															}
 														</div>
@@ -96,10 +101,13 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 											<>
 											<div className='col-12 mt-3'>
 												<div className='row m-0'>
+													{
+														assignment_status_data !== 'done' &&
+														<div className='col-12 mb-3'>
+															<p className='m-0' style={{color : 'black'}}>Input Student Grade for their skill</p>
+														</div>
+													}
 													<div className='col-12'>
-														<p className='m-0' style={{color : 'black'}}>Input Student Grade for their skill</p>
-													</div>
-													<div className='col-12 mt-3'>
 														<div className='row'>
 															{/* <div className='col-12'>
 																<p className='m-0' style={{fontFamily : 'InterBold'}}>Grade Skill</p>
@@ -125,7 +133,14 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 																									<td className='align-middle'>
 																										<p className='m-0'>{index_skill + 1}. {data_skill.name}</p>
 																									</td>
-																									<td className='w-25'><input className='form-control form-control-sm rounded' placeholder='0' value={data_skill.score} onChange={(e)=>changeScore(index, index_skill, e.target.value)} /></td>
+																									<td className='w-25'>
+																										{
+																											assignment_status_data !== 'done' ?
+																											<input className='form-control form-control-sm rounded' placeholder='0' value={data_skill.score} onChange={(e)=>changeScore(index, index_skill, e.target.value)} />
+																											:
+																											<p className='m-0 text-right'>{data_skill.score}</p>
+																										}
+																									</td>
 																								</tr>
 																							))
 																						}
@@ -139,8 +154,13 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 														</div>
 													</div>
 													<div className='col-12 mt-3'>
-														<p className='m-0' style={{color : 'black'}}>Input Notes</p>
-														<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+														<p className='m-0' style={{color : 'black'}}>{assignment_status_data !== 'done' ? 'Input ' : ''}Notes</p>
+														{
+															assignment_status_data !== 'done' ?
+															<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+															:
+															<p className='m-0 mt-2'>{teacher_notes}</p>
+														}
 													</div>
 												</div>
 											</div>
@@ -152,7 +172,12 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 										<div className='col-12 mt-4'>
 											<div className='row m-0'>
 												<div className='col'>
-													<button className='btn btn-primary rounded px-5' onClick={submitGrading} disabled={is_modal_btn_disable}>Submit</button>
+													{
+														assignment_status_data !== 'done' ?
+														<button className='btn btn-primary rounded px-5' onClick={submitGrading} disabled={is_modal_btn_disable}>Submit</button>
+														:
+														<button className='btn btn-outline-primary rounded px-5' data-dismiss="modal">Close</button>
+													}
 												</div>
 											</div>
 										</div>

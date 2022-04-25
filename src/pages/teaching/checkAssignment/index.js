@@ -57,7 +57,12 @@ export default function CheckAssignment(){
 						data[x].grade = data[x].task.project.grade.name
 					}
 					data[x].submitted_date_format = base.moment(data[x].created_at).format('DD/MM HH:mm')
-					data[x].checked_date_format = base.moment(data[x].updated_at).format('DD/MM HH:mm')
+
+					data[x].checked_date_format = '-'
+
+					if(data[x].teacher != null) {
+						data[x].checked_date_format = base.moment(data[x].updated_at).format('DD/MM HH:mm')
+					}
 				}
 				set_data_arr(data)
 			}
@@ -167,23 +172,7 @@ export default function CheckAssignment(){
 																				{
 																					active_tab === 'all' &&
 																					<td className='td-fit-content align-middle'>
-																						{
-																							<>
-																							{
-																								data.assignment_agreement != null ?
-																								<>
-																								{
-																									data.assignment_agreement.assign_teacher != null ?
-																									<p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.assignment_agreement.assign_teacher.user.name}</p>
-																									: 
-																									<p className='m-0' style={{color : 'black'}}>-</p>
-																								}
-																								</>
-																								:
-																								<p className='m-0' style={{color : 'black'}}>-</p>
-																							}
-																							</>
-																						}
+																						<p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.teacher.name}</p>
 																					</td>
 																				}
 																				<td className='td-fit-content align-middle'>
