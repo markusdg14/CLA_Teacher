@@ -130,6 +130,10 @@ export default class Base extends Component{
 					return {user_data : response.data}
 				}
 			}
+			else{
+				localStorage.clear()
+				window.location.href = '/auth/login'
+			}
 		}
 	}
 }
