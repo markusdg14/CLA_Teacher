@@ -19,6 +19,7 @@ import HomeroomIndex from '../homeroom';
 import HomeroomDetail from '../homeroom/detail';
 import TrackerIndex from '../teaching/tracker';
 import HomeIndex from '../home';
+import ForgetPassword from '../auth/forgetPass';
 
 
 // import Navbar from './navbar'
@@ -80,6 +81,7 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/profile"} element={<ProfileIndex />}></Route>
 
                     <Route exact path={"/auth/login"} element={<AuthLogin />}></Route>
+                    <Route exact path={"/auth/forget-password"} element={<ForgetPassword />}></Route>
                 </Routes>
               </div>
             </div>

@@ -137,7 +137,7 @@ export default function AuthLogin(){
                                         <button type='button' className='btn btn-lg btn-primary rounded w-100' onClick={signInBtn} disabled={is_disable_btn}>Sign In</button>
                                     </div>
                                     <div className='col-12 mt-3 pb-4'>
-                                        <a href='#' className='mt-3 text-primary'><u>Forget Password</u></a>
+                                        <a href='/auth/forget-password' className='mt-3 text-primary'><u>Forget Password</u></a>
                                     </div>
                                 </form>
                             </div>
