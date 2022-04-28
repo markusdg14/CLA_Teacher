@@ -45,7 +45,7 @@ export default function HomeroomStudentHabitOnGoing({habit_student_selected, on_
                                                                 <h2 className='m-0'><i className="bi bi-bookmark-check-fill text-primary mr-3"></i></h2>
                                                             </div>
                                                             <div className='col p-0 d-flex align-items-center'>
-                                                                <h5 className='m-0'>{data.habit.name}</h5>
+                                                                <h5 className='m-0'>{data.name}</h5>
                                                             </div>
                                                             <div className='col d-flex align-items-center justify-content-end'>
                                                                 <i className={"fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
@@ -60,7 +60,7 @@ export default function HomeroomStudentHabitOnGoing({habit_student_selected, on_
                                                                 <div className='row'>
                                                                     <div className='col'>
                                                                         <p className='m-0 text-primary'>Habit Category</p>
-                                                                        <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.habit.category_habit.name}</p>
+                                                                        <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.category_habit.name}</p>
                                                                     </div>
                                                                     <div className='col'>
                                                                         <p className='m-0 text-primary'>Duration of Habit</p>

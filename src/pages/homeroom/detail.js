@@ -169,7 +169,7 @@ export default function HomeroomDetail(){
             url += 'attendance-reward'
         }
         else if(header_selected === 'habit_tracker'){
-            url = '/habit/tracker?class_id=' + query.get('id') + '&type=to_be_completed'
+            url = '/habit/tracker?class_id=' + query.get('id') + '&type=need_confirm'
         }
 
         if(header_selected !== 'habit_tracker'){
@@ -538,7 +538,7 @@ export default function HomeroomDetail(){
 
                         for(let history of data[x].history){
                             var history_date = base.moment(history.done_at)
-                            if(start_date.isSame(history_date)){
+                            if(start_date.isSame(history_date, 'date')){
                                 flag = true
                                 break
                             }
@@ -770,6 +770,8 @@ export default function HomeroomDetail(){
                                 student_arr={student_arr}
                                 to_be_confirm_habit_arr={to_be_confirm_habit_arr}
                                 viewDetailHabit={(index)=>viewDetailHabit(index)}
+                                // confirmHabit={(type, index=0)=>confirmHabit(type, index)}
+                                // modal_habit_redeem_btn_disable={modal_habit_redeem_btn_disable}
                             />
                         </>
                         :

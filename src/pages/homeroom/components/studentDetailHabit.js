@@ -104,8 +104,8 @@ export default function HomeroomStudentHabitDetail({habit_student_selected, sear
                                                         accomplished_habit_arr.map((data, index)=>(
                                                             <tr key={index}>
                                                                 <td className='align-middle td-fit-content'>{base.moment(data.start_date).format('DD/MM') + ' - ' + base.moment(data.end_date).format('DD/MM')}</td>
-                                                                <td className='align-middle'>{data.habit.category_habit.name}</td>
-                                                                <td className='align-middle'>{data.habit.name}</td>
+                                                                <td className='align-middle'>{data.category_habit.name}</td>
+                                                                <td className='align-middle'>{data.name}</td>
                                                                 <td className='align-middle'>{data.talent_earned}</td>
                                                                 <td className='align-middle'>{base.moment(data.done_date).format('DD/MM HH:mm')}</td>
                                                             </tr>

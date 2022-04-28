@@ -6,6 +6,35 @@ import Base from '../../../utils/base';
 export default function HomeroomHabitChallengeTalent({search, changeSearch, student_arr, to_be_confirm_habit_arr, viewDetailHabit}){
 	var base = new Base()
 
+    const [selected_confirmHabit, set_selected_confirmHabit] = useState(null)
+    const [modal_btn_disable, set_modal_btn_disable] = useState(false)
+
+    async function confirmHabit(type, index=0){
+        if(type === 'open_modal'){
+            base.$('#modalConfirmHabit').modal('show')
+            set_selected_confirmHabit(to_be_confirm_habit_arr[index])
+        }
+        else if(type === 'process'){
+            var url = '/habit/tracker/redeem/confirm'
+            var data_post = {
+                id : selected_confirmHabit.id
+            }
+
+            set_modal_btn_disable(true)
+        
+            var response = await base.request(url, 'post', data_post)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.reload()
+                }
+                set_modal_btn_disable(false)
+            }
+            else{
+                set_modal_btn_disable(false)
+            }
+        }
+    }
+
 	return(
 		<div className='row'>
         
@@ -55,13 +84,13 @@ export default function HomeroomHabitChallengeTalent({search, changeSearch, stud
                                                     {
                                                         to_be_confirm_habit_arr.map((data, index)=>(
                                                             <tr key={index}>
-                                                                <td className='align-middle td-fit-content'>{base.moment(data.date).format('DD/MM')}</td>
+                                                                <td className='align-middle td-fit-content'>{base.moment(data.request_redeem_at).format('DD/MM')}</td>
                                                                 <td className='align-middle'>{data.class_student.user.name}</td>
-                                                                <td className='align-middle'>{data.habit.name}</td>
-                                                                <td className='align-middle'>{data.habit.category_habit.name}</td>
+                                                                <td className='align-middle'>{data.name}</td>
+                                                                <td className='align-middle'>{data.category_habit.name}</td>
                                                                 <td className='align-middle'>{data.talent_earned}</td>
-                                                                <td>
-                                                                    <button className='btn btn-primary rounded px-4'>View More</button>
+                                                                <td className='align-middle td-fit-content'>
+                                                                    <button type='button' className='btn btn-primary rounded px-4' onClick={()=>confirmHabit('open_modal', index)}>Confirm</button>
                                                                 </td>
                                                             </tr>
 
@@ -107,6 +136,43 @@ export default function HomeroomHabitChallengeTalent({search, changeSearch, stud
                 </div>
             </div>
 
+            <ModalConfirmHabit
+                confirmHabit={()=>confirmHabit('process')}
+                modal_btn_disable={modal_btn_disable}
+            />
+
 		</div>
 	)
+}
+
+function ModalConfirmHabit({confirmHabit, modal_btn_disable}){
+    var base = new Base()
+    
+    return(
+        <>
+            <div className="modal fade" id="modalConfirmHabit" tabIndex="-1" aria-labelledby="modalConfirmHabitLabel" aria-hidden="true">
+                <div className="modal-dialog p-4 p-lg-0-">
+                    <div className="modal-content rounded border-0 shadow-sm">
+                        <div className="modal-body rounded p-0" style={{backgroundColor : '#F8F9FE'}}>
+                            <div className={'row m-0'}>
+                                <div className='col-12 p-4'>
+                                    <h5 className='m-0 mt-2 modalConfirmHabitTitle text-primary' style={{fontFamily : 'InterBold'}}><i className="bi bi-chat-square-dots-fill mr-2 mr-lg-3" style={{color : '#00000066'}}></i>Confirming Habit</h5>
+                                    <p className='m-0 mt-3' style={{fontSize : '.75rem'}}>Are you sure you would like to confirm? </p>
+
+                                    <div className='row'>
+                                        <div className='col pr-2'>
+                                            <button className='btn btn-outline-primary w-100 rounded shadow-sm mt-4' data-dismiss="modal" disabled={modal_btn_disable}>No</button>
+                                        </div>
+                                        <div className='col pl-2'>
+                                            <button className='btn btn-primary w-100 rounded shadow-sm mt-4' onClick={()=>confirmHabit()} disabled={modal_btn_disable}>Yes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
 }
