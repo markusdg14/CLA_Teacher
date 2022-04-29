@@ -24,7 +24,7 @@ export default function ForgetPassword(){
     async function forgetPasswordSend(){
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         var flag = 1
-        var data_forget_password = {email : email}
+        var data_forget_password = {email : email, user_type : 'teacher'}
 
         if(email === ''){
             flag = 0
@@ -94,10 +94,7 @@ export default function ForgetPassword(){
                                     </div>
 
                                     <div className='col-12 mt-5'>
-                                        <button type='button' className='btn btn-lg btn-primary rounded w-100' onClick={forgetPasswordSend} disabled={is_disable_btn}>Sign In</button>
-                                    </div>
-                                    <div className='col-12 mt-3 pb-4'>
-                                        <a href='#' className='mt-3 text-primary'><u>Forget Password</u></a>
+                                        <button type='button' className='btn btn-lg btn-primary rounded w-100' onClick={forgetPasswordSend} disabled={is_disable_btn}>Reset Password</button>
                                     </div>
                                 </form>
                             </div>
