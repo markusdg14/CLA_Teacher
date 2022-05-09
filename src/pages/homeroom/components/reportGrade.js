@@ -29,10 +29,10 @@ export default function HomeroomReportGrade({grade_subject_arr, grade_student_ar
                                                     <div className='row'>
                                                         <div className='col-12 p-3' style={{backgroundColor : '#EBEFE2', cursor : 'pointer'}} onClick={()=>toggleSubject(index)}>
                                                             <div className='row'>
-                                                                <div className='col-5 d-flex align-items-center'>
+                                                                <div className='col d-flex align-items-center'>
                                                                     <p className='m-0'>Subject / Standard : <span className='m-0' style={{fontFamily : 'InterBold'}}>{data.name}</span> / <span>{data.minimum_pass_score}</span></p>
                                                                 </div>
-                                                                <div className='col-7 d-flex align-items-center'>
+                                                                <div className='col-auto d-flex align-items-center justify-content-end'>
                                                                     <i className={"fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
                                                                 </div>
                                                             </div>

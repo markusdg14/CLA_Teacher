@@ -76,13 +76,13 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 												{
 													skill_subject_arr.map((data, index)=>(
 														<div className="table-responsive" key={index}>
-															<table className="table table-borderless w-100">
+															<table className="table w-100">
 																<thead>
 																	<tr style={{backgroundColor : '#EBEFE2', cursor : 'pointer'}} onClick={()=>toggleReportSkill(index)}>
 																		<th style={{width : '6rem'}}>{data.name} <i className={"ml-3 fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i></th>
 																		{
 																			skill_project_arr.map((data_project, index_project)=>(
-																				<th className='text-center' key={index_project} style={{width : '6rem'}}>{data_project.name}</th>
+																				<th className='text-center align-middle' key={index_project} style={{width : '6rem'}}>{data_project.name}</th>
 																			))
 																		}
 																	</tr>

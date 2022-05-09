@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
-export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes}){
+export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes, set_radio_project}){
 	var base = new Base()
 
 	const [modal_radio_arr, set_modal_radio_arr] = useState([
@@ -11,17 +11,39 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 	])
 	const [radio_selected, set_radio_selected] = useState('revision')
 
-	function changeRadio(index){
-		var data_index = modal_radio_arr[index]
-		var initChecked = data_index.is_checked
-		for(var x in modal_radio_arr){
-			modal_radio_arr[x].is_checked = false
-		}
-		modal_radio_arr[index].is_checked = !initChecked
+	const [radio_project_arr, set_radio_project_arr] = useState([
+		{id : 'revision', title : 'Revision', is_checked : true},
+		{id : 'confirm', title : 'Confirm Submission', is_checked : false}
+	])
+	const [radio_project_selected, set_radio_project_selected] = useState('revision')
 
-		base.update_array(modal_radio_arr, set_modal_radio_arr, data_index, index)
-		if(modal_radio_arr[index].is_checked){
-			set_radio_selected(modal_radio_arr[index].id)
+	function changeRadio(index, radio_type='assignment'){
+		if(radio_type === 'assignment'){
+			var data_index = modal_radio_arr[index]
+			var initChecked = data_index.is_checked
+			for(var x in modal_radio_arr){
+				modal_radio_arr[x].is_checked = false
+			}
+			modal_radio_arr[index].is_checked = !initChecked
+	
+			base.update_array(modal_radio_arr, set_modal_radio_arr, data_index, index)
+			if(modal_radio_arr[index].is_checked){
+				set_radio_selected(modal_radio_arr[index].id)
+			}
+		}
+		else{
+			var data_index = radio_project_arr[index]
+			var initChecked = data_index.is_checked
+			for(var x in radio_project_arr){
+				radio_project_arr[x].is_checked = false
+			}
+			radio_project_arr[index].is_checked = !initChecked
+
+			base.update_array(radio_project_arr, set_radio_project_arr, data_index, index)
+			if(radio_project_arr[index].is_checked){
+				set_radio_project_selected(radio_project_arr[index].id)
+				set_radio_project(radio_project_arr[index].id)
+			}
 		}
 	}
 
@@ -40,7 +62,7 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 												assignment_status_data === 'done' ?
 												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Grade Skill</h5>
 												:
-												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>{assignment_type === 'quiz' ? 'Grading Assignment' : assignment_type === 'discussion' ? 'Input Grade Skill' : ''}</h5>
+												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>{assignment_type === 'quiz' ? 'Grading Assignment' : assignment_type === 'discussion' ? 'Input Grade Skill' : assignment_type === 'upload' ? 'Grading Task' : ''}</h5>
 											}
 										</div>
 
@@ -166,6 +188,39 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 											</div>
 											</>
 											: 
+											assignment_type === 'upload' ? 
+											<>
+												<div className='col-12 mt-3'>
+													<div className='row m-0'>
+														<div className='col-12'>
+															<p className='m-0' style={{fontSize : '1.25rem', color : 'black'}}>Pick what you want to do</p>
+															<div className='row m-0 mt-2'>
+																{
+																	radio_project_arr.map((data, index)=>(
+																		<div className='col-auto' key={index}>
+																			<div className="form-check">
+																				<input className="form-check-input" type="radio" name="exampleRadios" id={'radio-' + data.id} value={data.id} checked={data.is_checked} onChange={()=>changeRadio(index, 'project')} />
+																				<label className="form-check-label" htmlFor={'radio-' + data.id} style={{color : 'black'}}>
+																					{data.title}
+																				</label>
+																			</div>
+																		</div>
+																	))
+																}
+															</div>
+														</div>
+													</div>
+												</div>
+
+												<div className='col-12 mt-4'>
+													<div className='row m-0'>
+														<div className='col-12'>
+															<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+														</div>
+													</div>
+												</div>
+											</>
+											:
 											<></>
 										}
 

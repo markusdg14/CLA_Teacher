@@ -104,6 +104,7 @@ export default function HomeroomDetail(){
     const [reward_score_arr] = useState([{id : 0, name : 0}, {id : 1, name : 1}])
     const [reward_score, set_reward_score] = useState([])
 
+    const [attendance_date, set_attendance_date] = useState('')
     const [attendance_all_one, set_attendance_all_one] = useState(false)
 
     useEffect(async ()=>{
@@ -603,6 +604,9 @@ export default function HomeroomDetail(){
             base.update_array(reward_score, set_reward_score, data_index, index)
 
         }
+        else if(type === 'date'){
+            set_attendance_date(new Date(value))
+        }
     }
 
     async function postReward(){
@@ -644,7 +648,8 @@ export default function HomeroomDetail(){
             }
             var data_post = {
                 class_student : {id : class_student_id},
-                arr_attendance_reward : arr_reward
+                arr_attendance_reward : arr_reward,
+                date : (attendance_date === '' ? base.moment().format('YYYY-MM-DD') : base.moment(attendance_date).format('YYYY-MM-DD'))
             }
 
             var url = '/point/transaction'
@@ -815,6 +820,7 @@ export default function HomeroomDetail(){
                 changeAttendance={(value, type, index)=>changeAttendance(value, type, index)}
                 postReward={()=>postReward()}
                 attendance_all_one={attendance_all_one}
+                attendance_date={attendance_date}
             />
 
         </div>

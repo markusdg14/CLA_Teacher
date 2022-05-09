@@ -61,6 +61,8 @@ export default function CheckAssignmentDetail(){
 
     const [student_submission, set_student_submission] = useState('')
 
+    const [radio_project_selected, set_radio_project_selected] = useState('revision')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -70,9 +72,14 @@ export default function CheckAssignmentDetail(){
         if(user_data.id !== ''){
             get_data()
             get_filter_data_arr('grade')
-            get_filter_data_arr('subject')
         }
     }, [user_data])
+
+    useEffect(async ()=>{
+        if(grade_selected != ''){
+            get_filter_data_arr('subject', grade_selected)
+        }
+    }, [grade_selected])
 
     useEffect(async ()=>{
         if(baseFile !== ''){
@@ -158,14 +165,23 @@ export default function CheckAssignmentDetail(){
                     set_rule_id(data.assignment_agreement.assessment_rule_id)
                 }
                 else {
+                    console.log(data)
                     set_assignment_info_arr([
                         {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.task.project.grade.name},
                         {title : 'Subject', value : data.task.project.subject.name},
                         {title : 'Project Title', value : data.task.title + ' - ' + data.task.project.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
                     ])
 
-                    set_assignment_type('discussion')
-                    data.assignment_score = 'Graded'
+                    if(data.task.type === 'presentation'){
+                        set_assignment_type('discussion')
+                    }
+                    else {
+                        set_assignment_type('upload')
+                    }
+
+                    if(data.assessment_status.data === 'done'){
+                        data.assignment_score = 'Graded'
+                    }
                 }
 
                 set_assignment_grade(data.assignment_score)
@@ -226,8 +242,6 @@ export default function CheckAssignmentDetail(){
                         arr_skill[y].score = ''
                     }
                 }
-                
-                console.log(data)
                 set_grade_skill_arr(data)
             }
         }
@@ -239,7 +253,6 @@ export default function CheckAssignmentDetail(){
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
-                console.log(data)
                 set_rule(data.name)
                 set_rule_detail_arr(data.detail)
             }
@@ -265,17 +278,27 @@ export default function CheckAssignmentDetail(){
         get_list()
     }
 
-    async function get_filter_data_arr(type){
-        var url = '/' + type + '/all'
+    async function get_filter_data_arr(type, id=''){
+        var url = ''
+        if(type === 'grade'){
+            url = '/class/homeroom?type=current_academic_year'
+        }
+        else{
+            url = '/subject?grade_id=' + id
+        }
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
                 if(type === 'grade'){
-                    set_grade_arr(data)
+                    var data1 = data.data
+                    for(var x in data1){
+                        data1[x].name = data1[x].grade_name + '' + data1[x].name
+                    }
+                    set_grade_arr(data1)
                 }
                 else if(type === 'subject'){
-                    set_subject_arr(data)
+                    set_subject_arr(data.data)
                 }
             }
         }
@@ -305,7 +328,15 @@ export default function CheckAssignmentDetail(){
 
     function changeFilter(val, type){
         if(type === 'grade'){
-            set_grade_selected(val)
+            console.log(val)
+            var grade = grade_arr
+            var grade_id = ''
+            for(var x in grade){
+                if(grade[x].id === val){
+                    grade_id = grade[x].grade.id
+                }
+            }
+            set_grade_selected(grade_id)
         }
         else if(type === 'subject'){
             set_subject_selected(val)
@@ -376,6 +407,15 @@ export default function CheckAssignmentDetail(){
             }
             method = 'post'
         }
+        else if(assignment_type === 'upload'){
+            url = '/assessment/assignment'
+            var status = (radio_project_selected === 'revision' ? 'need_correction' : 'done')
+            data_upload = {
+                id : assignment_submitted_id,
+                status : status,
+                comment : teacher_notes,
+            }
+        }
 
         var response = await base.request(url, method, data_upload)
         if(response != null){
@@ -416,6 +456,10 @@ export default function CheckAssignmentDetail(){
 
     function viewGradeSkill(){
         base.$('#modalSubmit').modal('show')
+    }
+
+    function changeRadioProject(value){
+        set_radio_project_selected(value)
     }
 
     return(
@@ -516,7 +560,7 @@ export default function CheckAssignmentDetail(){
                                     <div className='col-12 pb-3'>
                                         <p className='m-0' style={{fontFamily : 'InterBold', fontSize : '1.25rem'}}>Student Submission</p>
                                         <div className='p-2 p-lg-3 border rounded mt-3'>
-                                            <p className='m-0'>{student_submission}</p>
+                                            <p className='m-0'>{student_submission != null ? student_submission : '-'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -641,6 +685,7 @@ export default function CheckAssignmentDetail(){
                 changeNumerical={(value)=>changeNumerical(value)}
                 assignment_status_data={assignment_status_data}
                 teacher_notes={teacher_notes}
+                set_radio_project={(value)=>changeRadioProject(value)}
             />
             
         </div>

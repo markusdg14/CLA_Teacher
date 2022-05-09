@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr, attendance_all_one}){
+export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr, attendance_all_one, attendance_date}){
     var base = new Base()
 
     return(
@@ -22,6 +24,16 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                             <div className='col-auto'>
                                                 <label>Student</label>
                                                 <SelectOption data_arr={student_arr} selected={attendance_reward_student_selected} title={'Student'} changeInput={(value)=>changeAttendance(value, 'student')} />
+                                            </div>
+                                            <div className='col-auto'>
+                                                <label>Date</label>
+                                                <DatePicker
+                                                    selected={(attendance_date === '' ? new Date() : new Date(attendance_date))}
+                                                    onChange={date => changeAttendance(date, 'date')}
+                                                    maxDate={new Date()}
+                                                    timeFormat="HH:mm"
+                                                    dateFormat="dd MMMM yyyy"
+                                                />
                                             </div>
                                         </div>
                                     </div>
