@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import Base from '../../../utils/base';
+import Base from '../../utils/base';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from '../../../components/header';
+import Header from '../../components/header';
 
 
-export default function StudentProfileIndex(){
+export default function EditProfile(){
     var base = new Base()
 
     const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}})
@@ -104,6 +104,7 @@ export default function StudentProfileIndex(){
 
             var response = await base.request(url, 'put', data)
             if(response != null){
+                set_is_disable_btn(false)
                 if(response.status == 'success'){
                     set_error('success', 'Success!', 'alert')
                     window.location.reload()
@@ -202,9 +203,6 @@ export default function StudentProfileIndex(){
                                                 ))
                                             }
 
-                                            <div className='col-12 mt-3'>
-                                                <a href='#' className='mt-3 text-primary'><u>Change Password</u></a>
-                                            </div>
                                             <div className='col-12 mt-5 pb-4'>
                                                 <button type='button' className='btn btn-primary rounded px-5 py-2' onClick={saveBtn} disabled={is_disable_btn}>Save Changes</button>
                                             </div>

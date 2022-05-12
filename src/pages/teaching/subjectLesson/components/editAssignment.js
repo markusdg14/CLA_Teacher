@@ -65,18 +65,21 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                         </div>
                                         <div className='col-12 mt-3'>
                                             <div className='row'>
-                                                <div className='col'>
-                                                    <FormInput 
-                                                        title={'Type of Assignment'}
-                                                        changeInput={(value)=>console.log(value)}
-                                                        value={selected_assignment.assignment_type.name}
-                                                        error_data={''}
-                                                        type={''}
-                                                        input_type={'text'}
-                                                        readOnly={true}
-                                                    />
-                                                </div>
-                                                <div className='col'>
+                                                {
+                                                    selected_assignment.type === 'assignment' &&
+                                                    <div className='col'>
+                                                        <FormInput 
+                                                            title={'Type of Assignment'}
+                                                            changeInput={(value)=>console.log(value)}
+                                                            value={selected_assignment.assignment_type.name}
+                                                            error_data={''}
+                                                            type={''}
+                                                            input_type={'text'}
+                                                            readOnly={true}
+                                                        />
+                                                    </div>
+                                                }
+                                                <div className={(selected_assignment.type === 'assignment' ? 'col' : 'col-4')}>
                                                     <FormInput 
                                                         title={'Grading System'}
                                                         changeInput={(value)=>console.log(value)}
@@ -92,7 +95,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
 
                                         <div className='col-12 mt-3'>
                                             <FormInput 
-                                                title={'Judul Assignment'}
+                                                title={'Judul ' + (selected_assignment.type === 'task' ? 'Task' : 'Assignment')}
                                                 changeInput={(value)=>changeInput(value, 'name')}
                                                 value={selected_assignment.name}
                                                 error_data={''}
@@ -101,10 +104,24 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                                 readOnly={false}
                                             />
                                         </div>
+                                        {/* {
+                                            selected_assignment.type === 'task' &&
+                                            <div className='col-12 mt-3'>
+                                                <FormInput 
+                                                    title={'Nama Project'}
+                                                    changeInput={(value)=>changeInput(value, 'name')}
+                                                    value={selected_assignment.project.name}
+                                                    error_data={''}
+                                                    type={''}
+                                                    input_type={'text'}
+                                                    readOnly={false}
+                                                />
+                                            </div>
+                                        } */}
                                         <div className='col-12 mt-3'>
-                                            <label className='text-primary'>Deadline Date</label>
+                                            <label className='text-primary'>{selected_assignment.type === 'task' ? 'Meeting At' : 'Deadline Date'}</label>
                                             <DatePicker
-                                                selected={new Date(selected_assignment.deadline_date)}
+                                                selected={(selected_assignment.deadline_date == null ? new Date() : new Date(selected_assignment.deadline_date))}
                                                 onChange={date => changeInput(date, 'deadline_date')}
                                                 minDate={new Date()}
                                                 timeFormat="HH:mm"
@@ -112,7 +129,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                             />
                                         </div>
                                         <div className='col-12 mt-3'>
-                                            <label className='text-primary'>Detail Assignment</label>
+                                            <label className='text-primary'>{selected_assignment.type === 'task' ? 'Detail Task' : 'Detail Assignment'}</label>
                                             <textarea className="form-control rounded mt-2" rows={5} onChange={(e)=>changeInput(e.target.value, 'description')} style={{resize : 'none', border : '1px solid #EAEAEA'}} value={selected_assignment.description} placeholder=""></textarea>
                                         </div>
 

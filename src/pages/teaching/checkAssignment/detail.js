@@ -63,6 +63,8 @@ export default function CheckAssignmentDetail(){
 
     const [radio_project_selected, set_radio_project_selected] = useState('revision')
 
+    const [pdf_blob, set_pdf_blob] = useState(null)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -82,13 +84,14 @@ export default function CheckAssignmentDetail(){
     }, [grade_selected])
 
     useEffect(async ()=>{
-        if(baseFile !== ''){
-            if(assignment_type === 'discussion'){
-                get_grade_skill()
-            }
-            base.$('#modalSubmit').modal('show')
-            // postPDF()
-        }
+        // console.log('123change')
+        // if(baseFile !== ''){
+        //     get_grade_skill()
+        //     if(assignment_type === 'discussion'){
+        //         get_grade_skill()
+        //     }
+        //     base.$('#modalSubmit').modal('show')
+        // }
     }, [baseFile])
 
     useEffect(async ()=>{
@@ -137,6 +140,8 @@ export default function CheckAssignmentDetail(){
                 if(data.type === 'assignment'){
                     set_grade(data.assignment_agreement.assignment_group.grade.name)
                     set_subject_id(data.assignment_agreement.assignment_group.subject.id)
+                    set_subject_selected(data.assignment_agreement.assignment_group.subject.id)
+                    set_grade_selected(data.assignment_agreement.assignment_group.grade.id)
                     set_assignment_agreement_id(data.assignment_agreement.id)
                     set_assignment_type(data.assignment_agreement.assignment_type.data)
                     // set_assignment_type('discussion')
@@ -153,9 +158,6 @@ export default function CheckAssignmentDetail(){
                         }
                     }
 
-
-    
-    
                     set_assignment_info_arr([
                         {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.assignment_agreement.assignment_group.grade.name},
                         {title : 'Subject', value : data.assignment_agreement.assignment_group.subject.name}, {title : 'Lesson', value : data.assignment_agreement.assignment_group.lesson.name},
@@ -165,14 +167,17 @@ export default function CheckAssignmentDetail(){
                     set_rule_id(data.assignment_agreement.assessment_rule_id)
                 }
                 else {
-                    console.log(data)
                     set_assignment_info_arr([
-                        {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.task.project.grade.name},
-                        {title : 'Subject', value : data.task.project.subject.name},
-                        {title : 'Project Title', value : data.task.title + ' - ' + data.task.project.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
+                        {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.task_agreement.project_agreement.grade.name},
+                        {title : 'Subject', value : data.task_agreement.project_agreement.subject.name},
+                        {title : 'Project Title', value : data.task_agreement.title + ' - ' + data.task_agreement.project_agreement.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
                     ])
 
-                    if(data.task.type === 'presentation'){
+                    set_subject_id(data.task_agreement.project_agreement.subject.id)
+                    set_subject_selected(data.task_agreement.project_agreement.subject.id)
+                    set_grade_selected(data.task_agreement.project_agreement.grade.id)
+
+                    if(data.task_agreement.type === 'presentation'){
                         set_assignment_type('discussion')
                     }
                     else {
@@ -183,6 +188,8 @@ export default function CheckAssignmentDetail(){
                         data.assignment_score = 'Graded'
                     }
                 }
+
+                get_list()
 
                 set_assignment_grade(data.assignment_score)
 
@@ -198,8 +205,37 @@ export default function CheckAssignmentDetail(){
                     WebViewer({
                         path : '/lib', initialDoc : base.url_photo('assignment/submitted', file),
                     }, viewerDiv.current).then((instance) => {
-                        const {docViewer} = instance
-                        const annotManager = docViewer.getAnnotationManager();
+                        const {documentViewer} = instance.Core
+                        const annotManager = documentViewer.getAnnotationManager();
+
+                        documentViewer.addEventListener('documentLoaded', async ()=>{
+                            const doc = documentViewer.getDocument()
+                            const xfdfString = await annotManager.exportAnnotations()
+                            const options = { xfdfString };
+                            const data = await doc.getFileData(options);
+                            const arr = new Uint8Array(data);
+                            const blob = new Blob([arr], { type: 'application/pdf' });
+
+                            // set_pdf_blob(blob)
+                            await getBaseData(blob, (result)=>{
+                                set_baseFile(result)
+                            })
+                        })
+
+                        documentViewer.addEventListener('mouseLeave', async ()=>{
+                            const doc = documentViewer.getDocument()
+                            const xfdfString = await annotManager.exportAnnotations()
+                            const options = { xfdfString };
+                            const data = await doc.getFileData(options);
+                            const arr = new Uint8Array(data);
+                            const blob = new Blob([arr], { type: 'application/pdf' });
+
+                            // set_pdf_blob(blob)
+                            await getBaseData(blob, (result)=>{
+                                set_baseFile(result)
+                            })
+                        })
+
 
                         // if(data.assessment_status.data != 'done'){
                         //     instance.UI.setHeaderItems(header => {
@@ -207,7 +243,7 @@ export default function CheckAssignmentDetail(){
                         //           type: 'actionButton',
                         //           img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
                         //           onClick: async () => {
-                        //             const doc = docViewer.getDocument()
+                        //             const doc = documentViewer.getDocument()
                         //             const xfdfString = await annotManager.exportAnnotations();
                         //             const options = { xfdfString };
                         //             const data = await doc.getFileData(options);
@@ -271,7 +307,7 @@ export default function CheckAssignmentDetail(){
     }
 
     function backBtn(){
-        window.history.back()
+        window.location.href = '/check-assignment'
     }
 
     function filterBtn(){
@@ -356,11 +392,18 @@ export default function CheckAssignmentDetail(){
         }
     }
 
+    async function get_basePdf(){
+        await getBaseData(pdf_blob, (result)=>{
+            set_baseFile(result)
+        })
+    }
+
     async function submitGrading(){
         set_is_modal_btn_disable(true)
         var url = ''
         var data_upload = {}
         var method = 'put'
+        console.log(assignment_type)
         if(assignment_type === 'quiz'){
             url = '/assessment/assignment'
             data_upload = {
@@ -414,6 +457,10 @@ export default function CheckAssignmentDetail(){
                 id : assignment_submitted_id,
                 status : status,
                 comment : teacher_notes,
+                file : {
+                    file : baseFile,
+                    file_name : assignment_submitted_id + '.pdf'
+                }
             }
         }
 
@@ -573,7 +620,12 @@ export default function CheckAssignmentDetail(){
             {
                 assignment_status_data !== 'done' &&
                 <div className='col-12 mt-3 text-right'>
-                    <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
+                    {/* {
+                        total_file > 0 ?
+                        <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>get_basePdf()}>Grade</button>
+                        :
+                    } */}
+                        <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
                 </div>
             }
 
@@ -602,74 +654,77 @@ export default function CheckAssignmentDetail(){
                 </div>
             </div>
 
-            <div className='col-12 mt-3'>
-                <div className="card rounded shadow-sm">
-                    <div className={"card-body p-0"}>
-                        <div className={'row m-0'}>
-                            <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-                            <div className='col-12 p-3 pt-4 pb-5'>
-                                <div className='row m-0'>
-                                    <div className='col-12 mb-3'>
-                                        <h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>List Check Assignment</h5>
-                                    </div>
+            {
+                list_check_assignment_arr.length > 0 &&
+                <div className='col-12 mt-3'>
+                    <div className="card rounded shadow-sm">
+                        <div className={"card-body p-0"}>
+                            <div className={'row m-0'}>
+                                <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+                                <div className='col-12 p-3 py-4'>
+                                    <div className='row m-0'>
+                                        <div className='col-12 mb-3'>
+                                            <h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>List Check Assignment</h5>
+                                        </div>
 
-                                    <div className='col-12 p-0'>
-                                        <div className='row'>
+                                        <div className='col-12 p-0'>
+                                            <div className='row'>
 
-                                            {
-                                                is_loading_list ?
-                                                <div className='col-12 text-center'>
-                                                    <h4>Loading...</h4>
-                                                </div>
-                                                :
-                                                <>
-                                                    {
-                                                        is_filter &&
-                                                        <>
-                                                            {
-                                                                list_check_assignment_arr.length > 0 ?
-                                                                <>
+                                                {
+                                                    is_loading_list ?
+                                                    <div className='col-12 text-center'>
+                                                        <h4>Loading...</h4>
+                                                    </div>
+                                                    :
+                                                    <>
+                                                        {
+                                                            is_filter &&
+                                                            <>
                                                                 {
-                                                                    list_check_assignment_arr.map((data, index)=>(
-                                                                        <div className={'col-6 p-3 list_check_assignment' + (index % 2 === 0 ? ' border-right' : '')} onClick={()=>viewDetail(index)}>
-                                                                            <div className='row m-0'>
-                                                                                <div className='col-auto d-flex align-items-center'>
-                                                                                    <img src={data.user.image_display} style={{height : '4rem', width : '4rem', aspectRatio : 1, borderRadius : '4rem'}} />
-                                                                                </div>
-                                                                                <div className='col-auto d-flex align-items-center'>
-                                                                                    <div>
-                                                                                        <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.user.name}</p>
-                                                                                        <p className='m-0'>{data.assignment_agreement.name} | {data.assignment_agreement.assignment_group.subject.name} | {data.assignment_agreement.assignment_group.lesson.name}</p>
+                                                                    list_check_assignment_arr.length > 0 ?
+                                                                    <>
+                                                                    {
+                                                                        list_check_assignment_arr.map((data, index)=>(
+                                                                            <div className={'col-6 p-3 list_check_assignment' + (index % 2 === 0 ? ' border-right' : '')} onClick={()=>viewDetail(index)}>
+                                                                                <div className='row m-0'>
+                                                                                    <div className='col-auto d-flex align-items-center'>
+                                                                                        <img src={data.user.image_display} style={{height : '4rem', width : '4rem', aspectRatio : 1, borderRadius : '4rem'}} />
+                                                                                    </div>
+                                                                                    <div className='col-auto d-flex align-items-center'>
+                                                                                        <div>
+                                                                                            <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.user.name}</p>
+                                                                                            <p className='m-0'>{data.assignment_agreement.name} | {data.assignment_agreement.assignment_group.subject.name} | {data.assignment_agreement.assignment_group.lesson.name}</p>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div className='col d-flex align-items-center justify-content-end mt-3 mt-lg-0'>
+                                                                                        <p className='m-0'>{base.moment(data.created_at).format('DD/MM HH:mm')}</p>
                                                                                     </div>
                                                                                 </div>
-
-                                                                                <div className='col d-flex align-items-center justify-content-end mt-3 mt-lg-0'>
-                                                                                    <p className='m-0'>{base.moment(data.created_at).format('DD/MM HH:mm')}</p>
-                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    ))
+                                                                        ))
+                                                                    }
+                                                                    </>
+                                                                    :
+                                                                    <div className='col-12 text-center'>
+                                                                        <h4>No Data</h4>
+                                                                    </div>
                                                                 }
-                                                                </>
-                                                                :
-                                                                <div className='col-12 text-center'>
-                                                                    <h4>No Data</h4>
-                                                                </div>
-                                                            }
-                                                        </>
-                                                    }
-                                                </>
-                                            }
+                                                            </>
+                                                        }
+                                                    </>
+                                                }
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
-                        
                     </div>
                 </div>
-            </div>
+            }
 
             <ModalSubmit
                 assignment_type={assignment_type}

@@ -37,13 +37,16 @@ export default function LessonList({data_arr, confirmLesson, changeView}){
                                 <div className='row'>
 
                                     {
-                                        data.assignment_agreement.map((assignment, index_assignment)=>(
+                                        data.arr_assignment_agreement.map((assignment, index_assignment)=>(
                                             <div className='col-12 py-3 rounded' style={{borderBottom : '1px solid #EAEAEA'}} key={index_assignment}>
                                                 <div className='row'>
                                                     <div className='col d-flex align-items-center'>
                                                         <p className='m-0 d-inline-block'>
-                                                            <i className={(assignment.icon) + " mr-4 text-primary"} style={{fontSize : 18}}></i>
-                                                            {assignment.name}
+                                                            {
+                                                                assignment.icon != null &&
+                                                                <i className={(assignment.icon) + " mr-4 text-primary"} style={{fontSize : 18}}></i>
+                                                            }
+                                                            {(assignment.type === 'task' ? assignment.title : assignment.name)}
                                                         </p>
                                                     </div>
                                                     <div className='col-auto text-left text-lg-right mt-2 mt-lg-0'>

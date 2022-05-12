@@ -167,7 +167,7 @@ export default function CheckAssignment(){
 																				</td>
 																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.subject_lesson}</p></td>
 																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{
-																					data.assignment_agreement != null ? data.assignment_agreement.name : data.task.title + ' - ' + data.task.project.name}</p></td>
+																					data.assignment_agreement != null ? data.assignment_agreement.name : data.task_agreement.title + ' - ' + data.task_agreement.project_agreement.name}</p></td>
 																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.submitted_date_format}</p></td>
 																				{
 																					active_tab === 'all' &&

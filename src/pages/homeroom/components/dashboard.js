@@ -7,7 +7,7 @@ export default function HomeroomDashboard({rank_student_arr, schedule_lesson_day
 
     return(
         <div className='row'>
-            <div className='col-12'>
+            {/* <div className='col-12'>
                 <div className='row'>
                     <div className='col-12 col-lg-6'>
                         <DashboardList data_arr={rank_student_arr} type={'rank'} title={'Rank Student by Grade'} />
@@ -17,9 +17,9 @@ export default function HomeroomDashboard({rank_student_arr, schedule_lesson_day
                         <DashboardList data_arr={[]} type={'todo_list'} title={'To Do List'} />
                     </div>
                 </div>
-            </div>
+            </div> */}
 
-            <div className='col-12 mt-5'>
+            <div className='col-12'>
                 <div className="card rounded shadow-sm">
                     <div className={"card-body p-0"}>
                         <div className={'row m-0'}>

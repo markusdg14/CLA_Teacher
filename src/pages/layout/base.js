@@ -7,7 +7,6 @@ import Navbar from './navbar';
 import CalendarIndex from '../teaching/calendar';
 import ProfileIndex from '../profile';
 import AuthLogin from '../auth/login';
-import StudentProfileIndex from '../profile/studentProfile';
 import CheckAssignment from '../teaching/checkAssignment';
 import CheckAssignmentDetail from '../teaching/checkAssignment/detail';
 import SubjectLesson from '../teaching/subjectLesson';
@@ -20,6 +19,7 @@ import HomeroomDetail from '../homeroom/detail';
 import TrackerIndex from '../teaching/tracker';
 import HomeIndex from '../home';
 import ForgetPassword from '../auth/forgetPass';
+import EditProfile from '../profile/edit';
 
 
 // import Navbar from './navbar'
@@ -58,7 +58,7 @@ export default class BaseLayout extends Base{
                 <Navbar />
               }
 
-              <div className='container mt-5 pb-5 mb-5'>
+              <div className='container pb-5 mb-5 mt-4'>
                 <Routes>
                     <Route exact path={"/"} element={<HomeIndex />}></Route>
 
@@ -79,6 +79,7 @@ export default class BaseLayout extends Base{
 
                     <Route exact path={"/calendar"} element={<CalendarIndex />}></Route>
                     <Route exact path={"/profile"} element={<ProfileIndex />}></Route>
+                    <Route exact path={"/profile/edit"} element={<EditProfile />}></Route>
 
                     <Route exact path={"/auth/login"} element={<AuthLogin />}></Route>
                     <Route exact path={"/auth/forget-password"} element={<ForgetPassword />}></Route>

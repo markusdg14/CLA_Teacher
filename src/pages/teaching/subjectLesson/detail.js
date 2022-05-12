@@ -66,13 +66,19 @@ export default function SubjectLessonDetail(){
                 set_header(response.assignment_group.grade.name + ' ' + response.assignment_group.subject.name)
 
                 for(var x in data){
-                    var data_agreement = data[x].assignment_agreement
+                    var data_agreement = data[x].arr_assignment_agreement
                     data[x].is_confirm = true
 
                     for(var y in data_agreement){
-                        data_agreement[y].icon = (data_agreement[y].assignment_type.data === 'quiz' ? 'bi bi-puzzle-fill' : data_agreement[y].assignment_type.data === 'discussion' ? 'bi bi-easel-fill' : data_agreement[y].assignment_type.data === 'ungraded' ? 'bi bi-book-half' : '')
+                        data_agreement[y].icon = 'bi bi-puzzle-fill'
+                        if(data_agreement[y].type === 'assignment'){
+                            data_agreement[y].icon = (data_agreement[y].assignment_type.data === 'quiz' ? 'bi bi-puzzle-fill' : data_agreement[y].assignment_type.data === 'discussion' ? 'bi bi-easel-fill' : data_agreement[y].assignment_type.data === 'ungraded' ? 'bi bi-book-half' : '')
+                        }
+                        else{
+                            data_agreement[y].deadline_date = data_agreement[y].meeting_at
+                        }
                     }
-
+                    
                     if(data[x].confirmed_user == null){
                         data[x].is_confirm = false
                     }
@@ -128,14 +134,22 @@ export default function SubjectLessonDetail(){
     function changeView(type, index=0, index_assignment=0){
         set_viewType(type)
         if(type === 'edit_assignment'){
-            data_arr[index].assignment_agreement[index_assignment].image_display = base.img_no_image
-            if(data_arr[index].assignment_agreement[index_assignment].file_name != null){
-                data_arr[index].assignment_agreement[index_assignment].image_display = base.url_photo('assignment', data_arr[index].assignment_agreement[index_assignment].file_name)
+            data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.img_no_image
+            if(data_arr[index].arr_assignment_agreement[index_assignment].file_name != null){
+                data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.url_photo('assignment', data_arr[index].arr_assignment_agreement[index_assignment].file_name)
             }
-            set_selected_lesson(data_arr[index])
-            set_selected_assignment(data_arr[index].assignment_agreement[index_assignment])
 
-            base.update_object(assignment_image_data, set_assignment_image_data, data_arr[index].assignment_agreement[index_assignment].image_display, 'image_display')
+            if(data_arr[index].arr_assignment_agreement[index_assignment].type === 'task'){
+                data_arr[index].arr_assignment_agreement[index_assignment].name = data_arr[index].arr_assignment_agreement[index_assignment].title
+                data_arr[index].arr_assignment_agreement[index_assignment].deadline_date = data_arr[index].arr_assignment_agreement[index_assignment].meeting_at
+                data_arr[index].arr_assignment_agreement[index_assignment].assessment_rule = data_arr[index].arr_assignment_agreement[index_assignment].project_agreement.assessment_rule
+            }
+
+
+            set_selected_lesson(data_arr[index])
+            set_selected_assignment(data_arr[index].arr_assignment_agreement[index_assignment])
+
+            base.update_object(assignment_image_data, set_assignment_image_data, data_arr[index].arr_assignment_agreement[index_assignment].image_display, 'image_display')
 
         }
         window.scrollTo(0,0)
@@ -170,17 +184,25 @@ export default function SubjectLessonDetail(){
     }
 
     async function saveAssignment(){
-        var url = '/assignment/agreement'
+        var type = selected_assignment.type
+        var url = '/' + type + '/agreement'
 
         var image = assignment_image_data
         image.image = img_data_base
 
         var data_post = {
             id : selected_assignment.id,
-            name : selected_assignment.name,
             description : selected_assignment.description,
-            deadline_date : base.moment(selected_assignment.deadline_date).format('YYYY-MM-DD'),
             image : image,
+        }
+
+        if(type === 'assignment'){
+            data_post.name = selected_assignment.name
+            data_post.deadline_date = base.moment(selected_assignment.deadline_date).format('YYYY-MM-DD')
+        }
+        else {
+            data_post.title = selected_assignment.name
+            data_post.meeting_at = base.moment(selected_assignment.deadline_date).format('YYYY-MM-DD')
         }
 
         var response = await base.request(url, 'put', data_post)

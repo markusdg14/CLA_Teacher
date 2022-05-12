@@ -57,7 +57,7 @@ export default function Navbar(){
 
 	return(
 		<>
-			<nav className="navbar navbar-expand-lg navbar-dark p-0 m-0 mt-3 pb-3">
+			<nav className="navbar navbar-expand-lg navbar-dark p-0 m-0 py-3">
 				<div className="container d-none d-lg-flex px-md-3">
 					<a className="navbar-brand m-0" href="/"><img src={base.img_logo_text} className={'header_logo'} alt="ChristianLifeAcademy-Logo" style={{ width: '15rem' }} /></a>
 					<div className="d-flex flex-column">
