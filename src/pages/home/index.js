@@ -18,6 +18,8 @@ export default function HomeIndex(){
     const [schedule_lesson_time_arr, set_schedule_lesson_time_arr] = useState([])
     const [schedule_arr, set_schedule_arr] = useState([])
 
+    const [schedule_page, set_schedule_page] = useState('1')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -30,6 +32,12 @@ export default function HomeIndex(){
         }
     }, [user_data])
 
+    useEffect(async ()=>{
+		// set_schedule_lesson_time_arr([])
+		set_schedule_arr([])
+		get_schedule()
+	}, [schedule_page])
+
     async function get_todo(){
         var url = '/todo?type=today'
         var response = await base.request(url)
@@ -37,7 +45,6 @@ export default function HomeIndex(){
             if(response.status == 'success'){
                 var data = response.data.data
                 for(var x in data){
-                    console.log(data[x])
                     data[x].title = data[x].todo
                 }
                 set_to_do_list_arr(data)
@@ -46,8 +53,16 @@ export default function HomeIndex(){
     }
 
     async function get_schedule(){
-        var counter_time = base.moment('08:00', 'HH:mm')
-        var limit_time = base.moment('13:45', 'HH:mm')
+        var counter_time = ''
+        var limit_time = ''
+        if(schedule_page === '1'){
+            counter_time = base.moment('08:00', 'HH:mm')
+            limit_time = base.moment('10:45', 'HH:mm')
+        }
+        else if(schedule_page === '2'){
+            counter_time = base.moment('11:00', 'HH:mm')
+            limit_time = base.moment('13:45', 'HH:mm')
+        }
         var arr_time = []
 
         while(counter_time.isSameOrBefore(limit_time)){
@@ -68,33 +83,43 @@ export default function HomeIndex(){
         }
         await set_schedule_lesson_day_arr(day_arr)
 
-        // var arr_schedule = []
-        // for(let day of day_arr){
-        //     for(let time of arr_time){
-        //         var time_moment = base.moment(time.id, 'HH:mm')
-        //         if(arr_schedule[day.id] == null)
-        //             arr_schedule[day.id] = []
+        var arr_schedule = []
+        var data = user_data.arr_schedule
+        for(let day of day_arr){
+            for(let time of arr_time){
+                var time_moment = base.moment(time.id, 'HH:mm')
+                if(arr_schedule[day.id] == null)
+                    arr_schedule[day.id] = []
                     
-        //         if(arr_schedule[day.id][time.name] == null)
-        //             arr_schedule[day.id][time.name] = {}
+                if(arr_schedule[day.id][time.name] == null)
+                    arr_schedule[day.id][time.name] = {}
                     
-        //         var start_time = base.moment(data.start_time_format, 'HH:mm')
-        //         var end_time = base.moment(data.end_time_format, 'HH:mm')
-        //         if(data.day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
-        //             arr_schedule[day.id][time.name] = data
-        //             break
-        //         }
-        //     }
-        // }
-        // console.log(arr_schedule)
-        // set_schedule_arr(arr_schedule)
+                var start_time = base.moment(data.start_time_format, 'HH:mm')
+                var end_time = base.moment(data.end_time_format, 'HH:mm')
+                if(data.day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
+                    arr_schedule[day.id][time.name] = data
+                    break
+                }
+            }
+        }
+        console.log(arr_schedule)
+        set_schedule_arr(arr_schedule)
     }
+
+    async function showMoreSchedule(){
+		if(schedule_page === '1'){
+			set_schedule_page('2')
+		}
+		else{
+			set_schedule_page('1')
+		}
+	}
 
     return(
         <div className='row'>
 
             <div className='col-12'>
-                <Header title={'Homeroom'} user_data={user_data} />
+                <Header title={'Dashboard'} user_data={user_data} />
             </div>
 
             <div className='col-12 mt-5 pt-4'>
@@ -106,7 +131,90 @@ export default function HomeIndex(){
                 />
             </div>
 
-            <div className='col-12 mt-5'>
+            <div className='col-12 mt-3'>
+
+                <div className='card p-0 rounded border-0'>
+                    <div className='card-body p-0 pb-3'>
+                        <div className='row m-0'>
+                            <div className='col-12 p-0 rounded'>
+                                <div className="table-responsive rounded">
+                                    <table className="table table-fixed-lg">
+                                        <tbody className='bg-white'>
+                                            <tr className='' style={{backgroundColor : '#F9FAFB', borderBottom : '1px solid #E5E7EB'}}>
+                                                <th className='border-0 '></th>
+                                                {
+                                                    schedule_lesson_day_arr.map((day_data, day_index)=>(
+                                                        <th className='text-center border-0 schedule_day' style={{color : '#8A92A6'}} key={day_index}>{day_data.title}</th>
+                                                    ))
+                                                }
+                                            </tr>
+                                            {
+                                                schedule_lesson_time_arr.map((data_time, index_time)=>(
+                                                    <tr key={index_time}>
+                                                        <td className='border-0 px-0 py-1 mb-2 align-middle td-fit-content'>
+                                                            <p className='m-0 p-1 px-1 px-lg-3 schedule_time'>{data_time.name}</p>
+                                                        </td>
+
+                                                        {
+                                                            schedule_arr.length > 0 &&
+                                                            <>
+                                                                {
+                                                                    schedule_arr[schedule_lesson_day_arr[0].id] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].type === 'event_schedule' ?
+                                                                    <td className='border-0 px-0 py-1 align-middle' colSpan={5}>
+                                                                        <div className='h-100 px-2'>
+                                                                            <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#EBEFE2'}}>
+                                                                                <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem'}}>
+                                                                                    {schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].type === 'schedule' ? schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].subject.name : schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].name}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    :
+                                                                    <>
+                                                                        {
+                                                                            schedule_lesson_day_arr.map((data_day, index_day)=>(
+                                                                                <td className='border-0 px-0 py-1 align-middle' key={index_day}>
+                                                                                    {
+                                                                                        schedule_arr[data_day.id] != null && schedule_arr[data_day.id][data_time.name] != null && schedule_arr[data_day.id][data_time.name].start_time != null ?
+                                                                                        <div className='h-100 px-2'>
+                                                                                            <div className='p-2 d-flex align-items-center' style={{borderLeft : '.5rem solid #DE496E', backgroundColor : '#DE496E33', borderRadius : '.5rem'}}>
+                                                                                                    <div>
+                                                                                                        <p className='m-0 schedule_subject h-100' style={{color : '#6B7280', lineHeight : '1rem'}}>
+                                                                                                            {schedule_arr[data_day.id][data_time.name].subject.name}
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        :
+                                                                                        <></>
+                                                                                    }
+                                                                                </td>
+                                                                            ))
+                                                                        }
+                                                                    </>
+                                                                }
+                                                            </>
+                                                        }
+
+                                                    </tr>
+                                                ))
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div className='col-12 mt-3'>
+                                <button className='btn btn-primary shadow-sm rounded w-100' onClick={()=>showMoreSchedule()}><i className={(schedule_page === '1' ? 'bi bi-arrow-down-circle-fill' : 'bi bi-arrow-left-circle-fill') + " text-white mr-3"}></i>{schedule_page === '1' ? 'Next Schedule' : 'Back'}</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className='col-12 mt-5'>
                 <div className="card rounded shadow-sm">
                     <div className={"card-body p-0"}>
                         <div className={'row m-0'}>
@@ -190,7 +298,7 @@ export default function HomeIndex(){
                         
                     </div>
                 </div>
-            </div>
+            </div> */}
 
         </div>
     )
