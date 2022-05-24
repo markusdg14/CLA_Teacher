@@ -55,14 +55,14 @@ export default function HomeIndex(){
     async function get_schedule(){
         var counter_time = ''
         var limit_time = ''
-        if(schedule_page === '1'){
-            counter_time = base.moment('08:00', 'HH:mm')
-            limit_time = base.moment('10:45', 'HH:mm')
-        }
-        else if(schedule_page === '2'){
-            counter_time = base.moment('11:00', 'HH:mm')
-            limit_time = base.moment('13:45', 'HH:mm')
-        }
+        counter_time = base.moment('08:00', 'HH:mm')
+        // if(schedule_page === '1'){
+        //     limit_time = base.moment('10:30', 'HH:mm')
+        // }
+        // else if(schedule_page === '2'){
+        //     counter_time = base.moment('11:00', 'HH:mm')
+        // }
+        limit_time = base.moment('13:30', 'HH:mm')
         var arr_time = []
 
         while(counter_time.isSameOrBefore(limit_time)){
@@ -70,9 +70,11 @@ export default function HomeIndex(){
                 id: counter_time.format('HH:mm'),
                 name: counter_time.format('HH:mm'),
                 name_sm: counter_time.format('HH:mm'),
+                counter : counter_time.add(30, 'm').format('HH:mm')
             })
-            counter_time.add(15, 'm')
+            // counter_time.add(30, 'm')
         }
+
         set_schedule_lesson_time_arr(arr_time)
 
         var day_arr = []
@@ -85,25 +87,25 @@ export default function HomeIndex(){
 
         var arr_schedule = []
         var data = user_data.arr_schedule
-        for(let day of day_arr){
-            for(let time of arr_time){
-                var time_moment = base.moment(time.id, 'HH:mm')
-                if(arr_schedule[day.id] == null)
-                    arr_schedule[day.id] = []
+        // for(let day of day_arr){
+        //     for(let time of arr_time){
+        //         var time_moment = base.moment(time.id, 'HH:mm')
+        //         if(arr_schedule[day.id] == null)
+        //             arr_schedule[day.id] = []
                     
-                if(arr_schedule[day.id][time.name] == null)
-                    arr_schedule[day.id][time.name] = {}
+        //         if(arr_schedule[day.id][time.name] == null)
+        //             arr_schedule[day.id][time.name] = {}
                     
-                var start_time = base.moment(data.start_time_format, 'HH:mm')
-                var end_time = base.moment(data.end_time_format, 'HH:mm')
-                if(data.day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
-                    arr_schedule[day.id][time.name] = data
-                    break
-                }
-            }
-        }
-        console.log(arr_schedule)
-        set_schedule_arr(arr_schedule)
+        //         var start_time = base.moment(data.start_time_format, 'HH:mm')
+        //         var end_time = base.moment(data.end_time_format, 'HH:mm')
+        //         if(data.day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
+        //             arr_schedule[day.id][time.name] = data
+        //             break
+        //         }
+        //     }
+        // }
+
+        set_schedule_arr(data)
     }
 
     async function showMoreSchedule(){
@@ -152,11 +154,11 @@ export default function HomeIndex(){
                                                 schedule_lesson_time_arr.map((data_time, index_time)=>(
                                                     <tr key={index_time}>
                                                         <td className='border-0 px-0 py-1 mb-2 align-middle td-fit-content'>
-                                                            <p className='m-0 p-1 px-1 px-lg-3 schedule_time'>{data_time.name}</p>
+                                                            <p className='m-0 p-1 px-1 px-lg-3 schedule_time'>{data_time.name + ' - ' + data_time.counter}</p>
                                                         </td>
 
                                                         {
-                                                            schedule_arr.length > 0 &&
+                                                            schedule_arr != null &&
                                                             <>
                                                                 {
                                                                     schedule_arr[schedule_lesson_day_arr[0].id] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].type === 'event_schedule' ?
@@ -205,9 +207,9 @@ export default function HomeIndex(){
                                 </div>
                             </div>
 
-                            <div className='col-12 mt-3'>
+                            {/* <div className='col-12 mt-3'>
                                 <button className='btn btn-primary shadow-sm rounded w-100' onClick={()=>showMoreSchedule()}><i className={(schedule_page === '1' ? 'bi bi-arrow-down-circle-fill' : 'bi bi-arrow-left-circle-fill') + " text-white mr-3"}></i>{schedule_page === '1' ? 'Next Schedule' : 'Back'}</button>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>

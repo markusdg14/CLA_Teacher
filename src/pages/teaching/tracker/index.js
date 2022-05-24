@@ -273,7 +273,7 @@ export default function TrackerIndex(){
 															</div>
 															<div className='col-12 p-0 mt-3'>
 																<div className="table-responsive bg-white">
-																	<table class="table table-striped">
+																	<table class="table table-striped table-borderless m-0">
 																		<thead>
 																			<tr>
 																				<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
@@ -292,50 +292,65 @@ export default function TrackerIndex(){
 																			{
 																				subject_arr.map((data_subject, index_subject)=>(
 																					<tr key={index_subject}>
-																						<td className='p-2 align-middle td-fit-content'>
+																						<td className='p-2 px-4 align-middle td-fit-content'>
 																							<p className='m-0'>{data_subject.name}</p>
 																						</td>
 
 																						{
 																							lesson_arr.map((data_lesson, index_lesson)=>(
-																								<td className='m-0'>
-																									<div className='row'>
+																								<td className={'m-0 p-0' + (activity_agreement[data_lesson.lesson_id] != null ? (activity_agreement[data_lesson.lesson_id][data_subject.id].length == 0 ? ' bg-danger align-middle' : '') : '')}>
+																									<div className='row m-0'>
 																										{
 																											activity_agreement[data_lesson.lesson_id] != null &&
 																											<>
 																												{
-																													activity_agreement[data_lesson.lesson_id][data_subject.id].map((data_activity, index_activity)=>(
-																														<>
-																															<div className='col-12' key={index_activity}>
-																																{
-																																	activity_submitted[data_student.class_student_id] != null &&
-																																	<>
-																																		{
-																																			activity_submitted[data_student.class_student_id][data_subject.id] != null &&
-																																			<>
+																													activity_agreement[data_lesson.lesson_id][data_subject.id].length > 0 ?
+																													<>
+																														{
+																															activity_agreement[data_lesson.lesson_id][data_subject.id].map((data_activity, index_activity)=>(
+																																<>
+																																	{
+																																		activity_submitted[data_student.class_student_id] != null &&
+																																		<>
 																																			{
 																																				activity_submitted[data_student.class_student_id][data_subject.id] != null &&
 																																				<>
+																																				<div className='col-12' key={index_activity} style={{backgroundColor : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].status_color : '')}}>
 																																				{
 																																					activity_submitted[data_student.class_student_id][data_subject.id] != null &&
 																																					<>
 																																					{
-																																						activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id] != null &&
+																																						activity_submitted[data_student.class_student_id][data_subject.id] != null &&
 																																						<>
-																																						<p>123</p>
+																																						{
+																																							activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id] != null &&
+																																							<>
+																																							<p className='m-0' style={{color : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].text_color : '')}}>
+																																								{
+																																									data_activity.type === 'assignment' ? data_activity.name : data_activity.title
+																																								}
+																																							</p>
+																																							</>
+																																						}
 																																						</>
 																																					}
-																																					</>
+																																				</>
 																																				}
+																																				</div>
 																																			</>
 																																			}
 																																		</>
-																																		}
-																																	</>
-																																}
-																															</div>
-																														</>
-																													))
+																																	}
+																																</>
+																															))
+																														}
+																													</>
+																													:
+																													<>
+																													<div className='col-12 bg-danger text-center'>
+																														<h5 className='m-0'><i className="fas fa-lock text-white"></i></h5>
+																													</div>
+																													</>
 																												}
 																											</>
 																										}
