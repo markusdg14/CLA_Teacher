@@ -62,7 +62,7 @@ export default function HomeIndex(){
         // else if(schedule_page === '2'){
         //     counter_time = base.moment('11:00', 'HH:mm')
         // }
-        limit_time = base.moment('13:30', 'HH:mm')
+        limit_time = base.moment('13:45', 'HH:mm')
         var arr_time = []
 
         while(counter_time.isSameOrBefore(limit_time)){
@@ -70,7 +70,7 @@ export default function HomeIndex(){
                 id: counter_time.format('HH:mm'),
                 name: counter_time.format('HH:mm'),
                 name_sm: counter_time.format('HH:mm'),
-                counter : counter_time.add(30, 'm').format('HH:mm')
+                counter : counter_time.add(15, 'm').format('HH:mm')
             })
             // counter_time.add(30, 'm')
         }
@@ -161,7 +161,7 @@ export default function HomeIndex(){
                                                             schedule_arr != null &&
                                                             <>
                                                                 {
-                                                                    schedule_arr[schedule_lesson_day_arr[0].id] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].type === 'event_schedule' ?
+                                                                    schedule_arr[schedule_lesson_day_arr[0].id] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].type === 'event' ?
                                                                     <td className='border-0 px-0 py-1 align-middle' colSpan={5}>
                                                                         <div className='h-100 px-2'>
                                                                             <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#EBEFE2'}}>
@@ -182,7 +182,7 @@ export default function HomeIndex(){
                                                                                             <div className='p-2 d-flex align-items-center' style={{borderLeft : '.5rem solid #DE496E', backgroundColor : '#DE496E33', borderRadius : '.5rem'}}>
                                                                                                     <div>
                                                                                                         <p className='m-0 schedule_subject h-100' style={{color : '#6B7280', lineHeight : '1rem'}}>
-                                                                                                            {schedule_arr[data_day.id][data_time.name].subject.name}
+                                                                                                            {schedule_arr[data_day.id][data_time.name].type === 'schedule' ? schedule_arr[data_day.id][data_time.name].subject.name : schedule_arr[data_day.id][data_time.name].name}
                                                                                                         </p>
                                                                                                     </div>
                                                                                             </div>

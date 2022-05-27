@@ -131,8 +131,8 @@ export default class Base extends Component{
 				}
 			}
 			else{
-				localStorage.clear()
-				window.location.href = '/auth/login'
+				// localStorage.clear()
+				// window.location.href = '/auth/login'
 			}
 		}
 	}
