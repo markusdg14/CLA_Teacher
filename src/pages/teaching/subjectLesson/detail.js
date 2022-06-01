@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from '
 import ModalConfirm from './components/confirmModal';
 import LessonList from './components/lessonList';
 import EditAssignment from './components/editAssignment';
+import SelectOption from '../../../components/selectOption';
+import SubmitAssignment from './components/submitAssignment';
 
 export default function SubjectLessonDetail(){
     var base = new Base()
@@ -27,6 +29,9 @@ export default function SubjectLessonDetail(){
     const [academic_year_selected, set_academic_year_selected] = useState('')
 
     const [subject_arr, set_subject_arr] = useState([])
+    const [subject_selected, set_subject_selected] = useState('')
+    const [assignment_type_selected, set_assignment_type_selected] = useState('')
+
     const [header, set_header] = useState('')
 
     const [selected_lesson_index, set_selected_lesson_index] = useState('')
@@ -36,12 +41,16 @@ export default function SubjectLessonDetail(){
     const [selected_lesson, set_selected_lesson] = useState({})
     const [img_data_base, set_img_data_base] = useState('')
 
+    const [offline_student_arr, set_offline_student_arr] = useState([])
+
     const [assignment_image_data, set_assignment_image_data] = useState({
         image_display : base.img_no_image,
         image : '',
         original_rotation : 0,
         type : ''
     })
+
+    const [student_search_value, set_student_search_value] = useState('')
 
     const [is_disable_btn_modal, set_is_disable_btn_modal] = useState(false)
 
@@ -53,8 +62,50 @@ export default function SubjectLessonDetail(){
     useEffect(async ()=>{
         if(user_data.id !== ''){
             get_data()
+            get_filter_data_arr('grade')
         }
     }, [user_data])
+
+    useEffect(async ()=>{
+        if(grade_selected != ''){
+            get_filter_data_arr('subject', grade_selected)
+        }
+    }, [grade_selected])
+
+    useEffect(async()=>{
+        if(viewType === 'submit_assignment'){
+            if(selected_assignment.id != null){
+                set_offline_student_arr([])
+                get_class_student()
+            }
+        }
+    }, [student_search_value, selected_assignment])
+
+    async function get_filter_data_arr(type, id=''){
+        var url = ''
+        if(type === 'grade'){
+            url = '/class/homeroom?type=current_academic_year'
+        }
+        else{
+            url = '/subject?class_id=' + id
+        }
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                if(type === 'grade'){
+                    var data1 = data.data
+                    for(var x in data1){
+                        data1[x].name = data1[x].grade_name
+                    }
+                    set_grade_arr(data1)
+                }
+                else if(type === 'subject'){
+                    set_subject_arr(data.data)
+                }
+            }
+        }
+    }
 
 
     async function get_data(){
@@ -100,8 +151,12 @@ export default function SubjectLessonDetail(){
     }
 
     function changeFilter(val, type){
-        var filter = JSON.parse(val)
-        set_grade_selected(filter)
+        if(type === 'grade'){
+            set_grade_selected(val)
+        }
+        else if(type === 'subject'){
+            set_subject_selected(val)
+        }
     }
 
     function applyFilter(){
@@ -133,26 +188,47 @@ export default function SubjectLessonDetail(){
 
     function changeView(type, index=0, index_assignment=0){
         set_viewType(type)
-        if(type === 'edit_assignment'){
-            data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.img_no_image
-            if(data_arr[index].arr_assignment_agreement[index_assignment].file_name != null){
-                data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.url_photo('assignment', data_arr[index].arr_assignment_agreement[index_assignment].file_name)
-            }
-
-            if(data_arr[index].arr_assignment_agreement[index_assignment].type === 'task'){
-                data_arr[index].arr_assignment_agreement[index_assignment].name = data_arr[index].arr_assignment_agreement[index_assignment].title
-                data_arr[index].arr_assignment_agreement[index_assignment].deadline_date = data_arr[index].arr_assignment_agreement[index_assignment].meeting_at
-                data_arr[index].arr_assignment_agreement[index_assignment].assessment_rule = data_arr[index].arr_assignment_agreement[index_assignment].project_agreement.assessment_rule
-            }
-
-
-            set_selected_lesson(data_arr[index])
-            set_selected_assignment(data_arr[index].arr_assignment_agreement[index_assignment])
-
-            base.update_object(assignment_image_data, set_assignment_image_data, data_arr[index].arr_assignment_agreement[index_assignment].image_display, 'image_display')
-
+        data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.img_no_image
+        if(data_arr[index].arr_assignment_agreement[index_assignment].file_name != null){
+            data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.url_photo('assignment', data_arr[index].arr_assignment_agreement[index_assignment].file_name)
         }
+
+        if(data_arr[index].arr_assignment_agreement[index_assignment].type === 'task'){
+            data_arr[index].arr_assignment_agreement[index_assignment].name = data_arr[index].arr_assignment_agreement[index_assignment].title
+            data_arr[index].arr_assignment_agreement[index_assignment].deadline_date = data_arr[index].arr_assignment_agreement[index_assignment].meeting_at
+            data_arr[index].arr_assignment_agreement[index_assignment].assessment_rule = data_arr[index].arr_assignment_agreement[index_assignment].project_agreement.assessment_rule
+
+            set_assignment_type_selected('discussion')
+        }
+        else{
+            set_assignment_type_selected(data_arr[index].arr_assignment_agreement[index_assignment].assignment_type.data)
+        }
+
+        console.log(data_arr[index].arr_assignment_agreement[index_assignment])
+        set_selected_lesson(data_arr[index])
+        set_selected_assignment(data_arr[index].arr_assignment_agreement[index_assignment])
+
+        base.update_object(assignment_image_data, set_assignment_image_data, data_arr[index].arr_assignment_agreement[index_assignment].image_display, 'image_display')
         window.scrollTo(0,0)
+    }
+
+    async function get_class_student(){
+        var url = '/class/student?grade_id=' + query.get('grade_id') + '&assignment_agreement_id=' + selected_assignment.id + '&is_online=0' + '&search=' + student_search_value
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+
+                for(var x in data){
+                    data[x].user.image_display = base.img_no_profile
+                    if(data[x].user.file_name != null){
+                        data[x].user.image_display = base.url_photo('user', data[x].user.file_name)
+                    }
+                }
+
+                set_offline_student_arr(data)                
+            }
+        }
     }
 
     function getImgBase(file, callback){
@@ -213,6 +289,10 @@ export default function SubjectLessonDetail(){
         }
     }
 
+    async function searchStudent(val){
+        set_student_search_value(val)
+    }
+
     return(
         <div className='row'>
 
@@ -241,7 +321,7 @@ export default function SubjectLessonDetail(){
             {
                 viewType === 'lesson_list' &&
                 <>
-                    {/* <div className='col-12 mt-5'>
+                    <div className='col-12 mt-5'>
                         <div className="card rounded shadow-sm">
                             <div className={"card-body p-0"}>
                                 <div className={'row m-0'}>
@@ -249,28 +329,11 @@ export default function SubjectLessonDetail(){
                                         <div className='row m-0'>
                                             <div className='col'>
                                                 <label>Grade</label>
-                                                <Select
-                                                    name='grade_selected'
-                                                    value={1}
-                                                    options={grade_arr}
-                                                    onChange={(val)=>changeFilter(JSON.stringify(val), 'grade')}
-                                                />
-                                            </div>
-                                            <div className='col'>
-                                                <label>Academic Year</label>
-                                                <Select
-                                                    name='academic_year_selected'
-                                                    value={academic_year_selected}
-                                                    options={academic_year_arr}
-                                                />
+                                                <SelectOption data_arr={grade_arr} selected={grade_selected} title={'Grade'} changeInput={(value)=>changeFilter(value, 'grade')} />
                                             </div>
                                             <div className='col'>
                                                 <label>Subject</label>
-                                                <Select
-                                                    name='subject_selected'
-                                                    value={subject_selected}
-                                                    options={subject_arr}
-                                                />
+                                                <SelectOption data_arr={subject_arr} selected={subject_selected} title={'Subject'} changeInput={(value)=>changeFilter(value, 'subject')} />
                                             </div>
                                             <div className='col d-flex align-items-end'>
                                                 <button className='btn btn-primary rounded w-100' onClick={()=>applyFilter()}>Filter</button>
@@ -281,7 +344,7 @@ export default function SubjectLessonDetail(){
                                 
                             </div>
                         </div>
-                    </div> */}
+                    </div>
 
                     <div className='col-12 mt-4 text-right'>
                         <button className='btn btn-outline-primary rounded px-5'>Student View</button>
@@ -292,9 +355,14 @@ export default function SubjectLessonDetail(){
             <div className='col-12 mt-5'>
             {
                 viewType === 'lesson_list' ?
-                <LessonList data_arr={data_arr} confirmLesson={(index)=>confirmLesson('view', index)} changeView={(index, index_assignment)=>changeView('edit_assignment', index, index_assignment)} />
+                <LessonList data_arr={data_arr} confirmLesson={(index)=>confirmLesson('view', index)} changeView={(type, index, index_assignment)=>changeView(type, index, index_assignment)} />
                 :
+                viewType === 'edit_assignment' ?
                 <EditAssignment selected_lesson={selected_lesson} selected_assignment={selected_assignment} changeInput={(value, type)=>changeInput(value, type)} assignment_image_data={assignment_image_data} saveAssignment={()=>saveAssignment()} />
+                :
+                viewType === 'submit_assignment' ?
+                <SubmitAssignment selected_lesson={selected_lesson} selected_assignment={selected_assignment} changeInput={(value, type)=>changeInput(value, type)} assignment_image_data={assignment_image_data} saveAssignment={()=>saveAssignment()} offline_student_arr={offline_student_arr} searchStudent={(val)=>searchStudent(val)} student_search_value={student_search_value} assignment_type_selected={assignment_type_selected} subject_id={query.get('subject_id')} />
+                : <></>
             }
             </div>
 

@@ -62,7 +62,7 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 												assignment_status_data === 'done' ?
 												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Grade Skill</h5>
 												:
-												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>{assignment_type === 'quiz' ? 'Grading Assignment' : assignment_type === 'discussion' ? 'Input Grade Skill' : assignment_type === 'upload' ? 'Grading Task' : ''}</h5>
+												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>{assignment_type === 'quiz' ? 'Grading Assignment' : assignment_type === 'discussion' ? 'Input Grade Skill' : assignment_type === 'upload' ? 'Grading Task' : assignment_type === 'ungraded' ? 'Confirming Student Submission' : ''}</h5>
 											}
 										</div>
 
@@ -221,21 +221,47 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 												</div>
 											</>
 											:
-											<></>
+											assignment_type === 'ungraded' ?
+											<>
+												<div className='col-12 mt-3'>
+													<div className='row m-0'>
+														<div className='col-auto d-flex align-items-center'>
+															<img src={base.img_modal_ungraded} style={{height : '7.5rem'}} />
+														</div>
+														<div className='col d-flex align-items-center'>
+															<p className='m-0' style={{color : 'black'}}>Are you sure you would like to proceed to Confirm Student Activity Submission ?</p>
+														</div>
+													</div>
+												</div>
+												<div className='col-12 mt-4'>
+													<div className='row'>
+														<div className='col'>
+															<button type='button' className='btn btn-outline-primary rounded shadow-sm w-100' data-dismiss="modal">No</button>
+														</div>
+														<div className='col'>
+															<button type='button' className='btn btn-primary rounded shadow-sm w-100' onClick={submitGrading} disabled={is_modal_btn_disable}>Yes</button>
+														</div>
+													</div>
+												</div>
+											</>
+											: <></>
 										}
 
-										<div className='col-12 mt-4'>
-											<div className='row m-0'>
-												<div className='col'>
-													{
-														assignment_status_data !== 'done' ?
-														<button className='btn btn-primary rounded px-5' onClick={submitGrading} disabled={is_modal_btn_disable}>Submit</button>
-														:
-														<button className='btn btn-outline-primary rounded px-5' data-dismiss="modal">Close</button>
-													}
+										{
+											assignment_type !== 'ungraded' &&
+											<div className='col-12 mt-4'>
+												<div className='row m-0'>
+													<div className='col'>
+														{
+															assignment_status_data !== 'done' ?
+															<button className='btn btn-primary rounded px-5' onClick={submitGrading} disabled={is_modal_btn_disable}>Submit</button>
+															:
+															<button className='btn btn-outline-primary rounded px-5' data-dismiss="modal">Close</button>
+														}
+													</div>
 												</div>
 											</div>
-										</div>
+										}
 
 									</div>
 								</div>

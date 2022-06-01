@@ -48,8 +48,8 @@ export default function CheckAssignmentDetail(){
     const [baseFile, set_baseFile] = useState('')
     
     const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
-
     const [grade_skill_arr, set_grade_skill_arr] = useState([])
+
     const [assignment_agreement_id, set_assignment_agreement_id] = useState('')
     const [subject_id, set_subject_id] = useState('')
     const [class_student_id, set_class_student_id] = useState('')
@@ -121,20 +121,6 @@ export default function CheckAssignmentDetail(){
                 set_assignment_status(data.assessment_status.name)
                 set_assignment_status_data(data.assessment_status.data)
 
-                if(data.assessment_status.data === 'done'){
-                    var skill_category = data.arr_skill_category
-                    var notes = ''
-                    for(var x in skill_category){
-                        var skill = skill_category[x].arr_skill
-                        for(var y in skill){
-                            skill[y].score = skill[y].grade_skill.score
-                        }
-                    }
-                    notes = skill_category[0].arr_skill[0].grade_skill.comment
-                    set_grade_skill_arr(skill_category)
-                    set_teacher_notes(notes)
-                }
-
                 data.assignment_score = '-'
                 
                 if(data.type === 'assignment'){
@@ -148,6 +134,19 @@ export default function CheckAssignmentDetail(){
 
                     if(data.assignment_agreement.assignment_type.data === 'discussion'){
                         data.assignment_score = 'Graded'
+                        if(data.assessment_status.data === 'done'){
+                            var skill_category = data.arr_skill_category
+                            var notes = ''
+                            for(var x in skill_category){
+                                var skill = skill_category[x].arr_skill
+                                for(var y in skill){
+                                    skill[y].score = skill[y].grade_skill.score
+                                }
+                            }
+                            notes = skill_category[0].arr_skill[0].grade_skill.comment
+                            set_grade_skill_arr(skill_category)
+                            set_teacher_notes(notes)
+                        }
                     }
                     else{
                         if(data.assessment_rule_detail != null)
@@ -179,6 +178,19 @@ export default function CheckAssignmentDetail(){
 
                     if(data.task_agreement.type === 'presentation'){
                         set_assignment_type('discussion')
+                        if(data.assessment_status.data === 'done'){
+                            var skill_category = data.arr_skill_category
+                            var notes = ''
+                            for(var x in skill_category){
+                                var skill = skill_category[x].arr_skill
+                                for(var y in skill){
+                                    skill[y].score = skill[y].grade_skill.score
+                                }
+                            }
+                            notes = skill_category[0].arr_skill[0].grade_skill.comment
+                            set_grade_skill_arr(skill_category)
+                            set_teacher_notes(notes)
+                        }
                     }
                     else {
                         set_assignment_type('upload')
@@ -571,63 +583,68 @@ export default function CheckAssignmentDetail(){
                         </div>
                     </div>
                 </div>
-            </div>                
+            </div>
 
             {
-                assignment_type === 'undgraded' ?
-                <div className='col-12 mt-5 text-center'>
-                    <div className="card rounded shadow-sm">
-                        <div className={"card-body p-5"}>
-                            <div className='row'>
-                                <div className='col-12'>
-                                    <img src={base.img_study_2} style={{height : '20rem'}} />
-                                </div>
-                                <div className='col-12 pb-2'>
-                                    <button className='btn btn-primary rounded px-5 py-2 shadow-sm' onClick={()=>submitGrading()}>Confirm Submission</button>
+                assignment_type === 'ungraded' ?
+                <>
+                    <div className='col-12 mt-5 text-center'>
+                        <div className="card rounded shadow-sm">
+                            <div className={"card-body p-5"}>
+                                <div className='row'>
+                                    <div className='col-12'>
+                                        <img src={base.img_study_2} style={{height : '20rem'}} />
+                                    </div>
+                                    {
+                                        assignment_status_data !== 'done' &&
+                                        <div className='col-12 pb-2'>
+                                            <button className='btn btn-primary rounded px-5 py-2 shadow-sm' onClick={()=>modalSubmit()}>Confirm Submission</button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </>
                 :
                 <>
                     <div className={'col-12 mt-5 ' + (total_file > 0 ? 'd-block' : 'd-none')}>
                         <div className='weviewer' style={{height : '100vh'}} ref={viewerDiv}></div>
                     </div>
-                </>
-            }
-
-            {
-                student_submission !== '' &&
-                <>
-                    <div className='col-12 mt-5'>
-                        <div className="card rounded shadow-sm">
-                            <div className={"card-body p-3 pt-4"}>
-                                <div className='row m-0'>
-                                    <div className='col-12 pb-3'>
-                                        <p className='m-0' style={{fontFamily : 'InterBold', fontSize : '1.25rem'}}>Student Submission</p>
-                                        <div className='p-2 p-lg-3 border rounded mt-3'>
-                                            <p className='m-0'>{student_submission != null ? student_submission : '-'}</p>
+                    {
+                        student_submission !== '' &&
+                        <>
+                            <div className='col-12 mt-5'>
+                                <div className="card rounded shadow-sm">
+                                    <div className={"card-body p-3 pt-4"}>
+                                        <div className='row m-0'>
+                                            <div className='col-12 pb-3'>
+                                                <p className='m-0' style={{fontFamily : 'InterBold', fontSize : '1.25rem'}}>Student Submission</p>
+                                                <div className='p-2 p-lg-3 border rounded mt-3'>
+                                                    <p className='m-0'>{student_submission != null ? student_submission : '-'}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </>
+                    }
+                    {
+                        assignment_status_data !== 'done' &&
+                        <div className='col-12 mt-3 text-right'>
+                            {/* {
+                                total_file > 0 ?
+                                <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>get_basePdf()}>Grade</button>
+                                :
+                            } */}
+                                <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
                         </div>
-                    </div>
+                    }
                 </>
             }
 
-            {
-                assignment_status_data !== 'done' &&
-                <div className='col-12 mt-3 text-right'>
-                    {/* {
-                        total_file > 0 ?
-                        <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>get_basePdf()}>Grade</button>
-                        :
-                    } */}
-                        <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
-                </div>
-            }
+
 
             <div className='col-12 mt-5'>
                 <div className="card rounded shadow-sm">

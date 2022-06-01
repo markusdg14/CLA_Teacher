@@ -53,8 +53,11 @@ export default function LessonList({data_arr, confirmLesson, changeView}){
                                                         <p className='m-0' style={{fontFamily : 'InterBold', color : 'black', fontSize : '.75rem'}}>Terkumpul {assignment.total_submitted}/{assignment.total_student} Student</p>
                                                         <p className='m-0' style={{color : 'black', fontSize : '.75rem'}}>DUE : {assignment.deadline_date != null ? base.moment(assignment.deadline_date).format('DD/MM/YY HH:mm') : '-'}</p>
                                                     </div>
-                                                    <div className='col col-lg-auto text-right mt-2 mt-lg-0 d-flex align-items-center justify-content-end'>
-                                                        <h4 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-pencil-square" style={{color : '#0085FF'}} onClick={()=>changeView(index, index_assignment)}></i></h4>
+                                                    <div className='col col-lg-auto text-right mt-2 mt-lg-0 pr-2 d-flex align-items-center justify-content-end'>
+                                                        <h4 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-pencil-square" style={{color : '#0085FF'}} onClick={()=>changeView('edit_assignment', index, index_assignment)}></i></h4>
+                                                    </div>
+                                                    <div className='col col-lg-auto text-right mt-2 mt-lg-0 pl-2 d-flex align-items-center justify-content-end'>
+                                                        <h4 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-folder-fill" style={{color : '#0085FF'}} onClick={()=>changeView('submit_assignment', index, index_assignment)}></i></h4>
                                                     </div>
                                                 </div>
                                             </div>

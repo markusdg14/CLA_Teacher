@@ -81,6 +81,8 @@ export default class Base extends Component{
 	img_leaves = require('../assets/img/leaves.png')
 	img_img_1 = require('../assets/img/img_1.png')
 
+	img_modal_ungraded = require('../assets/img/image_modal_ungraded.png')
+
 	async update_array(arr, set_state, data = {}, index = 0){
 		var temp = [...arr]
 		temp[index] = data

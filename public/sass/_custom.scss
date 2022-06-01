@@ -29,6 +29,12 @@ $font_path : '../fonts/';
 }
 
 @font-face {
+    src: url("#{$font_path}/PoetsenOne-Regular.ttf") format("truetype");
+
+    font-family: "PoetsenOne";
+}
+
+@font-face {
     src: url("../vendor/font-awesome/webfonts/fa-solid-900.ttf") format("truetype");
 
     font-family: "FASolid";
@@ -574,5 +580,32 @@ a{
 		color: #2F2F2F;
 		background-clip: padding-box;
 		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	}
+}
+
+.headerProfileImg{
+	@include media-breakpoint-down(md){
+		height : 4.75rem;
+		width : 4.75rem;
+		border-radius : 4.75rem;
+		aspect-ratio: 1;
+	}
+	@include media-breakpoint-up(lg){
+		height : 5rem;
+		width : 5rem;
+		border-radius : 5rem;
+		aspect-ratio: 1;
+	}
+}
+
+.headerSection{
+	>h5{
+		font-size: 1rem;
+	}
+	>h2{
+		font-size: 1.25rem;
+	}
+	>p{
+		font-size: .75rem;
 	}
 }

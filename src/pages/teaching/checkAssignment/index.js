@@ -48,14 +48,14 @@ export default function CheckAssignment(){
 					}
 
 					data[x].grade = data[x].class_student.class_model.grade.name + data[x].class_student.class_model.name
-					// if(data[x].assignment_agreement != null){
-					// 	data[x].subject_lesson = data[x].assignment_agreement.assignment_group.subject.name + ' ' + data[x].assignment_agreement.assignment_group.lesson.name
-					// 	data[x].grade = data[x].assignment_agreement.assignment_group.grade.name
-					// }
-					// else {
-					// 	data[x].subject_lesson = data[x].task.project.subject.name
-					// 	data[x].grade = data[x].task.project.grade.name
-					// }
+					if(data[x].assignment_agreement != null){
+						data[x].subject_lesson = data[x].assignment_agreement.assignment_group.subject.name + ' ' + data[x].assignment_agreement.assignment_group.lesson.name
+						data[x].grade = data[x].assignment_agreement.assignment_group.grade.name
+					}
+					else {
+						data[x].subject_lesson = data[x].task.project.subject.name
+						data[x].grade = data[x].task.project.grade.name
+					}
 					data[x].submitted_date_format = base.moment(data[x].created_at).format('DD/MM HH:mm')
 
 					data[x].checked_date_format = '-'

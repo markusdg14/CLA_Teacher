@@ -9721,6 +9721,10 @@ h3 {
   font-family: "PlayfairDisplayBold";
 }
 @font-face {
+  src: url("../fonts//PoetsenOne-Regular.ttf") format("truetype");
+  font-family: "PoetsenOne";
+}
+@font-face {
   src: url("../vendor/font-awesome/webfonts/fa-solid-900.ttf") format("truetype");
   font-family: "FASolid";
 }
@@ -10240,6 +10244,33 @@ a.fc-event {
   color: #2F2F2F;
   background-clip: padding-box;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+@media (max-width: 991.98px) {
+  .headerProfileImg {
+    height: 4.75rem;
+    width: 4.75rem;
+    border-radius: 4.75rem;
+    aspect-ratio: 1;
+  }
+}
+@media (min-width: 992px) {
+  .headerProfileImg {
+    height: 5rem;
+    width: 5rem;
+    border-radius: 5rem;
+    aspect-ratio: 1;
+  }
+}
+
+.headerSection > h5 {
+  font-size: 1rem;
+}
+.headerSection > h2 {
+  font-size: 1.25rem;
+}
+.headerSection > p {
+  font-size: 0.75rem;
 }
 
 /*# sourceMappingURL=App.css.map */
