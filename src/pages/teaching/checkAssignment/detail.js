@@ -22,6 +22,8 @@ export default function CheckAssignmentDetail(){
     const [assignment_submitted_id, set_assignment_submitted_id] = useState('')
     const [assignment_type, set_assignment_type] = useState('')
 
+    const [activity_type, set_activity_type] = useState('')
+
     const [assignment_info_arr, set_assignment_info_arr] = useState([])
     const [student_data, set_student_data] = useState({id : '', name : '', image_display : base.img_no_profile})
     const [assignment_status, set_assignment_status] = useState('')
@@ -122,8 +124,10 @@ export default function CheckAssignmentDetail(){
                 set_assignment_status_data(data.assessment_status.data)
 
                 data.assignment_score = '-'
+
+                var activity_type1 = 'assignment'
                 
-                if(data.type === 'assignment'){
+                if(data.assignment_agreement != null){
                     set_grade(data.assignment_agreement.assignment_group.grade.name)
                     set_subject_id(data.assignment_agreement.assignment_group.subject.id)
                     set_subject_selected(data.assignment_agreement.assignment_group.subject.id)
@@ -165,7 +169,8 @@ export default function CheckAssignmentDetail(){
     
                     set_rule_id(data.assignment_agreement.assessment_rule_id)
                 }
-                else {
+                else if(data.task_agreement != null){
+                    activity_type1 = 'task'
                     set_assignment_info_arr([
                         {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.task_agreement.project_agreement.grade.name},
                         {title : 'Subject', value : data.task_agreement.project_agreement.subject.name},
@@ -202,6 +207,8 @@ export default function CheckAssignmentDetail(){
                 }
 
                 get_list()
+
+                set_activity_type(activity_type1)
 
                 set_assignment_grade(data.assignment_score)
 
@@ -710,7 +717,14 @@ export default function CheckAssignmentDetail(){
                                                                                     <div className='col-auto d-flex align-items-center'>
                                                                                         <div>
                                                                                             <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.user.name}</p>
-                                                                                            <p className='m-0'>{data.assignment_agreement.name} | {data.assignment_agreement.assignment_group.subject.name} | {data.assignment_agreement.assignment_group.lesson.name}</p>
+                                                                                            {
+                                                                                                data.assignment_agreement != null ?
+                                                                                                <p className='m-0'>{data.assignment_agreement.name} | {data.assignment_agreement.assignment_group.subject.name} | {data.assignment_agreement.assignment_group.lesson.name}</p>
+                                                                                                :
+                                                                                                data.task_agreement != null ?
+                                                                                                <p className='m-0'>{data.task_agreement.title} | {data.task_agreement.project_agreement.subject.name}</p>
+                                                                                                : <></>
+                                                                                            }
                                                                                         </div>
                                                                                     </div>
 

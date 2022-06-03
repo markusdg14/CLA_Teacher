@@ -10273,4 +10273,15 @@ a.fc-event {
   font-size: 0.75rem;
 }
 
+.subject_lesson_list.title {
+  background-color: #EAEAEA;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.subject_lesson_list.detail {
+  background-color: white;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
 /*# sourceMappingURL=App.css.map */

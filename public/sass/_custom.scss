@@ -609,3 +609,16 @@ a{
 		font-size: .75rem;
 	}
 }
+
+.subject_lesson_list{
+	&.title{
+		background-color: #EAEAEA;
+		border-bottom-left-radius: 0 !important;
+		border-bottom-right-radius: 0 !important;
+	}
+	&.detail{
+		background-color: white;
+		border-top-left-radius: 0 !important;
+		border-top-right-radius: 0 !important;
+	}
+}
