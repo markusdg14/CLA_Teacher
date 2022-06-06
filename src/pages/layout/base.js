@@ -58,7 +58,7 @@ export default class BaseLayout extends Base{
                 <Navbar />
               }
 
-              <div className='container pb-5 mb-5 mt-4'>
+              <div className='container pb-5 mb-5 mt-4 px-0'>
                 <Routes>
                     <Route exact path={"/"} element={<HomeIndex />}></Route>
 
