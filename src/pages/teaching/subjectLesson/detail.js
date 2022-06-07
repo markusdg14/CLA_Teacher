@@ -175,14 +175,16 @@ export default function SubjectLessonDetail(){
                 id : data_arr[selected_lesson_index].id,
             }
 
-            set_is_disable_btn_modal(true)
+            console.log(data_post)
 
-            var response = await base.request(url, 'put', data_post)
-            if(response != null){
-                if(response.status == 'success'){
-                    window.location.reload()
-                }
-            }
+            // set_is_disable_btn_modal(true)
+
+            // var response = await base.request(url, 'put', data_post)
+            // if(response != null){
+            //     if(response.status == 'success'){
+            //         window.location.reload()
+            //     }
+            // }
         }
     }
 

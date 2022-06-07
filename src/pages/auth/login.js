@@ -5,6 +5,8 @@ import { getToken } from '../../firebaseInit.js';
 import firebase from 'firebase/app';
 import 'firebase/messaging';
 
+import {isSafari, isMobileSafari} from 'react-device-detect'
+
 export default function AuthLogin(){
     var base = new Base()
 
@@ -22,12 +24,15 @@ export default function AuthLogin(){
     useEffect(async ()=>{
         await localStorage.clear()
 
-        if(firebase.messaging.isSupported()){
-            await getToken(token=>{
-                console.log(token)
-                set_firebaseToken(token)
-            })
+        if(!isMobileSafari || !isSafari){
+            if(firebase.messaging.isSupported()){
+                await getToken(token=>{
+                    console.log(token)
+                    set_firebaseToken(token)
+                })
+            }
         }
+
     }, [])
 
     function changeInput(value, index){

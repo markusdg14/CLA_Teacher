@@ -599,15 +599,15 @@ a{
 }
 
 .headerSection{
-	>h5{
+	>div>h5{
 		font-size: 1rem;
 	}
-	>h2{
+	>div>h2{
 		font-size: 1.25rem;
 	}
-	>p{
-		font-size: .75rem;
-	}
+}
+.headerDateTime{
+	font-size: .75rem;
 }
 
 .subject_lesson_list{

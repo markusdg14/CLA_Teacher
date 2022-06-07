@@ -10263,13 +10263,14 @@ a.fc-event {
   }
 }
 
-.headerSection > h5 {
+.headerSection > div > h5 {
   font-size: 1rem;
 }
-.headerSection > h2 {
+.headerSection > div > h2 {
   font-size: 1.25rem;
 }
-.headerSection > p {
+
+.headerDateTime {
   font-size: 0.75rem;
 }
 

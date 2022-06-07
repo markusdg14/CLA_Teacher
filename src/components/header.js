@@ -30,10 +30,22 @@ export default function Header({title, user_data}){
 						<img className='headerProfileImg' src={user_data.image.image_display} />
 				</div>
                 <div className='col d-flex align-items-center p-0 p-lg-2'>
-					<div className='headerSection'>
-						<h6 className='m-0 text-primary text-uppercase' style={{fontFamily : 'InterBold'}}>{greeting},</h6>
-						<h2 className='m-0 mt-1 text-capitalize headerName' style={{fontFamily : 'PlayfairDisplayBold'}}>{user_data.name}</h2>
-						<p className='m-0 mt-1 text-uppercase bg-secondary text-white px-3 py-1' style={{borderRadius : '5rem', fontFamily : 'PoetsenOne'}}>{base.moment().format('dddd, DD MMMM YYYY')}</p>
+					<div className='row headerSection'>
+                        <div className='col-12'>
+					        <h6 className='m-0 text-primary text-uppercase' style={{fontFamily : 'InterBold'}}>{greeting},</h6>
+                        </div>
+                        <div className='col-12'>
+						    <h2 className='m-0 mt-1 text-capitalize headerName' style={{fontFamily : 'PlayfairDisplayBold'}}>{user_data.name}</h2>
+                        </div>
+                        <div className='col-12 mt-1'>
+                            <div className='row m-0'>
+                                <div className='col-auto bg-secondary' style={{borderRadius : '5rem'}}>
+						            <p className='m-0 text-uppercase text-white headerDateTime' style={{fontFamily : 'PoetsenOne'}}>{base.moment().format('dddd, DD MMMM YYYY')}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* <div className='bg-secondary px-3 py-1 rounded'>
+                        </div> */}
 					</div>
 				</div>
                 {/* <div className='col d-flex align-items-center'>

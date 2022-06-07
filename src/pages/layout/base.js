@@ -20,6 +20,7 @@ import TrackerIndex from '../teaching/tracker';
 import HomeIndex from '../home';
 import ForgetPassword from '../auth/forgetPass';
 import EditProfile from '../profile/edit';
+import SubjectLessonEdit from '../teaching/subjectLesson/editActivity';
 
 
 // import Navbar from './navbar'
@@ -67,6 +68,7 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/check-assignment/detail"} element={<CheckAssignmentDetail />}></Route>
 
                     <Route exact path={"/subject-lesson"} element={<SubjectLesson />}></Route>
+                    <Route exact path={"/subject-lesson/edit-activity"} element={<SubjectLessonEdit />}></Route>
                     <Route exact path={"/subject-lesson/detail"} element={<SubjectLessonDetail />}></Route>
 
                     <Route exact path={"/announcement"} element={<Announcement />}></Route>
