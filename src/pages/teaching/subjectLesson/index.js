@@ -15,6 +15,8 @@ export default function SubjectLesson(){
 
     const [filter_grade_arr, set_filter_grade_arr] = useState([])
     const [filter_grade_selected, set_filter_grade_selected] = useState('')
+    const [filter_class_selected, set_filter_class_selected] = useState('')
+
     const [filter_subject_arr, set_filter_subject_arr] = useState([])
     const [filter_subject_selected, set_filter_subject_selected] = useState([])
     const [filter_lesson_arr, set_filter_lesson_arr] = useState([])
@@ -45,7 +47,7 @@ export default function SubjectLesson(){
     async function get_filter_data_arr(type, id=''){
         var url = ''
         if(type === 'grade'){
-            url = '/grade'
+            url = '/class/homeroom?type=current_academic_year'
         }
         else if(type === 'subject'){
             url = '/subject?grade_id=' + id
@@ -59,6 +61,9 @@ export default function SubjectLesson(){
                 var data = response.data
                 if(type === 'grade'){
                     var data1 = data.data
+                    for(var x in data1){
+                        data1[x].name = data1[x].grade.name + ' ' + data1[x].name
+                    }
                     
                     set_filter_grade_arr(data1)
                 }
@@ -83,7 +88,8 @@ export default function SubjectLesson(){
 
     async function changeFilter(index, type, value=''){
         if(type === 'grade'){
-            set_filter_grade_selected(filter_grade_arr[index].id)
+            set_filter_grade_selected(filter_grade_arr[index].grade.id)
+            set_filter_class_selected(filter_grade_arr[index].id)
         }
         else if(type === 'subject'){
             set_filter_subject_selected(value)
@@ -121,9 +127,12 @@ export default function SubjectLesson(){
             for(var x in filter_lesson_selected){
                 lesson_id.push(filter_lesson_selected[x].id)
             }
+
+            console.log(filter_class_selected)
+            console.log(filter_grade_selected)
     
-            var url = '/assignment/group?type=' + '&arr_subject_id=' + JSON.stringify(subject_id)
-                + '&arr_lesson_id=' + JSON.stringify(lesson_id) + '&grade_id=' + filter_grade_selected + '&type=current_academic_year'
+            var url = '/assignment/group?arr_subject_id=' + JSON.stringify(subject_id)
+                + '&arr_lesson_id=' + JSON.stringify(lesson_id) + '&grade_id=' + filter_grade_selected + '&class_id=' + filter_class_selected + '&type=current_academic_year'
             var response = await base.request(url)
             if(response != null){
                 if(response.status == 'success'){
@@ -384,7 +393,6 @@ export default function SubjectLesson(){
                                                                                 <div className='col p-0'>
                                                                                     <div>
                                                                                         <p className='m-0' style={{fontSize : '.9rem', fontFamily : 'InterBold'}}>{data_class_student.user.name}</p>
-                                                                                        <p className='m-0' style={{fontSize : '.7rem', lineHeight : 1}}>{data_class_student.class_model.grade.name + ' ' + data_class_student.class_model.name}</p>
                                                                                         <p className='m-0' style={{fontSize : '.7rem'}}>{data_class_student.is_online ? 'Online' : 'Offline'}</p>
                                                                                     </div>
                                                                                 </div>
