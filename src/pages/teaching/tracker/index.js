@@ -38,7 +38,7 @@ export default function TrackerIndex(){
 
 	const [is_loading, set_is_loading] = useState(true)
 
-	const [activity_agreement, set_activity_agreement] = useState({})
+	const [activity_agreement, set_activity_agreement] = useState([])
 	const [activity_submitted, set_activity_submitted] = useState({})
 
 	useEffect(async ()=>{
@@ -299,13 +299,13 @@ export default function TrackerIndex(){
 
 																						{
 																							lesson_arr.map((data_lesson, index_lesson)=>(
-																								<td className={'m-0 p-0' + (activity_agreement[data_lesson.lesson_id] != null ? (activity_agreement[data_lesson.lesson_id][data_subject.id].length == 0 ? ' align-middle' : '') : '')}>
+																								<td className={'m-0 p-0' + (activity_agreement[data_lesson.lesson_id] == null ? ' align-middle' : '')}>
 																									<div className='row m-0'>
 																										{
 																											activity_agreement[data_lesson.lesson_id] != null &&
 																											<>
 																												{
-																													activity_agreement[data_lesson.lesson_id][data_subject.id].length > 0 ?
+																													activity_agreement[data_lesson.lesson_id][data_subject.id] != null ?
 																													<>
 																														{
 																															activity_agreement[data_lesson.lesson_id][data_subject.id].map((data_activity, index_activity)=>(
