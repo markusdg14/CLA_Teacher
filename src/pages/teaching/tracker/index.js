@@ -49,9 +49,9 @@ export default function TrackerIndex(){
 
 	const [activity_status] = useState([
 		{title : 'OK', color : '#60B158'},
-		{title : 'CW', color : '#FFD157'},
-		{title : 'CS', color : '#F2994A'},
-		{title : 'SK', color : '#0085FF'},
+		{title : 'CW', color : '#CF91FF'},
+		{title : 'CS', color : '#FF973C'},
+		{title : 'SK', color : '#5EB2FF'},
 		{title : 'HS', color : '#FC5A5A'},
 	])
 
@@ -69,6 +69,7 @@ export default function TrackerIndex(){
 
 	useEffect(()=>{
 		if(selected_class !== ''){
+			set_student_arr([])
 			set_is_loading(true)
 			get_data()
 		}
@@ -223,7 +224,7 @@ export default function TrackerIndex(){
 										<div className='row'>
 											{
 												class_arr.map((data, index)=>(
-													<div className='col-auto' key={index}>
+													<div className='col-auto mb-2' key={index}>
 														<div className={'gradePicker' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
 															<p className='m-0'>{data.title}</p>
 														</div>

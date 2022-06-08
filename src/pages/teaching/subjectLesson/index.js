@@ -45,7 +45,7 @@ export default function SubjectLesson(){
     async function get_filter_data_arr(type, id=''){
         var url = ''
         if(type === 'grade'){
-            url = '/class/homeroom?type=current_academic_year'
+            url = '/grade'
         }
         else if(type === 'subject'){
             url = '/subject?grade_id=' + id
@@ -59,9 +59,7 @@ export default function SubjectLesson(){
                 var data = response.data
                 if(type === 'grade'){
                     var data1 = data.data
-                    for(var x in data1){
-                        data1[x].name = data1[x].grade_name
-                    }
+                    
                     set_filter_grade_arr(data1)
                 }
                 else if(type === 'subject'){
@@ -85,7 +83,7 @@ export default function SubjectLesson(){
 
     async function changeFilter(index, type, value=''){
         if(type === 'grade'){
-            set_filter_grade_selected(filter_grade_arr[index].grade_id)
+            set_filter_grade_selected(filter_grade_arr[index].id)
         }
         else if(type === 'subject'){
             set_filter_subject_selected(value)
@@ -284,7 +282,7 @@ export default function SubjectLesson(){
                     <div className='col'>
                         <div className='row'>
                             <div className='col-12'>
-                                <p className='m-0'>Subject</p>
+                                <p className='m-0' style={{color : 'black'}}>Subject</p>
                             </div>
                             <div className='col-12 mt-3'>
                                 <Select options={filter_subject_arr} value={filter_subject_selected} isMulti={true} onChange={(value)=>changeFilter(0, 'subject', value)} isOptionDisabled={()=>filter_subject_selected.length >= 2} />
@@ -295,7 +293,7 @@ export default function SubjectLesson(){
                     <div className='col'>
                         <div className='row'>
                             <div className='col-12'>
-                                <p className='m-0'>Lesson</p>
+                                <p className='m-0' style={{color : 'black'}}>Lesson</p>
                             </div>
                             <div className='col-12 mt-3'>
                                 <Select options={filter_lesson_arr} value={filter_lesson_selected} isMulti={true} onChange={(value)=>changeFilter(0, 'lesson', value)} isOptionDisabled={()=>filter_lesson_selected.length >= 2} />
@@ -303,8 +301,8 @@ export default function SubjectLesson(){
                         </div>
                     </div>
 
-                    <div className='col-auto d-flex align-items-end'>
-                        <button type='button' className='btn btn-primary rounded shadow-sm px-4' onClick={()=>filterBtn()}>Filter</button>
+                    <div className='col-auto'>
+                        <button type='button' className='btn btn-primary rounded shadow-sm px-4 mt-4' onClick={()=>filterBtn()}>Filter</button>
                     </div>
                 </div>
             </div>
@@ -386,7 +384,8 @@ export default function SubjectLesson(){
                                                                                 <div className='col p-0'>
                                                                                     <div>
                                                                                         <p className='m-0' style={{fontSize : '.9rem', fontFamily : 'InterBold'}}>{data_class_student.user.name}</p>
-                                                                                        <p className='m-0' style={{fontSize : '.7rem', lineHeight : .75}}>{data_class_student.is_online ? 'Online' : 'Offline'}</p>
+                                                                                        <p className='m-0' style={{fontSize : '.7rem', lineHeight : 1}}>{data_class_student.class_model.grade.name + ' ' + data_class_student.class_model.name}</p>
+                                                                                        <p className='m-0' style={{fontSize : '.7rem'}}>{data_class_student.is_online ? 'Online' : 'Offline'}</p>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div className='col'>

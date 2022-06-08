@@ -20,28 +20,10 @@ export default function SubjectLessonEdit(){
     let query = useQuery()
 
     const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : ''}})
-    const [data_arr, set_data_arr] = useState([])
     
-    const [grade_arr, set_grade_arr] = useState([])
-    const [grade_selected, set_grade_selected] = useState('')
-
-    const [academic_year_arr, set_academic_year_arr] = useState([])
-    const [academic_year_selected, set_academic_year_selected] = useState('')
-
-    const [subject_arr, set_subject_arr] = useState([])
-    const [subject_selected, set_subject_selected] = useState('')
-    const [assignment_type_selected, set_assignment_type_selected] = useState('')
-
-    const [header, set_header] = useState('')
-
-    const [selected_lesson_index, set_selected_lesson_index] = useState('')
-
-    const [viewType, set_viewType] = useState('lesson_list')
     const [selected_assignment, set_selected_assignment] = useState({assessment_rule : {id : '', name : ''}})
     const [selected_lesson, set_selected_lesson] = useState({lesson : {id : '', name : ''}, grade : {id : '', name : ''}, subject : {id : '', name : ''}})
     const [img_data_base, set_img_data_base] = useState('')
-
-    const [offline_student_arr, set_offline_student_arr] = useState([])
 
     const [assignment_image_data, set_assignment_image_data] = useState({
         image_display : base.img_no_image,
@@ -49,10 +31,6 @@ export default function SubjectLessonEdit(){
         original_rotation : 0,
         type : ''
     })
-
-    const [student_search_value, set_student_search_value] = useState('')
-
-    const [is_disable_btn_modal, set_is_disable_btn_modal] = useState(false)
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -85,42 +63,14 @@ export default function SubjectLessonEdit(){
                     data.project_agreement.lesson = data.lesson
 
                     set_selected_lesson(data.project_agreement)
-                    set_assignment_type_selected('discussion')
                 }
                 else if(query.get('type') === 'assignment'){
-                    set_assignment_type_selected(data.assignment_type.data)
                     set_selected_lesson(data.assignment_group)
                 }
 
                 set_selected_assignment(data)
             }
         }
-    }
-
-    function changeView(type, index=0, index_assignment=0){
-        set_viewType(type)
-        data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.img_no_image
-        if(data_arr[index].arr_assignment_agreement[index_assignment].file_name != null){
-            data_arr[index].arr_assignment_agreement[index_assignment].image_display = base.url_photo('assignment', data_arr[index].arr_assignment_agreement[index_assignment].file_name)
-        }
-
-        if(data_arr[index].arr_assignment_agreement[index_assignment].type === 'task'){
-            data_arr[index].arr_assignment_agreement[index_assignment].name = data_arr[index].arr_assignment_agreement[index_assignment].title
-            data_arr[index].arr_assignment_agreement[index_assignment].deadline_date = data_arr[index].arr_assignment_agreement[index_assignment].meeting_at
-            data_arr[index].arr_assignment_agreement[index_assignment].assessment_rule = data_arr[index].arr_assignment_agreement[index_assignment].project_agreement.assessment_rule
-
-            set_assignment_type_selected('discussion')
-        }
-        else{
-            set_assignment_type_selected(data_arr[index].arr_assignment_agreement[index_assignment].assignment_type.data)
-        }
-
-        console.log(data_arr[index].arr_assignment_agreement[index_assignment])
-        set_selected_lesson(data_arr[index])
-        set_selected_assignment(data_arr[index].arr_assignment_agreement[index_assignment])
-
-        base.update_object(assignment_image_data, set_assignment_image_data, data_arr[index].arr_assignment_agreement[index_assignment].image_display, 'image_display')
-        window.scrollTo(0,0)
     }
 
     function getImgBase(file, callback){
@@ -181,6 +131,10 @@ export default function SubjectLessonEdit(){
         }
     }
 
+    function backBtn(){
+        window.location.href = '/subject-lesson'
+    }
+
     return(
         <div className='row'>
 
@@ -189,6 +143,16 @@ export default function SubjectLessonEdit(){
             </div>
 
             <div className='col-12 mt-5 pt-4'>
+                <div className='row'>
+                    <div className='col d-flex align-items-center'>
+                        <div className='bg-white shadow rounded d-flex align-items-center justify-content-center' style={{cursor : 'pointer', width : '3rem', height : '3rem'}} onClick={backBtn}>
+                            <h3 className='m-0'><i className="bi bi-arrow-left-short" style={{color : '#6F826E'}}></i></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className='col-12 mt-4'>
                 <EditAssignment selected_lesson={selected_lesson} selected_assignment={selected_assignment} changeInput={(value, type)=>changeInput(value, type)} assignment_image_data={assignment_image_data} saveAssignment={()=>saveAssignment()} />
             </div>
 
