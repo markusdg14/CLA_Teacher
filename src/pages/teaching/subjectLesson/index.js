@@ -7,6 +7,7 @@ import ActiveUnactiveData from '../../../components/activeUnactiveData';
 
 import Select from 'react-select'
 import ModalConfirm from './components/confirmModal';
+import ModalSubmit from '../checkAssignment/modalSubmit';
 
 export default function SubjectLesson(){
     var base = new Base()
@@ -24,9 +25,29 @@ export default function SubjectLesson(){
 
     const [data_arr, set_data_arr] = useState([])
 
+    const [activity_type_selected, set_activity_type_selected] = useState('')
+    const [activity_assessment_rule_selected, set_activity_assessment_rule_selected] = useState('')
+    const [activity_rule_selected, set_activity_rule_selected] = useState('')
+    const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
+    const [grade_skill_arr, set_grade_skill_arr] = useState([])
+    const [rule, set_rule] = useState([])
+    const [numerical_score, set_numerical_score] = useState('')
+    const [assignment_status_data, set_assignment_status_data] = useState('')
+    const [teacher_notes, set_teacher_notes] = useState('')
+    const [assignment_submitted_id, set_assignment_submitted_id] = useState('')
+    const [activity_subject_selected, set_activity_subject_selected] = useState('')
+    const [rule_detail_arr, set_rule_detail_arr] = useState([])
+    const [radio_project_selected, set_radio_project_selected] = useState('revision')
+    const [class_student_id, set_class_student_id] = useState('')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
+
+        base.$('#modalSubmit').on('hidden.bs.modal', function (event) {
+            set_activity_type_selected('')
+            set_activity_assessment_rule_selected('')
+        })
     }, [])
 
     useEffect(async ()=>{
@@ -50,7 +71,7 @@ export default function SubjectLesson(){
             url = '/class/homeroom?type=current_academic_year'
         }
         else if(type === 'subject'){
-            url = '/subject?grade_id=' + id
+            url = '/subject?grade_id=' + id + '&class_id=' + filter_class_selected
         }
         else if(type === 'lesson'){
             url = '/lesson/all'
@@ -141,7 +162,7 @@ export default function SubjectLesson(){
                         for(var y in data[x].arr_assignment_agreement){
                             data[x].arr_assignment_agreement[y].icon = 'bi bi-puzzle-fill'
                             data[x].arr_assignment_agreement[y].activity_name = ''
-                            if(data[x].arr_assignment_agreement[y].type === 'assignment'){
+                            if(data[x].arr_assignment_agreement[y].data_type === 'assignment'){
                                 data[x].arr_assignment_agreement[y].icon = (data[x].arr_assignment_agreement[y].assignment_type.data === 'quiz' ? 'bi bi-puzzle-fill' : data[x].arr_assignment_agreement[y].assignment_type.data === 'discussion' ? 'bi bi-easel-fill' : data[x].arr_assignment_agreement[y].assignment_type.data === 'ungraded' ? 'bi bi-book-half' : '')
     
                                 data[x].arr_assignment_agreement[y].activity_name = data[x].arr_assignment_agreement[y].name
@@ -197,7 +218,6 @@ export default function SubjectLesson(){
     }, [lesson_selected, index_lesson_selected])
 
     async function confirmLesson(btn_from, index=0){
-        console.log(btn_from)
         if(btn_from === 'list'){
             set_index_lesson_selected(index)
             set_lesson_selected(data_arr[index])
@@ -226,34 +246,199 @@ export default function SubjectLesson(){
     async function editActivity(index, index_assignment){
         console.log(data_arr[index].arr_assignment_agreement[index_assignment])
         var data = data_arr[index].arr_assignment_agreement[index_assignment]
-        window.location.href='/subject-lesson/edit-activity?id=' + data.id + '&type=' + data.type
+        window.location.href='/subject-lesson/edit-activity?id=' + data.id + '&type=' + data.data_type
     }
-    
+
+    useEffect(async()=>{
+        if(activity_type_selected !== ''){
+            if(activity_assessment_rule_selected !== ''){
+                get_grade_skill()
+                get_rule()
+                base.$('#modalSubmit').modal('show')
+            }
+        }
+        else{
+            base.$('#modalSubmit').modal('hide')
+        }
+    }, [activity_type_selected, activity_assessment_rule_selected])
+
+    async function get_rule(){
+        var url = '/assessment/rule?id=' + activity_assessment_rule_selected
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                set_rule(data.name)
+                set_rule_detail_arr(data.detail)
+            }
+        }
+    }
+
+    async function get_grade_skill(){
+        var url = '/skill/category?id=&subject_id=' + activity_subject_selected + '&assignment_submitted_id=' + assignment_submitted_id
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+
+                for(var x in data){
+                    var arr_skill = data[x].arr_skill
+                    for(var y in arr_skill){
+                        arr_skill[y].score = ''
+                    }
+                }
+                set_grade_skill_arr(data)
+            }
+        }
+    }
+
     async function changeStatus(index, index_assignment, index_class_student, index_status, index_arr_status){
         var data_index = data_arr[index]
+        var status_selected = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].status_activity_arr[index_status].data_arr[index_arr_status]
+        var status = status_selected.status
+        var assignment_agreement = data_arr[index].arr_assignment_agreement[index_assignment]
+        var class_student = assignment_agreement.arr_class_student[index_class_student]
         if(data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted != null){
             
-            var status_selected = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].status_activity_arr[index_status].data_arr[index_arr_status]
-            var status = status_selected.status
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
             
             if(status != ''){
-                var url = '/assessment/assignment'
-                var data_upload = {
-                    id : last_submitted.id,
-                    status : status,
+                if(status === 'done'){
+                    set_activity_subject_selected(data_index.subject.id)
+                    set_class_student_id(class_student.id)
+                    if(class_student.last_assignment_submitted != null){
+                        set_assignment_submitted_id(class_student.last_assignment_submitted.id)
+                        set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
+                    }
+                    if(assignment_agreement.data_type === 'assignment'){
+                        set_activity_type_selected(assignment_agreement.assignment_type.data)
+                        set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
+                    }
+                    else if(assignment_agreement.data_type === 'task'){
+                        set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
+                        set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
+                    }
                 }
-        
-                var response = await base.request(url, 'put', data_upload)
-                if(response != null){
-                    if(response.status == 'success'){
-                        filterBtn()
+                else{
+                    var url = '/assessment/assignment'
+                    var data_upload = {
+                        id : last_submitted.id,
+                        status : status,
+                    }
+            
+                    var response = await base.request(url, 'put', data_upload)
+                    if(response != null){
+                        if(response.status == 'success'){
+                            filterBtn()
+                        }
                     }
                 }
             }
 
         }
+    }
 
+    async function changeInputModal(val, type){
+        if(type === 'grade'){
+            set_activity_rule_selected(val)
+        }
+        if(type === 'notes'){
+            set_teacher_notes(val)
+        }
+    }
+
+    async function submitGrading(){
+        set_is_modal_btn_disable(true)
+        var url = ''
+        var data_upload = {}
+        var method = 'put'
+        if(activity_type_selected === 'quiz'){
+            url = '/assessment/assignment'
+            data_upload = {
+                id : assignment_submitted_id,
+                comment : teacher_notes,
+            }
+
+            if(rule === 'Numerical'){
+                data_upload.score = numerical_score
+            }
+            else{
+                if(activity_rule_selected !== ''){
+                    data_upload.assessment_rule_detail = {id : activity_rule_selected}
+                }
+            }
+        }
+        else  if(activity_type_selected === 'ungraded'){
+            url = '/assessment/assignment'
+            data_upload = {
+                id : assignment_submitted_id,
+            }
+        }
+        else if(activity_type_selected === 'discussion'){
+            var arr_skill = []
+            for(var x in grade_skill_arr){
+                var skill_data = grade_skill_arr[x].arr_skill
+                for(var y in skill_data){
+                    arr_skill.push({
+                        skill : {id : skill_data[y].id},
+                        score : skill_data[y].score
+                    })
+                }
+            }
+            url = '/grade/skill'
+            data_upload = {
+                class_student : {id : class_student_id},
+                assignment_submitted : {id : assignment_submitted_id},
+                comment : teacher_notes,
+                arr_skill : arr_skill
+            }
+            method = 'post'
+        }
+        else if(activity_type_selected === 'upload'){
+            url = '/assessment/assignment'
+            var status = (radio_project_selected === 'revision' ? 'need_correction' : 'done')
+            data_upload = {
+                id : assignment_submitted_id,
+                status : status,
+                comment : teacher_notes,
+            }
+        }
+
+        var response = await base.request(url, method, data_upload)
+        if(response != null){
+            if(response.status == 'success'){
+                filterBtn()
+                base.$('#modalSubmit').modal('hide')
+            }
+        }
+        set_is_modal_btn_disable(false)
+    }
+
+    function changeScore(index, index_skill, val){
+        var data_index = grade_skill_arr[index]
+        var skill_data = data_index.arr_skill
+        skill_data[index_skill].score = val
+
+        base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
+    }
+
+    function changeNumerical(value){
+        var indexValue = value.length - 1
+        var score = numerical_score
+        if(value.charCodeAt(indexValue) >= 48 && value.charCodeAt(indexValue) <= 57){
+            score = value
+        }
+        else if((indexValue < 0)){
+            score = ''
+        }
+        if(parseInt(value) > 100){
+            score = 100
+        }
+        set_numerical_score(score)
+    }
+
+    function changeRadioProject(value){
+        set_radio_project_selected(value)
     }
 
     return(
@@ -459,6 +644,25 @@ export default function SubjectLesson(){
             </div>
 
             <ModalConfirm confirmLesson={()=>confirmLesson('modal')} is_disable_btn_modal={is_disable_btn_modal} />
+
+            <ModalSubmit
+                assignment_type={activity_type_selected}
+                rule_detail_arr={rule_detail_arr}
+                rule_selected={activity_rule_selected}
+                changeInput={(val, type)=>changeInputModal(val, type)}
+                submitGrading={()=>submitGrading()}
+                is_modal_btn_disable={is_modal_btn_disable}
+                grade_skill_arr={grade_skill_arr}
+                changeScore={(index, index_skill, val)=>changeScore(index, index_skill, val)}
+                rule={rule}
+                numerical_score={numerical_score}
+                changeNumerical={(value)=>changeNumerical(value)}
+                assignment_status_data={assignment_status_data}
+                teacher_notes={teacher_notes}
+                set_radio_project={(value)=>changeRadioProject(value)}
+                viewFrom={'subject-lesson'}
+            />
+
             </>
         </div>
     )

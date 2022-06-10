@@ -772,6 +772,7 @@ export default function CheckAssignmentDetail(){
                 assignment_status_data={assignment_status_data}
                 teacher_notes={teacher_notes}
                 set_radio_project={(value)=>changeRadioProject(value)}
+                viewFrom={'check-assignment'}
             />
             
         </div>
