@@ -49,8 +49,8 @@ export default function TrackerIndex(){
 
 	const [activity_status] = useState([
 		{title : 'OK', color : '#60B158'},
-		{title : 'CW', color : '#CF91FF'},
-		{title : 'CS', color : '#FF973C'},
+		{title : 'MJ', color : '#CF91FF'},
+		{title : 'MN', color : '#FF973C'},
 		{title : 'SK', color : '#5EB2FF'},
 		{title : 'HS', color : '#FC5A5A'},
 	])

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Base from '../../../utils/base';
 import Header from '../../../components/header';
 import CardSubject from '../../../components/cardSubject';
 import NoData from '../../../components/NoData'
 import ActiveUnactiveData from '../../../components/activeUnactiveData';
+import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
 
 import Select from 'react-select'
 import ModalConfirm from './components/confirmModal';
@@ -12,7 +13,14 @@ import ModalSubmit from '../checkAssignment/modalSubmit';
 export default function SubjectLesson(){
     var base = new Base()
 
-    const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}})
+    function useQuery(){
+        const {search} = useLocation()
+        return useMemo(() => new URLSearchParams(search), [search]);
+    }
+
+    let query = useQuery()
+
+    const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}})
 
     const [filter_grade_arr, set_filter_grade_arr] = useState([])
     const [filter_grade_selected, set_filter_grade_selected] = useState('')
@@ -40,22 +48,31 @@ export default function SubjectLesson(){
     const [radio_project_selected, set_radio_project_selected] = useState('revision')
     const [class_student_id, set_class_student_id] = useState('')
 
+    const [selected_academic_year, set_selected_academic_year] = useState('')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
+        set_selected_academic_year(check_user.user_data.current_academic_year.id)
 
         base.$('#modalSubmit').on('hidden.bs.modal', function (event) {
             set_activity_type_selected('')
+            set_teacher_notes('')
             set_activity_assessment_rule_selected('')
         })
     }, [])
 
     useEffect(async ()=>{
         if(user_data.id !== ''){
-            get_filter_data_arr('grade')
-            get_filter_data_arr('lesson')
-            // get_data('current')
-            // get_data('past')
+            await get_filter_data_arr('grade')
+            await get_filter_data_arr('lesson')
+
+            if(query.get('grade_id') != null){
+                await set_filter_grade_selected(query.get('grade_id'))
+            }
+            if(query.get('class_id') != null){
+                await set_filter_class_selected(query.get('class_id'))
+            }
         }
     }, [user_data])
 
@@ -65,10 +82,18 @@ export default function SubjectLesson(){
         }
     }, [filter_grade_selected])
 
+    useEffect(async ()=>{
+        if(query.get('grade_id') != null){
+            if(data_arr.length === 0)
+                filterBtn()
+        }
+    }, [filter_grade_selected, filter_class_selected, filter_subject_selected, filter_lesson_selected])
+
     async function get_filter_data_arr(type, id=''){
         var url = ''
         if(type === 'grade'){
-            url = '/class/homeroom?type=current_academic_year'
+            url = '/academic-year/class?academic_year_id=' + selected_academic_year
+            // url = '/class/homeroom?type=current_academic_year'
         }
         else if(type === 'subject'){
             url = '/subject?grade_id=' + id + '&class_id=' + filter_class_selected
@@ -90,16 +115,48 @@ export default function SubjectLesson(){
                 }
                 else if(type === 'subject'){
                     var subject_arr = data.data
+                    
                     for(var x in subject_arr){
                         subject_arr[x].label = subject_arr[x].name
                         subject_arr[x].value = subject_arr[x].id
                     }
+
+                    var filter_url = []
+                    if(query.get('subject_selected') != null){
+                        filter_url = query.get('subject_selected').split(',')
+                        var query_data = []
+
+                        for(var x in filter_url){
+                            for(var y in subject_arr){
+                                if(subject_arr[y].id === filter_url[x]){
+                                    query_data.push(subject_arr[y])
+                                }
+                            }
+                            set_filter_subject_selected(query_data)
+                        }
+                    }
+
                     set_filter_subject_arr(subject_arr)
                 }
                 else if(type === 'lesson'){
                     for(var x in data){
                         data[x].label = data[x].name
                         data[x].value = data[x].id
+                    }
+
+                    var filter_url_lesson = []
+                    if(query.get('lesson_selected') != null){
+                        filter_url_lesson = query.get('lesson_selected').split(',')
+                        var query_data = []
+
+                        for(var x in filter_url_lesson){
+                            for(var y in data){
+                                if(data[y].id === filter_url_lesson[x]){
+                                    query_data.push(data[y])
+                                }
+                            }
+                            set_filter_lesson_selected(query_data)
+                        }
                     }
                     set_filter_lesson_arr(data)
                 }
@@ -124,6 +181,7 @@ export default function SubjectLesson(){
 
     async function filterBtn(){
         var flag = 1
+
         if(filter_grade_selected === ''){
             flag = 0
         }
@@ -137,20 +195,24 @@ export default function SubjectLesson(){
         if(flag){
             var subject_id = []
             var subject_name_selected = ''
+            var subject_selected_id = ''
+
             for(var x in filter_subject_selected){
                 subject_id.push(filter_subject_selected[x].id)
                 subject_name_selected += filter_subject_selected[x].name + (parseInt(x) === filter_subject_selected.length-1 ? '' : ', ')
+                subject_selected_id += filter_subject_selected[x].id + (parseInt(x) === filter_subject_selected.length-1 ? '' : ',')
             }
     
             set_subject_selected(subject_name_selected)
     
             var lesson_id = []
+            var lesson_selected_id = ''
             for(var x in filter_lesson_selected){
                 lesson_id.push(filter_lesson_selected[x].id)
+                lesson_selected_id += filter_lesson_selected[x].id + (parseInt(x) === filter_lesson_selected.length-1 ? '' : ',')
             }
 
-            console.log(filter_class_selected)
-            console.log(filter_grade_selected)
+            window.history.pushState({}, null, '/subject-lesson?grade_id=' + filter_grade_selected + '&class_id=' + filter_class_selected + '&subject_selected=' + subject_selected_id + '&lesson_selected=' + lesson_selected_id)
     
             var url = '/assignment/group?arr_subject_id=' + JSON.stringify(subject_id)
                 + '&arr_lesson_id=' + JSON.stringify(lesson_id) + '&grade_id=' + filter_grade_selected + '&class_id=' + filter_class_selected + '&type=current_academic_year'
@@ -185,12 +247,12 @@ export default function SubjectLesson(){
                                         title : 'top', data_arr : [
                                             {title : 'NO', bg_color : '#999999', status : '', is_checked : (status_activity === '' ? true : false)},
                                             {title : 'OK', bg_color : '#60B158', status : 'done', is_checked : (status_activity === 'done' ? true : false)},
-                                            {title : 'CW', bg_color : '#CF91FF', status : 'need_much_correction', is_checked : (status_activity === 'need_much_correction' ? true : false)},
+                                            {title : 'MJ', bg_color : '#CF91FF', status : 'need_much_correction', is_checked : (status_activity === 'need_much_correction' ? true : false)},
                                         ]
                                     },
                                     {
                                         title : 'bottom', data_arr : [
-                                            {title : 'CS', bg_color : '#F2994A', status : 'need_correction',  is_checked : (status_activity === 'need_correction' ? true : false)},
+                                            {title : 'MN', bg_color : '#F2994A', status : 'need_correction',  is_checked : (status_activity === 'need_correction' ? true : false)},
                                             {title : 'SK', bg_color : '#0085FF', status : 'on_checking',  is_checked : (status_activity === 'on_checking' ? true : false)},
                                             {title : 'HS', bg_color : '#FC5A5A', status : 'blocked',  is_checked : (status_activity === 'blocked' ? true : false)},
                                         ]
@@ -244,7 +306,6 @@ export default function SubjectLesson(){
     }
 
     async function editActivity(index, index_assignment){
-        console.log(data_arr[index].arr_assignment_agreement[index_assignment])
         var data = data_arr[index].arr_assignment_agreement[index_assignment]
         window.location.href='/subject-lesson/edit-activity?id=' + data.id + '&type=' + data.data_type
     }
@@ -303,33 +364,35 @@ export default function SubjectLesson(){
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
             
             if(status != ''){
-                if(status === 'done'){
-                    set_activity_subject_selected(data_index.subject.id)
-                    set_class_student_id(class_student.id)
-                    if(class_student.last_assignment_submitted != null){
-                        set_assignment_submitted_id(class_student.last_assignment_submitted.id)
-                        set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
+                if(last_submitted.assessment_status.data !== 'done'){
+                    if(status === 'done'){
+                        set_activity_subject_selected(data_index.subject.id)
+                        set_class_student_id(class_student.id)
+                        if(class_student.last_assignment_submitted != null){
+                            set_assignment_submitted_id(class_student.last_assignment_submitted.id)
+                            set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
+                        }
+                        if(assignment_agreement.data_type === 'assignment'){
+                            set_activity_type_selected(assignment_agreement.assignment_type.data)
+                            set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
+                        }
+                        else if(assignment_agreement.data_type === 'task'){
+                            set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
+                            set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
+                        }
                     }
-                    if(assignment_agreement.data_type === 'assignment'){
-                        set_activity_type_selected(assignment_agreement.assignment_type.data)
-                        set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
-                    }
-                    else if(assignment_agreement.data_type === 'task'){
-                        set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
-                        set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
-                    }
-                }
-                else{
-                    var url = '/assessment/assignment'
-                    var data_upload = {
-                        id : last_submitted.id,
-                        status : status,
-                    }
-            
-                    var response = await base.request(url, 'put', data_upload)
-                    if(response != null){
-                        if(response.status == 'success'){
-                            filterBtn()
+                    else{
+                        var url = '/assessment/assignment'
+                        var data_upload = {
+                            id : last_submitted.id,
+                            status : status,
+                        }
+                
+                        var response = await base.request(url, 'put', data_upload)
+                        if(response != null){
+                            if(response.status == 'success'){
+                                filterBtn()
+                            }
                         }
                     }
                 }
@@ -417,7 +480,13 @@ export default function SubjectLesson(){
     function changeScore(index, index_skill, val){
         var data_index = grade_skill_arr[index]
         var skill_data = data_index.arr_skill
-        skill_data[index_skill].score = val
+
+        if(parseInt(val) <= 5 && parseInt(val) >= 1){
+            skill_data[index_skill].score = val
+        }
+        else{
+            skill_data[index_skill].score = ''
+        }
 
         base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
     }
@@ -462,7 +531,7 @@ export default function SubjectLesson(){
                                     filter_grade_arr.map((data, index)=>(
                                         <div className='col-12 col-lg-6 mb-2' key={index}>
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id={"grade_radio" + index} name="customRadio" class="custom-control-input" onChange={(e)=>changeFilter(index, 'grade')} />
+                                                <input type="radio" id={"grade_radio" + index} name="customRadio" class="custom-control-input" onChange={(e)=>changeFilter(index, 'grade')} checked={filter_class_selected === data.id} />
                                                 <label class="custom-control-label" htmlFor={"grade_radio" + index}>{data.name}</label>
                                             </div>
                                         </div>

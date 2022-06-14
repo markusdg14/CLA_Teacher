@@ -495,7 +495,13 @@ export default function CheckAssignmentDetail(){
     function changeScore(index, index_skill, val){
         var data_index = grade_skill_arr[index]
         var skill_data = data_index.arr_skill
-        skill_data[index_skill].score = val
+
+        if(parseInt(val) <= 5 && parseInt(val) >= 1){
+            skill_data[index_skill].score = val
+        }
+        else{
+            skill_data[index_skill].score = ''
+        }
 
         base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
     }

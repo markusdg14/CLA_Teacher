@@ -66,6 +66,19 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 											}
 										</div>
 
+										<div className='col-12 mb-3'>
+											{
+												assignment_type === 'discussion' &&
+												<>
+													<p className='m-0'>5 : Advanced</p>
+													<p className='m-0'>4 : Accomplished</p>
+													<p className='m-0'>3 : Well-developed</p>
+													<p className='m-0'>2 : Need to put more effort</p>
+													<p className='m-0'>1 : Need an encouragement and help</p>
+												</>
+											}
+										</div>
+
 
 										{
 											assignment_type === 'quiz' ?

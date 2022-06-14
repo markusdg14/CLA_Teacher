@@ -132,7 +132,8 @@ export default function SubjectLessonEdit(){
     }
 
     function backBtn(){
-        window.location.href = '/subject-lesson'
+        window.history.back()
+        // window.location.href = '/subject-lesson'
     }
 
     return(
