@@ -10,6 +10,7 @@ import CustomBadge from '../../components/customBadge';
 import CardSubject from '../../components/cardSubject';
 import NoData from '../../components/NoData';
 import ActiveUnactiveData from '../../components/activeUnactiveData';
+import UnderConstruction from '../../components/underConstruction';
 
 
 export default function HomeroomIndex(){
@@ -31,8 +32,8 @@ export default function HomeroomIndex(){
 
     useEffect(async ()=>{
         if(user_data.id !== ''){
-            get_data('current')
-            get_data('past')
+            // get_data('current')
+            // get_data('past')
         }
     }, [user_data])
 
@@ -80,7 +81,9 @@ export default function HomeroomIndex(){
                 <Header title={'Homeroom'} user_data={user_data} />
             </div>
 
-            {
+            <UnderConstruction />
+
+            {/* {
                 data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
                 <div className='col-12 mt-5 pt-5'>
                     <NoData />
@@ -109,7 +112,7 @@ export default function HomeroomIndex(){
                     </div>
                 </div>
                 </>
-            }
+            } */}
 
 
         </div>

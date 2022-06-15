@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Base from '../../../utils/base';
 import Header from '../../../components/header';
 import NoData from '../../../components/NoData';
+import UnderConstruction from '../../../components/underConstruction';
 
 
 export default function Announcement(){
@@ -21,13 +22,13 @@ export default function Announcement(){
 
     useEffect(()=>{
         if(user_data.id != null){
-            get_grade()
+            // get_grade()
         }
     }, [user_data])
 
     useEffect(()=>{
         if(selected_grade !== ''){
-            get_data()
+            // get_data()
         }
     }, [selected_grade])
 
@@ -87,7 +88,9 @@ export default function Announcement(){
                 <Header title={'Announcement'} user_data={user_data} />
             </div>
 
-            <div className='col-12 mt-5 pt-4'>
+            <UnderConstruction />
+
+            {/* <div className='col-12 mt-5 pt-4'>
                 <div className='row'>
                     <div className='col-12 col-lg-3'>
                         <div className='row'>
@@ -177,7 +180,7 @@ export default function Announcement(){
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
             
         </div>
     )

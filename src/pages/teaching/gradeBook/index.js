@@ -4,6 +4,7 @@ import Header from '../../../components/header';
 import CardSubject from '../../../components/cardSubject';
 import NoData from '../../../components/NoData';
 import ActiveUnactiveData from '../../../components/activeUnactiveData';
+import UnderConstruction from '../../../components/underConstruction';
 
 
 export default function GradeBook(){
@@ -25,8 +26,8 @@ export default function GradeBook(){
 
     useEffect(async ()=>{
         if(user_data.id !== ''){
-            get_data('current')
-            get_data('past')
+            // get_data('current')
+            // get_data('past')
         }
     }, [user_data])
 
@@ -76,7 +77,9 @@ export default function GradeBook(){
                 <Header title={'Grade Book'} user_data={user_data} />
             </div>
 
-            {
+            <UnderConstruction />
+
+            {/* {
                 data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
                 <div className='col-12 mt-5 pt-5'>
                     <NoData />
@@ -105,7 +108,7 @@ export default function GradeBook(){
                     </div>
                 </div>
                 </>
-            }
+            } */}
 
             
         </div>
