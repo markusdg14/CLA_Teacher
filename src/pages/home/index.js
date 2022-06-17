@@ -127,7 +127,7 @@ export default function HomeIndex(){
             <div className='col-12 mt-5 pt-4'>
                 <HomeList
                     data_arr={to_do_list_arr}
-                    title={'To Do List & Annoucement'}
+                    title={'Annoucement'}
                     icon={'fas fa-folder'}
 
                 />
