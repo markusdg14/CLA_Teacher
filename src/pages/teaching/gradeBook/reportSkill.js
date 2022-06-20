@@ -45,7 +45,7 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 										{
 											legend_arr.map((data, index)=>(
 												<div className='col-12' key={index}>
-													<p className='m-0'>{data.start_score} - {data.end_score} : {data.name}</p>
+													<p className='m-0'>{data.legend} : {data.name}</p>
 												</div>
 											))
 										}
@@ -73,155 +73,164 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 											</div>
 											<div className='col-12 col-lg-auto'>
 													<SelectOption
-															data_arr={term_arr} 
-															selected={term_selected}
-															title={'Term'}
-															changeInput={(value)=>changeTerm(value)}
+														data_arr={term_arr} 
+														selected={term_selected}
+														title={'Term'}
+														changeInput={(value)=>changeTerm(value)}
 													/>
 											</div>
 										</div>
 									</div>
-									<div className='col-12 mt-3'>
-										<div className='row m-0'>
-											<div className='col-12'>
-												<div className="table-responsive">
-													<table className="table table-borderless">
-														<thead>
-															<tr>
-																<th style={{width : '6rem'}}></th>
-																{
-																	skill_assignment.map((data_assignment, index_assignment)=>(
-																		<th className='text-center' key={index_assignment} style={{width : '6rem'}}>{data_assignment.name}</th>
-																	))
-																}
-															</tr>
-														</thead>
-														<tbody>
-															{
-																skill_ctg_arr.map((data_category, index_category)=>(
-																	<>
-																		<tr key={index_category}>
-																			<td colSpan={skill_assignment.length + 1}>
-																				<p className='m-0'>{data_category.name}</p>
-																			</td>																			
-																		</tr>
-																		{
-																			skill_list_arr.map((data_list, index_list)=>(
-																				<tr key={index_list}>
-																					<td className='text-primary'><i class="bi bi-circle-fill mr-2" style={{fontSize : '.75rem'}}></i> {data_list.name}</td>
 
+									{
+										skill_ctg_arr.length > 0 &&
+										<div className='col-12 mt-3'>
+											<div className='row m-0'>
+												<div className='col-12'>
+													<div className="table-responsive">
+														<table className="table table-borderless">
+															<thead style={{backgroundColor : '#EBEFE2'}}>
+																<tr>
+																	<th style={{width : '6rem'}}></th>
+																	{
+																		skill_assignment.map((data_assignment, index_assignment)=>(
+																			<th className='text-center' key={index_assignment} style={{width : '6rem'}}>{data_assignment.name}</th>
+																		))
+																	}
+																</tr>
+															</thead>
+															<tbody>
+																{
+																	skill_ctg_arr.map((data_category, index_category)=>(
+																		<>
+																			<tr key={index_category}>
+																				<td colSpan={skill_assignment.length + 1} style={{backgroundColor : '#F3F4F6'}}>
+																					<p className='m-0'>{data_category.name}</p>
+																				</td>																			
+																			</tr>
+																			{
+																				skill_list_arr.map((data_list, index_list)=>(
+																					<>
 																					{
-																						skill_assignment.map((data_assignment, index_assignment)=>(
-																							<td className='text-center' style={{width : '6rem'}} key={index_assignment}>
-																								{
-																									skill_grade_arr[data_category.id] != null &&
-																									<>
+																						data_list.skill_category_id === data_category.id &&
+																						<tr key={index_list}>
+																							<td className='text-primary pl-4'>{/* <i class="bi bi-circle-fill mr-2" style={{fontSize : '.75rem'}}></i>  */}{data_list.name}</td>
+
+																							{
+																								skill_assignment.map((data_assignment, index_assignment)=>(
+																									<td className='text-center' style={{width : '6rem'}} key={index_assignment}>
 																										{
-																											skill_grade_arr[data_category.id][data_list.id] != null &&
+																											skill_grade_arr[data_category.id] != null &&
 																											<>
-																											{
-																												skill_grade_arr[data_category.id][data_list.id][data_assignment.id] != null &&   
-																												<span className={"badge badge-pill p-2 px-3 rounded badge-success"}>{skill_grade_arr[data_category.id][data_list.id][data_assignment.id].score}</span>
-																											}
+																												{
+																													skill_grade_arr[data_category.id][data_list.id] != null &&
+																													<>
+																													{
+																														skill_grade_arr[data_category.id][data_list.id][data_assignment.id] != null &&   
+																														<p className={"m-0"}>{skill_grade_arr[data_category.id][data_list.id][data_assignment.id].score}</p>
+																													}
+																													</>
+																												}
 																											</>
 																										}
-																									</>
-																								}
-																							</td>
-																						))
+																									</td>
+																								))
+																							}
+																						</tr>
 																					}
-																				</tr>
-																			))
-																		}
-																		<tr style={{backgroundColor : '#FFF8E5'}}>
-																			<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Average</td>
-																			{
-																				skill_assignment.map((data_assignment, index_assignment)=>(
-																					<td className='text-center ' style={{width : '6rem'}} key={index_assignment}>
-																						{
-																							skill_grade_book_arr[data_assignment.id] != null &&
-																							<>
-																								{
-																									<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].average}</span>
-																								}
-																							</>
-																						}
-																					</td>
+																					</>
 																				))
 																			}
-																		</tr>
-
-																		<tr style={{backgroundColor : '#FFF8E5'}}>
-																			<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Score</td>
-																			{
-																				skill_assignment.map((data_assignment, index_assignment)=>(
-																					<td className='text-center ' style={{width : '6rem'}} key={index_assignment}>
-																						{
-																							skill_grade_book_arr[data_assignment.id] != null &&
-																							<>
-																								{
-																									skill_grade_book_arr[data_assignment.id].grade_book != null &&
-																									<>
+																			<tr style={{backgroundColor : '#EBEFE2'}}>
+																				<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Average</td>
+																				{
+																					skill_assignment.map((data_assignment, index_assignment)=>(
+																						<td className='text-center ' style={{width : '6rem'}} key={index_assignment}>
+																							{
+																								skill_grade_book_arr[data_assignment.id] != null &&
+																								<>
 																									{
-																										<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].grade_book.score}</span>
+																										<p className={"m-0"}>{parseFloat(skill_grade_book_arr[data_assignment.id].average).toFixed(2)}</p>
 																									}
-																									</>
-																								}
-																							</>
-																						}
-																					</td>
-																				))
-																			}
-																		</tr>
+																								</>
+																							}
+																						</td>
+																					))
+																				}
+																			</tr>
 
-																		<tr style={{backgroundColor : '#F7F7F7'}}>
-																			<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Legend of Mark</td>
-																			{
-																				skill_assignment.map((data_assignment, index_assignment)=>(
-																					<td className='text-center ' style={{width : '6rem'}} key={index_assignment}>
-																						{
-																							skill_grade_book_arr[data_assignment.id] != null &&
-																							<>
-																								{
-																									skill_grade_book_arr[data_assignment.id].grade_book != null &&
-																									<>
+																			<tr style={{backgroundColor : '#EBEFE2'}}>
+																				<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Score</td>
+																				{
+																					skill_assignment.map((data_assignment, index_assignment)=>(
+																						<td className='text-center ' style={{width : '6rem'}} key={index_assignment}>
+																							{
+																								skill_grade_book_arr[data_assignment.id] != null &&
+																								<>
+																									{
+																										skill_grade_book_arr[data_assignment.id].grade_book != null &&
+																										<>
 																										{
-																											<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data_assignment.id].grade_book.assessment_range.legend}</span>
+																											<p className={"m-0"}>{skill_grade_book_arr[data_assignment.id].grade_book.score}</p>
 																										}
-																									</>
-																								}
-																							</>
-																						}
-																					</td>
-																				))
-																			}
-																		</tr>
-																		<tr style={{backgroundColor : '#F7F7F7'}}>
-																			<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Teacher Notes</td>
-																			{
-																				skill_assignment.map((data_assignment, index_assignment)=>(
-																					<td className='' style={{width : '6rem'}} key={index_assignment}>
-																						{
-																							skill_grade_book_arr[data_assignment.id] != null &&
-																							<>
-																								<p className={"m-0"}>
-																									{skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-'}
-																								</p>
-																							</>
-																						}
-																					</td>
-																				))
-																			}
-																		</tr>
-																	</>
-																))
-															}
-														</tbody>
-													</table>
+																										</>
+																									}
+																								</>
+																							}
+																						</td>
+																					))
+																				}
+																			</tr>
+
+																			<tr>
+																				<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Legend of Mark</td>
+																				{
+																					skill_assignment.map((data_assignment, index_assignment)=>(
+																						<td className='text-center ' style={{width : '6rem'}} key={index_assignment}>
+																							{
+																								skill_grade_book_arr[data_assignment.id] != null &&
+																								<>
+																									{
+																										skill_grade_book_arr[data_assignment.id].grade_book != null &&
+																										<>
+																											{
+																												<p className={"m-0"}>{skill_grade_book_arr[data_assignment.id].grade_book.assessment_range.legend}</p>
+																											}
+																										</>
+																									}
+																								</>
+																							}
+																						</td>
+																					))
+																				}
+																			</tr>
+																			<tr>
+																				<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Teacher Notes</td>
+																				{
+																					skill_assignment.map((data_assignment, index_assignment)=>(
+																						<td className='' style={{width : '6rem'}} key={index_assignment}>
+																							{
+																								skill_grade_book_arr[data_assignment.id] != null &&
+																								<>
+																									<p className={"m-0"}>
+																										{skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-'}
+																									</p>
+																								</>
+																							}
+																						</td>
+																					))
+																				}
+																			</tr>
+																		</>
+																	))
+																}
+															</tbody>
+														</table>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
+									}
 								</div>
 							</div>
 						</div>

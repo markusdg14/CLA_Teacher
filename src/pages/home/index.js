@@ -153,8 +153,8 @@ export default function HomeIndex(){
                                             {
                                                 schedule_lesson_time_arr.map((data_time, index_time)=>(
                                                     <tr key={index_time}>
-                                                        <td className='border-0 px-0 py-1 mb-2 align-middle td-fit-content'>
-                                                            <p className='m-0 p-1 px-1 px-lg-3 schedule_time'>{data_time.name + ' - ' + data_time.counter}</p>
+                                                        <td className='border-0 px-0 pt-1 pb-0 align-middle td-fit-content'>
+                                                            <p className='m-0 p-0 px-1 px-lg-3 schedule_time'>{data_time.name + ' - ' + data_time.counter}</p>
                                                         </td>
 
                                                         {
@@ -162,7 +162,7 @@ export default function HomeIndex(){
                                                             <>
                                                                 {
                                                                     schedule_arr[schedule_lesson_day_arr[0].id] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name] != null && schedule_arr[schedule_lesson_day_arr[0].id][data_time.name].type === 'event' ?
-                                                                    <td className='border-0 px-0 py-1 align-middle' colSpan={5}>
+                                                                    <td className='border-0 px-0 pt-1 pb-0 align-middle' colSpan={5}>
                                                                         <div className='h-100 px-2'>
                                                                             <div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#EBEFE2'}}>
                                                                                 <p className='m-0 schedule_subject text-center' style={{color : '#B6C0A0', fontFamily : 'InterBold', lineHeight : '1rem'}}>
@@ -175,7 +175,7 @@ export default function HomeIndex(){
                                                                     <>
                                                                         {
                                                                             schedule_lesson_day_arr.map((data_day, index_day)=>(
-                                                                                <td className='border-0 px-0 py-1 align-middle' key={index_day}>
+                                                                                <td className='border-0 px-0 pt-1 pb-0 align-middle' key={index_day}>
                                                                                     {
                                                                                         schedule_arr[data_day.id] != null && schedule_arr[data_day.id][data_time.name] != null && schedule_arr[data_day.id][data_time.name].start_time != null ?
                                                                                         <div className='h-100 px-2'>

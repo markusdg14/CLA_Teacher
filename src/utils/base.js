@@ -9,11 +9,11 @@ import 'bootstrap'
 
 export default class Base extends Component{
     
-    base_url = 'https://lms-admin.quantumtri.com/api';
-    url_image = 'https://lms-admin.quantumtri.com/image';
+    // base_url = 'https://lms-admin.quantumtri.com/api';
+    // url_image = 'https://lms-admin.quantumtri.com/image';
 
-	// base_url = 'https://admin.christianlifeacademy-id.com/api'
-	// url_image = 'https://admin.christianlifeacademy-id.com/image';
+	base_url = 'https://admin.christianlifeacademy-id.com/api'
+	url_image = 'https://admin.christianlifeacademy-id.com/image';
 	
     timeoutAxios = 300000
     currencyFormat = 'id-ID'

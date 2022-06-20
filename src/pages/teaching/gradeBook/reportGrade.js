@@ -34,14 +34,15 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
                                     </div>
                                     <div className='col-12'>
                                         <div className="table-responsive">
-                                            <table className="table table-fixed-lg">
+                                            <table className="table">
                                                 <thead>
                                                     <tr>
-                                                        <td></td>
-                                                        <td className={'text-center'}>Final Score</td>
+                                                        <td className='py-2'>No</td>
+                                                        <td className='py-2'>Student Name</td>
+                                                        <td className={'text-center py-2'} style={{backgroundColor : '#FFF2CA'}}>Final Score</td>
                                                         {
                                                             assignment_agreement.map((data, index)=>(
-                                                                <td key={index} className={'text-center'}>{data.name}</td>
+                                                                <td key={index} className={'text-center py-2'}>{data.name}</td>
                                                             ))
                                                         }
                                                     </tr>
@@ -50,8 +51,9 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
                                                     {
                                                         class_student.map((data, index)=>(
                                                             <tr key={index}>
-                                                                <td>{data.user.name}</td>
-                                                                <td className={'text-center align-middle'}>
+                                                                <td className='td-fit-content py-2'>{parseInt(index)+1}</td>
+                                                                <td className='py-2'>{data.user.name}</td>
+                                                                <td className={'text-center align-middle py-2'} style={{backgroundColor : '#FFF2CA'}}>
                                                                     {
                                                                         <>
                                                                             {
@@ -59,7 +61,7 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
                                                                                 <>
                                                                                 {
                                                                                     grade_book_arr[data.id]['final_score'] != null &&
-                                                                                    <span className='badge badge-success rounded px-3 py-2'>{grade_book_arr[data.id]['final_score'].score}</span>
+                                                                                    <p className='m-0'>{grade_book_arr[data.id]['final_score'].score}</p>
                                                                                 }
                                                                                 </>
                                                                             }
@@ -68,7 +70,7 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
                                                                 </td>
                                                                 {
                                                                     assignment_agreement.map((data_agreement, index_agreement)=>(
-                                                                        <td key={index_agreement} className={'text-center align-middle'}>
+                                                                        <td key={index_agreement} className={'text-center align-middle py-2'}>
                                                                             {
                                                                                 grade_book_arr[data.id] != null &&
                                                                                     <>

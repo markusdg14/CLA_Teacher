@@ -422,7 +422,9 @@ export default function CheckAssignmentDetail(){
         var url = ''
         var data_upload = {}
         var method = 'put'
-        console.log(assignment_type)
+
+        var flag = 1
+        
         if(assignment_type === 'quiz'){
             url = '/assessment/assignment'
             data_upload = {
@@ -436,10 +438,16 @@ export default function CheckAssignmentDetail(){
 
             if(rule === 'Numerical'){
                 data_upload.score = numerical_score
+                if(numerical_score === ''){
+                    flag = 0
+                }
             }
             else{
                 if(rule_selected !== ''){
                     data_upload.assessment_rule_detail = {id : rule_selected}
+                }
+                else{
+                    flag = 0
                 }
             }
         }
@@ -460,6 +468,14 @@ export default function CheckAssignmentDetail(){
                     })
                 }
             }
+
+            for(var x in arr_skill){
+                if(arr_skill[x].score === ''){
+                    flag = 0
+                    break
+                }
+            }
+
             url = '/grade/skill'
             data_upload = {
                 class_student : {id : class_student_id},
@@ -483,12 +499,15 @@ export default function CheckAssignmentDetail(){
             }
         }
 
-        var response = await base.request(url, method, data_upload)
-        if(response != null){
-            if(response.status == 'success'){
-                window.location.href = '/check-assignment'
+        if(flag){
+            var response = await base.request(url, method, data_upload)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.href = '/check-assignment'
+                }
             }
         }
+
         set_is_modal_btn_disable(false)
     }
 
