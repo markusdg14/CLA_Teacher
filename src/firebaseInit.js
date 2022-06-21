@@ -13,7 +13,7 @@ var firebaseConfig = {
 };
 
 var flag = 1
-const messaging = ''
+var messaging = ''
 
 if(getOS() === 'Mac'){
   flag = 0
