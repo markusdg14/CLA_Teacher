@@ -69,11 +69,11 @@ export default function Navbar(){
 											{
 												data.dropdown_arr.length > 0 ?
 												<>
-												<a className="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">{data.title}</a>
+												<a className="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '.9rem'}}>{data.title}</a>
 												<div className="dropdown-menu" aria-labelledby="navbarDropdown">
 													{
 														data.dropdown_arr.map((dataDropdown, indexDropdown)=>(
-															<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '')} href={dataDropdown.nav} key={indexDropdown}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676'}}></i>{dataDropdown.title}</a>
+															<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '')} href={dataDropdown.nav} key={indexDropdown} style={{fontSize : '.9rem'}}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676'}}></i>{dataDropdown.title}</a>
 														))
 													}
 												</div>

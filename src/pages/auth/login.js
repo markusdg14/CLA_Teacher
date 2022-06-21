@@ -24,16 +24,23 @@ export default function AuthLogin(){
     useEffect(async ()=>{
         await localStorage.clear()
 
-        if(!isMobileSafari || !isSafari){
-            if(firebase.messaging.isSupported()){
-                await getToken(token=>{
-                    console.log(token)
-                    set_firebaseToken(token)
-                })
+        if(getOS() !== 'Mac'){
+            if(!isMobileSafari || !isSafari){
+                if(firebase.messaging.isSupported()){
+                    await getToken(token=>{
+                        console.log(token)
+                        set_firebaseToken(token)
+                    })
+                }
             }
         }
 
     }, [])
+
+    function getOS(){
+        const os = ['Windows', 'Linux', 'Mac'];
+        return os.find(v=>navigator.appVersion.indexOf(v) >= 0)
+    }
 
     function changeInput(value, index){
         set_error()

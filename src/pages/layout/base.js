@@ -21,6 +21,7 @@ import HomeIndex from '../home';
 import ForgetPassword from '../auth/forgetPass';
 import EditProfile from '../profile/edit';
 import SubjectLessonEdit from '../teaching/subjectLesson/editActivity';
+import ProfileChangePass from '../profile/changePassword';
 
 
 // import Navbar from './navbar'
@@ -85,6 +86,8 @@ export default class BaseLayout extends Base{
 
                     <Route exact path={"/auth/login"} element={<AuthLogin />}></Route>
                     <Route exact path={"/auth/forget-password"} element={<ForgetPassword />}></Route>
+
+                    <Route exact path={"/profile/change-password"} element={<ProfileChangePass />}></Route>
                 </Routes>
               </div>
             </div>

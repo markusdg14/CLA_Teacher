@@ -5,14 +5,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from '../../components/header';
 
 
-export default function EditProfile(){
+export default function ProfileChangePass(){
     var base = new Base()
 
     const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}})
-    const [user_form_arr, set_user_form_arr] = useState([
-        {title : 'Name', type : 'name', input_type : 'text', value : user_data.name},
-        {title : 'Email', type : 'email', input_type : 'email', value : ''},
-        {title : 'Phone Number', type : 'number', input_type : 'text', value : ''},
+    const [change_pass_form_arr, set_change_pass_form_arr] = useState([
+        {title : 'Old Password', type : 'old_password', input_type : 'password', value : ''},
+        {title : 'New Password', type : 'new_password', input_type : 'password', value : ''},
+        {title : 'Retype New Password', type : 'retype_new_password', input_type : 'password', value : ''},
     ])
 
     const [form_alert, set_form_alert] = useState({type : '', message : ''})
@@ -29,16 +29,6 @@ export default function EditProfile(){
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
-
-        set_user_form_arr([
-            {title : 'Name', type : 'name', input_type : 'text', value : check_user.user_data.name},
-            {title : 'Email', type : 'email', input_type : 'email', value : check_user.user_data.email},
-            {title : 'Phone Number', type : 'phone', input_type : 'text', value : check_user.user_data.phone},
-        ])
-
-        base.update_object(user_profile_img, set_user_profile_img, check_user.user_data.image.image_display, 'image_display')
-
-        // set_user_profile_img(check_user.user_data.image)
     }, [])
 
     function backBtn(){
@@ -50,68 +40,47 @@ export default function EditProfile(){
     function changeInput(value, index){
         set_error()
         set_error('', '', 'alert')
-        var data_index = user_form_arr[index]
+        var data_index = change_pass_form_arr[index]
         
-        if(user_form_arr[index].type === 'phone'){
-            var indexValue = value.length - 1
-            if(value.charCodeAt(indexValue) >= 48 && value.charCodeAt(indexValue) <= 57){
-                user_form_arr[index].value = value
-            }
-            else if(indexValue < 0){
-                user_form_arr[index].value = ''
-            }
-        }
-        else{
-            user_form_arr[index].value = value
-        }
-
-
-        base.update_array(user_form_arr, set_user_form_arr, data_index, index)
+        change_pass_form_arr[index].value = value
+        base.update_array(change_pass_form_arr, set_change_pass_form_arr, data_index, index)
     }
 
     async function saveBtn(){
-        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         var flag = 1
-        for(var x in user_form_arr){
-            if(user_form_arr[x].value === ''){
-                set_error(user_form_arr[x].type, user_form_arr[x].title)
+        for(var x in change_pass_form_arr){
+            if(change_pass_form_arr[x].value === ''){
+                set_error(change_pass_form_arr[x].type, change_pass_form_arr[x].title)
                 flag = 0
                 break
-            }
-            if(user_form_arr[x].type === 'email'){
-                if(!user_form_arr[x].value.match(mailformat)){
-                    set_error('email', 'Invalid email format')
-                    flag = 0
-                    break
-                }
             }
         }
 
         if(flag){
-            var url = '/auth/change-profile'
-            var data = {name : '', phone : '',}
-            for(var x in user_form_arr){
-                data[user_form_arr[x].type] = user_form_arr[x].value
+            var url = '/auth/change-password'
+            var data = {new_password : '', old_password : '', retype_new_password : ''}
+            for(var x in change_pass_form_arr){
+                data[change_pass_form_arr[x].type] = change_pass_form_arr[x].value
             }
 
-            set_error('warning', 'Please Wait...', 'alert')
-            set_is_disable_btn(true)
-
-            if(user_profile_img.type === 'new'){
-                data.image = user_profile_img
-                data.image.image = img_data_base
+            if(data.new_password !== data.retype_new_password){
+                set_error('danger', `Password doesn't match`, 'alert')
             }
+            else{
+                set_error('warning', 'Please Wait...', 'alert')
+                set_is_disable_btn(true)
 
-            var response = await base.request(url, 'put', data)
-            if(response != null){
-                set_is_disable_btn(false)
-                if(response.status == 'success'){
-                    set_error('success', 'Success!', 'alert')
-                    window.location.reload()
-                }
-                else{
+                var response = await base.request(url, 'put', data)
+                if(response != null){
                     set_is_disable_btn(false)
-                    set_error('danger', 'Whoops! Something went wrong...', 'alert')
+                    if(response.status == 'success'){
+                        set_error('success', 'Success!', 'alert')
+                        window.location.replace('/profile')
+                    }
+                    else{
+                        set_is_disable_btn(false)
+                        set_error('danger', 'Whoops! Something went wrong...', 'alert')
+                    }
                 }
             }
         }
@@ -124,31 +93,6 @@ export default function EditProfile(){
         else if(error_type === 'alert'){
             set_form_alert({type : type, message : message})
         }
-    }
-
-    function getImgBase(file, callback){
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            callback(reader.result)
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-        };
-    }
-
-    async function changeImage(event){
-        await getImgBase(event.target.files[0], (result)=>{
-            set_img_data_base(result)
-        })
-
-        var img_data = user_profile_img
-        img_data.image_display = URL.createObjectURL(event.target.files[0])
-        img_data.type = 'new'
-
-        base.update_object(user_profile_img, set_user_profile_img, img_data.image_display, 'image_display')
-
-        // set_user_profile_img(img_data)
     }
 
     return(
@@ -179,19 +123,8 @@ export default function EditProfile(){
                                                     <div className={"rounded alert alert-" + (form_alert.type)} role="alert">{form_alert.message}</div>
                                                 }
                                             </div>
-                                            <div className='col-12 mb-4'>
-                                                <div className='row'>
-                                                    <div className='col-auto'>
-                                                        <img src={user_profile_img.image_display} style={{height : '5.5rem', width : '5.5rem', aspectRatio : 1, borderRadius : '5.5rem'}} />
-                                                    </div>
-                                                    <div className='col-auto d-flex align-items-center'>
-                                                        <input type="file" name="photo" accept="image/*" id="file_input" className="d-none" onChange={(event)=>changeImage(event)} /> 
-                                                        <button type='button' className='btn btn-outline-primary rounded px-4 py-2' onClick={()=>base.$('#file_input').trigger('click')}>Edit Image</button>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             {
-                                                user_form_arr.map((data, index)=>(
+                                                change_pass_form_arr.map((data, index)=>(
                                                     <div className={"col-12 form-group m-0" + (index !== 0 ? ' mt-3' : '')} key={index}>
                                                         <label className='text-primary'>{data.title}</label>
                                                         <input type={data.input_type} className="form-control form-control-lg rounded" style={{backgroundColor : '#FFFFFF', border : '1px solid #EAEAEA'}} value={data.value} onChange={(e)=>changeInput(e.target.value, index)} readOnly={(data.type === 'email' ? true : false)} />

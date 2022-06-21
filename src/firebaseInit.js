@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import firebase from 'firebase/app';
 import 'firebase/messaging';
+import {isSafari, isMobileSafari} from 'react-device-detect'
 
 var firebaseConfig = {
   apiKey: "AIzaSyCWw3vmyZeFN3JUY7rC8sp8kT3-zqdspe4",
@@ -11,9 +12,21 @@ var firebaseConfig = {
   appId: "1:323699281462:web:775b4b076afafa5f4b1297"
 };
 
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
 var flag = 1
+const messaging = ''
+
+if(getOS() === 'Mac'){
+  flag = 0
+}
+else{
+  firebase.initializeApp(firebaseConfig);
+  messaging = firebase.messaging();
+}
+
+function getOS(){
+  const os = ['Windows', 'Linux', 'Mac'];
+  return os.find(v=>navigator.appVersion.indexOf(v) >= 0)
+}
 
 export const getToken = async (setToken) => {
 

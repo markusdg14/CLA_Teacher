@@ -76,7 +76,7 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
                                                                                     <>
                                                                                         {
                                                                                             grade_book_arr[data.id][data_agreement.id] != null &&
-                                                                                            <span className='badge badge-success rounded px-3 py-2'>{grade_book_arr[data.id][data_agreement.id].score}</span>
+                                                                                            <p className='m-0'>{grade_book_arr[data.id][data_agreement.id].score}</p>
                                                                                         }
                                                                                     </>
                                                                             }
