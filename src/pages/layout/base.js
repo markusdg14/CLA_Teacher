@@ -22,6 +22,7 @@ import ForgetPassword from '../auth/forgetPass';
 import EditProfile from '../profile/edit';
 import SubjectLessonEdit from '../teaching/subjectLesson/editActivity';
 import ProfileChangePass from '../profile/changePassword';
+import NotificationIndex from '../notification';
 
 
 // import Navbar from './navbar'
@@ -88,6 +89,8 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/auth/forget-password"} element={<ForgetPassword />}></Route>
 
                     <Route exact path={"/profile/change-password"} element={<ProfileChangePass />}></Route>
+
+                    <Route exact path={"/notification"} element={<NotificationIndex />}></Route>
                 </Routes>
               </div>
             </div>

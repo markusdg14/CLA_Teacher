@@ -22,12 +22,14 @@ export default function Navbar(){
 			// {title : 'Student Talent Bank', nav : '', icon : 'bi bi-file-earmark-bar-graph-fill'},
 		]},
 		{title : 'Profile', icon : '', url : '/profile', dropdown_arr : []},
-		{title : '', icon : 'bi bi-bell-fill', url : '/notification', dropdown_arr : []},
+		// {title : '', icon : 'bi bi-bell-fill', url : '/notification', dropdown_arr : []},
 	])
 
+	const [unread_notif, set_unread_notif] = useState(0)
+
 	useEffect(()=>{
-		
-	})
+		get_notif_unread()
+	}, [])
 
 	function useQuery() {
 		const { search } = useLocation();
@@ -54,6 +56,16 @@ export default function Navbar(){
 			}
 		}
 	}
+
+	async function get_notif_unread(){
+        var url = '/notification/unread'
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                set_unread_notif(response.data)
+            }
+        }
+    }
 
 	return(
 		<>
@@ -90,6 +102,15 @@ export default function Navbar(){
 										</li>
 									))
 								}
+								<li className={"nav-item ml-0 ml-xl-5 ml-lg-4" + (pathname === '/notif' ? ' nav_active' : '')}>
+									<a className="nav-link js-scroll-trigger text-primary position-relative" href='/notification' style={{ fontSize: '.9rem' }}>
+										{
+											unread_notif > 0 &&
+											<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '.5rem', top : '.5rem' }}></i>
+										}
+										<i className="bi bi-bell-fill text-primary" style={{ fontSize: '1rem' }}></i>
+									</a>
+								</li>
 							</ul>
 						</div>                        
 					</div>
@@ -100,6 +121,13 @@ export default function Navbar(){
 						<a className="navbar-brand m-0" href="/"><img src={base.img_logo_text} className={'header_logo'} alt="ChristianLifeAcademy-Logo" style={{ width: '12rem' }} /></a>
 					</div>
 					<div className="d-flex align-items-center">
+						<button className="navbar-toggler navbar-toggler-right border-0 p-0 position-relative" type="button" onClick={() => window.location.href = '/notification'}>
+							{
+								unread_notif > 0 &&
+								<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '.625rem', top : 0 }}></i>
+							}
+							<i className="bi bi-bell-fill text-primary mr-2" style={{ fontSize: '1.25rem' }}></i>
+						</button>
 						<button className="navbar-toggler navbar-toggler-right border-0 p-0" type="button" onClick={() => sidebar(true)}>
 							<i className="fas fa-bars text-primary" style={{ fontSize: '1.75rem' }}></i>
 						</button>
