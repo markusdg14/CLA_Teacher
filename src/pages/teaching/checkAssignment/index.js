@@ -11,7 +11,7 @@ export default function CheckAssignment(){
 
 	const [tab_arr, set_tab_arr] = useState([
 		{title : 'Need to Check', id : 'check', is_active : true},
-		{title : 'All Assignment', id : 'all', is_active : false},
+		{title : 'All Activity', id : 'all', is_active : false},
 	])
 	const [active_tab, set_active_tab] = useState('check')
 	const [data_type, set_data_type] = useState('on_checking')
@@ -96,7 +96,7 @@ export default function CheckAssignment(){
 		<div className='row'>
 
 			<div className='col-12'>
-				<Header title={'Check Assignment'} user_data={user_data} />
+				<Header title={'Check Activity'} user_data={user_data} />
 			</div>
 
 			<div className='col-12 mt-5 pt-4'>
@@ -145,7 +145,7 @@ export default function CheckAssignment(){
 																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Nama Student</th>
 																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Grade</th>
 																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Subject Lesson</th>
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Assignment</th>
+																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Activity</th>
 																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Submitted</th>
 																		{
 																			active_tab === 'all' &&
@@ -181,7 +181,7 @@ export default function CheckAssignment(){
 																					</td>
 																				}
 																				<td className='td-fit-content align-middle'>
-																					<a href={'/check-assignment/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
+																					<a href={'/check-activity/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
 																				</td>
 																			</tr>
 																		))

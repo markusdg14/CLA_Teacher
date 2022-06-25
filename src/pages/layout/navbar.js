@@ -12,7 +12,7 @@ export default function Navbar(){
 			{title : 'Teacher Tracker', nav : '/teacher-tracker', icon : 'bi bi-pie-chart-fill'},
 			{title : 'Send Announcement', nav : '/announcement', icon : 'bi bi-megaphone-fill'},
 			{title : 'Subject & Lesson', nav : '/subject-lesson', icon : 'bi bi-file-earmark-bar-graph-fill'},
-			{title : 'Check Assignment', nav : '/check-assignment', icon : 'bi bi-ui-checks'},
+			{title : 'Check Activity', nav : '/check-activity', icon : 'bi bi-ui-checks'},
 			{title : 'Calendar', nav : '/calendar', icon : 'bi bi-calendar2-week-fill'},
 			{title : 'Grade Book', nav : '/grade-book', icon : 'bi bi-folder-fill'},
 		]},

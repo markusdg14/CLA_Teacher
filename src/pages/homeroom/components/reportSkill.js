@@ -43,7 +43,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 										{
 											legend_arr.map((data, index)=>(
 												<div className='col-12' key={index}>
-													<p className='m-0'>{data.start_score} - {data.end_score} : {data.name}</p>
+													<p className='m-0'>{data.legend} : {data.name}</p>
 												</div>
 											))
 										}
@@ -95,7 +95,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																			skill_ctg_arr.map((data_category, index_category)=>(
 																				<>
 																				<tr key={index_category}>
-																					<td className='p-0' colSpan={skill_project_arr.length + 1}>
+																					<td className='p-0' colSpan={skill_project_arr.length + 1} style={{backgroundColor : '#F3F4F6'}}>
 																						<div className='px-2 py-0 d-flex align-items-center' style={{height : '3rem'}}>
 																							<p className='m-0' style={{fontFamily : 'InterBold'}}>{data_category.name}</p>
 																						</div>
@@ -103,35 +103,46 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																				</tr>
 																				{
 																					skill_list_arr.map((data_skill, index_skill)=>(
-																						<tr key={index_skill}>
-																							<td className='text-primary'><i class="bi bi-circle-fill mr-2" style={{fontSize : '.75rem'}}></i> {data_skill.name}</td> 
-																							
-																							{
-																								skill_project_arr.map((data_project, index_project)=>(
-																									<td className='text-center px-0' style={{width : '6rem'}} key={index_project}>
-																										<div className="">
-																											{
-																												skill_grade_arr[data.id] != null &&
-																												<>
-																													{
-																														skill_grade_arr[data.id][data_category.id][data_skill.id] != null &&
-																														<>
+																						<>
+																						{
+																							data_skill.skill_category_id === data_category.id &&
+																							<tr key={index_skill}>
+																								<td className='text-primary pl-4'>{data_skill.name}</td> 
+																								
+																								{
+																									skill_project_arr.map((data_project, index_project)=>(
+																										<td className='text-center px-0' style={{width : '6rem'}} key={index_project}>
+																											<div className="">
+																												{
+																													skill_grade_arr[data.id] != null &&
+																													<>
 																														{
-																															skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id] &&
-																															<span className={"badge badge-pill p-2 px-3 rounded badge-success"}>{skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id].score}</span>
+																															skill_grade_arr[data.id][data_category.id] != null &&
+																															<>
+																																{
+																																	skill_grade_arr[data.id][data_category.id][data_skill.id] != null &&
+																																	<>
+																																	{
+																																		skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id] &&
+																																		<p className={"m-0"}>{skill_grade_arr[data.id][data_category.id][data_skill.id][data_project.id].score}</p>
+																																	}
+																																	</>
+																																}
+																															</>
 																														}
-																														</>
-																													}
-																												</>
-																											}
-																										</div>
-																									</td>
-																								))
-																							}
-																						</tr>
+																													</>
+																												}
+																											</div>
+																										</td>
+																									))
+																								}
+																							</tr>
+																						}
+																						</>
 																					))
 																				}
-																				<tr style={{backgroundColor : '#FFF8E5'}}>
+
+																				<tr style={{backgroundColor : '#EBEFE2'}}>
 																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Average</td>
 																					{
 																						skill_project_arr.map((data_project, index_project)=>(
@@ -142,7 +153,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																										{
 																											skill_grade_book_arr[data.id][data_project.id] != null &&
 																											<>
-																											<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data.id][data_project.id].average}</span>
+																											<p className={"m-0"}>{parseFloat(skill_grade_book_arr[data.id][data_project.id].average).toFixed(2)}</p>
 																											</>
 																										}
 																										{
@@ -154,7 +165,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																					}
 																				</tr>
 
-																				<tr style={{backgroundColor : '#FFF8E5'}}>
+																				<tr style={{backgroundColor : '#EBEFE2'}}>
 																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Score</td>
 																					{
 																						skill_project_arr.map((data_project, index_project)=>(
@@ -167,7 +178,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																											<>
 																											{
 																												skill_grade_book_arr[data.id][data_project.id].grade_book != null &&
-																												<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.score}</span>
+																												<p className={"m-0"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.score}</p>
 																											}
 																											</>
 																										}
@@ -180,7 +191,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																					}
 																				</tr>
 
-																				<tr style={{backgroundColor : '#F7F7F7'}}>
+																				<tr>
 																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Legend of Mark</td>
 																					{
 																						skill_project_arr.map((data_project, index_project)=>(
@@ -193,7 +204,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																											<>
 																											{
 																												skill_grade_book_arr[data.id][data_project.id].grade_book != null &&
-																												<span className={"badge badge-pill p-2 px-3 rounded badge-dark"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.assessment_range.legend}</span>
+																												<p className={"m-0"}>{skill_grade_book_arr[data.id][data_project.id].grade_book.assessment_range.legend}</p>
 																											}
 																											</>
 																										}
@@ -205,7 +216,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																						))
 																					}
 																				</tr>
-																				<tr style={{backgroundColor : '#F7F7F7'}}>
+																				<tr>
 																					<td className='align-middle text-uppercase' style={{color : '#8A92A6'}}>Teacher Notes</td>
 																					{
 																						skill_project_arr.map((data_project, index_project)=>(

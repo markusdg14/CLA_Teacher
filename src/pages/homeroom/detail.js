@@ -218,30 +218,31 @@ export default function HomeroomDetail(){
 
                     var arr_schedule = []
                     var data_schedule_arr = data.arr_schedule
-                    for(let day of data.arr_day){
-                        for(let time of data.arr_time){
-                            var time_moment = base.moment(time.id, 'HH:mm')
-                            if(arr_schedule[day.id] == null)
-                                arr_schedule[day.id] = []
-                            if(arr_schedule[day.id][time.name] == null)
-                                arr_schedule[day.id][time.name] = {}
+                    // for(let day of data.arr_day){
+                    //     for(let time of data.arr_time){
+                    //         var time_moment = base.moment(time.id, 'HH:mm')
+                    //         if(arr_schedule[day.id] == null)
+                    //             arr_schedule[day.id] = []
+                    //         if(arr_schedule[day.id][time.id] == null)
+                    //             arr_schedule[day.id][time.id] = {}
 
-                            for(var x in data_schedule_arr){
-                                if(data_schedule_arr[x][time.id] != null){
-                                    var start_time = base.moment(data_schedule_arr[x][time.id].start_time).format('HH:mm')
-                                    start_time = base.moment(start_time, 'HH:mm')
-                                    var end_time = base.moment(data_schedule_arr[x][time.id].end_time).format('HH:mm')
-                                    end_time = base.moment(end_time, 'HH:mm')
-                                    if(data_schedule_arr[x][time.id].day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
-                                        arr_schedule[day.id][time.name] = data_schedule_arr[x][time.id]
-                                        break
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //         for(var x in data_schedule_arr){
+                    //             if(data_schedule_arr[x][time.id] != null){
+                    //                 var start_time = base.moment(data_schedule_arr[x][time.id].start_time).format('HH:mm')
+                    //                 start_time = base.moment(start_time, 'HH:mm')
+                    //                 var end_time = base.moment(data_schedule_arr[x][time.id].end_time).format('HH:mm')
+                    //                 end_time = base.moment(end_time, 'HH:mm')
+                    //                 if(data_schedule_arr[x][time.id].day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
+                    //                     arr_schedule[day.id][time.id] = data_schedule_arr[x][time.id]
+                    //                     break
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
 
-                    set_schedule_arr(arr_schedule)
+
+                    set_schedule_arr(data_schedule_arr)
 
                     var assign_teacher = data.arr_assign_teacher
                     var arr_school_subject = []
@@ -259,6 +260,7 @@ export default function HomeroomDetail(){
                         subject_data_arr[x].is_show = false
                     }
                     subject_data_arr[0].is_show = true
+                    console.log(data.arr_class_student)
                     set_grade_subject_arr(subject_data_arr)
                     set_grade_student_arr(data.arr_class_student)
                     set_grade_book_dtl_arr(data.arr_grade_book_detail)

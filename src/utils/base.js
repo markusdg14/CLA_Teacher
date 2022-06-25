@@ -137,10 +137,14 @@ export default class Base extends Component{
 					response.data.image = {image_display : image_display, image : '', original_rotation : 0, type : ''}
 					return {user_data : response.data}
 				}
+				else{
+					localStorage.clear()
+					window.location.href = '/auth/login'	
+				}
 			}
 			else{
-				// localStorage.clear()
-				// window.location.href = '/auth/login'
+				localStorage.clear()
+				window.location.href = '/auth/login'
 			}
 		}
 	}

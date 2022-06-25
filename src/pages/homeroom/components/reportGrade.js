@@ -47,7 +47,7 @@ export default function HomeroomReportGrade({grade_subject_arr, grade_student_ar
                                                                         <tr>
                                                                             <th></th>
                                                                             {
-                                                                                data.arr_assignment.data.map((data_assignment, index_assignment)=>(
+                                                                                data.arr_assignment.map((data_assignment, index_assignment)=>(
                                                                                     <th className='text-center'>{data_assignment.name}</th>
                                                                                 ))
                                                                             }
@@ -60,7 +60,7 @@ export default function HomeroomReportGrade({grade_subject_arr, grade_student_ar
                                                                                     <td className='td-fit-content'>{data_student.user.name}</td>
 
                                                                                     {
-                                                                                        data.arr_assignment.data.map((data_assignment, index_assignment)=>(
+                                                                                        data.arr_assignment.map((data_assignment, index_assignment)=>(
                                                                                             <>
                                                                                                 {
                                                                                                     grade_book_dtl_arr[data.id] != null ?

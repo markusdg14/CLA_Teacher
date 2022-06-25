@@ -51,7 +51,7 @@ export default function TrackerIndex(){
 		{title : 'OK', color : '#60B158'},
 		{title : 'MJ', color : '#CF91FF'},
 		{title : 'MN', color : '#FF973C'},
-		{title : 'SK', color : '#5EB2FF'},
+		{title : 'S', color : '#5EB2FF'},
 		{title : 'HS', color : '#FC5A5A'},
 	])
 

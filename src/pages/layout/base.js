@@ -61,13 +61,13 @@ export default class BaseLayout extends Base{
                 <Navbar />
               }
 
-              <div className='container pb-5 mb-5 mt-4 px-0'>
+              <div className='container pb-5 mb-5 mt-4'>
                 <Routes>
                     <Route exact path={"/"} element={<HomeIndex />}></Route>
 
                     <Route exact path={"/teacher-tracker"} element={<TrackerIndex />}></Route>
-                    <Route exact path={"/check-assignment"} element={<CheckAssignment />}></Route>
-                    <Route exact path={"/check-assignment/detail"} element={<CheckAssignmentDetail />}></Route>
+                    <Route exact path={"/check-activity"} element={<CheckAssignment />}></Route>
+                    <Route exact path={"/check-activity/detail"} element={<CheckAssignmentDetail />}></Route>
 
                     <Route exact path={"/subject-lesson"} element={<SubjectLesson />}></Route>
                     <Route exact path={"/subject-lesson/edit-activity"} element={<SubjectLessonEdit />}></Route>

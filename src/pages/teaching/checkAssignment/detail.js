@@ -157,14 +157,14 @@ export default function CheckAssignmentDetail(){
                             data.assignment_score = data.assessment_rule_detail.name
     
                         if(data.score != null){
-                            data.assignment_score = data.score
+                            data.assignment_score = 'N/A'
                         }
                     }
 
                     set_assignment_info_arr([
                         {title : 'Student Name', value : data.user.name}, {title : 'Grade', value : data.assignment_agreement.assignment_group.grade.name},
                         {title : 'Subject', value : data.assignment_agreement.assignment_group.subject.name}, {title : 'Lesson', value : data.assignment_agreement.assignment_group.lesson.name},
-                        {title : 'Assignment Title', value : data.assignment_agreement.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
+                        {title : 'Activity Title', value : data.assignment_agreement.name}, {title : 'Date Submitted', value : submitted_date_format}, ,
                     ])
     
                     set_rule_id(data.assignment_agreement.assessment_rule_id)
@@ -557,7 +557,7 @@ export default function CheckAssignmentDetail(){
         <div className='row'>
 
             <div className='col-12'>
-                <Header title={'Check Assignment'} user_data={user_data} />
+                <Header title={'Check Activity'} user_data={user_data} />
             </div>
 
             <div className='col-12 mt-5 pt-4'>
@@ -587,7 +587,7 @@ export default function CheckAssignmentDetail(){
 
                             </div>
                             <div className='col-12 p-4 bg-white rounded shadow-sm mt-2'>
-                                <p className='m-0 text-primary'>Assignment Status</p>
+                                <p className='m-0 text-primary'>Activity Status</p>
                                 <p className='m-0 text-secondary' style={{fontFamily : 'InterBold'}}>{assignment_status}</p>
                             </div>
                         </div>
@@ -676,111 +676,114 @@ export default function CheckAssignmentDetail(){
                 </>
             }
 
-
-
-            <div className='col-12 mt-5'>
-                <div className="card rounded shadow-sm">
-                    <div className={"card-body p-0"}>
-                        <div className={'row m-0'}>
-                            <div className='col-12 p-3 pt-4'>
-                                <div className='row m-0'>
-                                    <div className='col'>
-                                        <label>Grade</label>
-                                        <SelectOption data_arr={grade_arr} selected={grade_selected} title={'Grade'} changeInput={(value)=>changeFilter(value, 'grade')} />
-                                    </div>
-                                    <div className='col'>
-                                        <label>Subject</label>
-                                        <SelectOption data_arr={subject_arr} selected={subject_selected} title={'Subject'} changeInput={(value)=>changeFilter(value, 'subject')} />
-                                    </div>
-                                    <div className='col d-flex align-items-end'>
-                                        <button className='btn btn-primary rounded w-100' onClick={()=>filterBtn()}>Filter</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-
-            {
-                list_check_assignment_arr.length > 0 &&
-                <div className='col-12 mt-3'>
-                    <div className="card rounded shadow-sm">
-                        <div className={"card-body p-0"}>
-                            <div className={'row m-0'}>
-                                <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-                                <div className='col-12 p-3 py-4'>
-                                    <div className='row m-0'>
-                                        <div className='col-12 mb-3'>
-                                            <h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>List Check Assignment</h5>
-                                        </div>
-
-                                        <div className='col-12 p-0'>
-                                            <div className='row'>
-
-                                                {
-                                                    is_loading_list ?
-                                                    <div className='col-12 text-center'>
-                                                        <h4>Loading...</h4>
-                                                    </div>
-                                                    :
-                                                    <>
-                                                        {
-                                                            is_filter &&
-                                                            <>
-                                                                {
-                                                                    list_check_assignment_arr.length > 0 ?
-                                                                    <>
-                                                                    {
-                                                                        list_check_assignment_arr.map((data, index)=>(
-                                                                            <div className={'col-6 p-3 list_check_assignment' + (index % 2 === 0 ? ' border-right' : '')} onClick={()=>viewDetail(index)}>
-                                                                                <div className='row m-0'>
-                                                                                    <div className='col-auto d-flex align-items-center'>
-                                                                                        <img src={data.user.image_display} style={{height : '4rem', width : '4rem', aspectRatio : 1, borderRadius : '4rem'}} />
-                                                                                    </div>
-                                                                                    <div className='col-auto d-flex align-items-center'>
-                                                                                        <div>
-                                                                                            <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.user.name}</p>
-                                                                                            {
-                                                                                                data.assignment_agreement != null ?
-                                                                                                <p className='m-0'>{data.assignment_agreement.name} | {data.assignment_agreement.assignment_group.subject.name} | {data.assignment_agreement.assignment_group.lesson.name}</p>
-                                                                                                :
-                                                                                                data.task_agreement != null ?
-                                                                                                <p className='m-0'>{data.task_agreement.title} | {data.task_agreement.project_agreement.subject.name}</p>
-                                                                                                : <></>
-                                                                                            }
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className='col d-flex align-items-center justify-content-end mt-3 mt-lg-0'>
-                                                                                        <p className='m-0'>{base.moment(data.created_at).format('DD/MM HH:mm')}</p>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        ))
-                                                                    }
-                                                                    </>
-                                                                    :
-                                                                    <div className='col-12 text-center'>
-                                                                        <h4>No Data</h4>
-                                                                    </div>
-                                                                }
-                                                            </>
-                                                        }
-                                                    </>
-                                                }
-
+            <div className='col-12 mt-5' style={{borderTop : '1px solid #999999'}}>
+                <div className='row'>
+                    <div className='col-12 pt-5'>
+                        <div className="card rounded shadow-sm">
+                            <div className={"card-body p-0"}>
+                                <div className={'row m-0'}>
+                                    <div className='col-12 p-3 pt-4'>
+                                        <div className='row m-0'>
+                                            <div className='col'>
+                                                <label>Grade</label>
+                                                <SelectOption data_arr={grade_arr} selected={grade_selected} title={'Grade'} changeInput={(value)=>changeFilter(value, 'grade')} />
+                                            </div>
+                                            <div className='col'>
+                                                <label>Subject</label>
+                                                <SelectOption data_arr={subject_arr} selected={subject_selected} title={'Subject'} changeInput={(value)=>changeFilter(value, 'subject')} />
+                                            </div>
+                                            <div className='col d-flex align-items-end'>
+                                                <button className='btn btn-primary rounded w-100' onClick={()=>filterBtn()}>Filter</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                
                             </div>
-                            
                         </div>
                     </div>
+
+                    {
+                        list_check_assignment_arr.length > 0 &&
+                        <div className='col-12 mt-3'>
+                            <div className="card rounded shadow-sm">
+                                <div className={"card-body p-0"}>
+                                    <div className={'row m-0'}>
+                                        <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+                                        <div className='col-12 p-3 py-4'>
+                                            <div className='row m-0'>
+                                                <div className='col-12 mb-3'>
+                                                    <h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>List Check Activity</h5>
+                                                </div>
+
+                                                <div className='col-12 p-0'>
+                                                    <div className='row'>
+
+                                                        {
+                                                            is_loading_list ?
+                                                            <div className='col-12 text-center'>
+                                                                <h4>Loading...</h4>
+                                                            </div>
+                                                            :
+                                                            <>
+                                                                {
+                                                                    is_filter &&
+                                                                    <>
+                                                                        {
+                                                                            list_check_assignment_arr.length > 0 ?
+                                                                            <>
+                                                                            {
+                                                                                list_check_assignment_arr.map((data, index)=>(
+                                                                                    <div className={'col-6 p-3 list_check_assignment' + (index % 2 === 0 ? ' border-right' : '')} onClick={()=>viewDetail(index)}>
+                                                                                        <div className='row m-0'>
+                                                                                            <div className='col-auto d-flex align-items-center'>
+                                                                                                <img src={data.user.image_display} style={{height : '4rem', width : '4rem', aspectRatio : 1, borderRadius : '4rem'}} />
+                                                                                            </div>
+                                                                                            <div className='col-auto d-flex align-items-center'>
+                                                                                                <div>
+                                                                                                    <p className='m-0 text-primary' style={{fontFamily : 'InterBold'}}>{data.user.name}</p>
+                                                                                                    {
+                                                                                                        data.assignment_agreement != null ?
+                                                                                                        <p className='m-0'>{data.assignment_agreement.name} | {data.assignment_agreement.assignment_group.subject.name} | {data.assignment_agreement.assignment_group.lesson.name}</p>
+                                                                                                        :
+                                                                                                        data.task_agreement != null ?
+                                                                                                        <p className='m-0'>{data.task_agreement.title} | {data.task_agreement.project_agreement.subject.name}</p>
+                                                                                                        : <></>
+                                                                                                    }
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                            <div className='col d-flex align-items-center justify-content-end mt-3 mt-lg-0'>
+                                                                                                <p className='m-0'>{base.moment(data.created_at).format('DD/MM HH:mm')}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ))
+                                                                            }
+                                                                            </>
+                                                                            :
+                                                                            <div className='col-12 text-center'>
+                                                                                <h4>No Data</h4>
+                                                                            </div>
+                                                                        }
+                                                                    </>
+                                                                }
+                                                            </>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
-            }
+            </div>
+
 
             <ModalSubmit
                 assignment_type={assignment_type}

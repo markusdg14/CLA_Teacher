@@ -25,6 +25,8 @@ export default function HomeroomIndex(){
         {title : 'Past Homeroom Class', type : 'past', is_show : false},
     ])
 
+    const [is_under_construction] = useState(false)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -32,7 +34,9 @@ export default function HomeroomIndex(){
 
     useEffect(async ()=>{
         if(user_data.id !== ''){
-            // get_data('current')
+            if(!is_under_construction){
+                get_data('current')
+            }
             // get_data('past')
         }
     }, [user_data])
@@ -81,38 +85,45 @@ export default function HomeroomIndex(){
                 <Header title={'Homeroom'} user_data={user_data} />
             </div>
 
-            <UnderConstruction />
-
-            {/* {
-                data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
-                <div className='col-12 mt-5 pt-5'>
-                    <NoData />
-                </div>
+            {
+                is_under_construction ?
+                <UnderConstruction />
                 :
                 <>
-                <div className='col-12 mt-5 pt-4'>
-                    <div className="card rounded shadow-sm">
-                        <div className={"card-body p-0"}>
-                            <div className={'row m-0'}>
-                                <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-                                <div className='col-12 p-3 pt-4'>
-                                    <div className='row m-0'>
-                                        {
-                                            data_type_arr.map((dataType, indexType)=>(
-                                                <div className={'col-12' + (indexType > 0 ? ' mt-3' : '')} key={indexType}>
-                                                    <ActiveUnactiveData collapseType={()=>collapseType(indexType)} dataType={dataType} data_arr={(dataType.type === 'active' ? data_active_arr : data_unactive_arr)} viewType={'homeroom'} toDetail={(index)=>toDetail(index, dataType.type)} />
-                                                </div>
-                                            ))
-                                        }
+                    {
+                        data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
+                        <div className='col-12 mt-5 pt-5'>
+                            <NoData />
+                        </div>
+                        :
+                        <>
+                        <div className='col-12 mt-5 pt-4'>
+                            <div className="card rounded shadow-sm">
+                                <div className={"card-body p-0"}>
+                                    <div className={'row m-0'}>
+                                        <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+                                        <div className='col-12 p-3 pt-4'>
+                                            <div className='row m-0'>
+                                                {
+                                                    data_type_arr.map((dataType, indexType)=>(
+                                                        <div className={'col-12' + (indexType > 0 ? ' mt-3' : '')} key={indexType}>
+                                                            <ActiveUnactiveData collapseType={()=>collapseType(indexType)} dataType={dataType} data_arr={(dataType.type === 'active' ? data_active_arr : data_unactive_arr)} viewType={'homeroom'} toDetail={(index)=>toDetail(index, dataType.type)} />
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
                                     </div>
+                                    
                                 </div>
                             </div>
-                            
                         </div>
-                    </div>
-                </div>
+                        </>
+                    }
                 </>
-            } */}
+            }
+
+
 
 
         </div>
