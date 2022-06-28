@@ -45,10 +45,12 @@ export default function SubjectLesson(){
     const [assignment_submitted_id, set_assignment_submitted_id] = useState('')
     const [activity_subject_selected, set_activity_subject_selected] = useState('')
     const [rule_detail_arr, set_rule_detail_arr] = useState([])
-    const [radio_project_selected, set_radio_project_selected] = useState('revision')
+    const [radio_project_selected, set_radio_project_selected] = useState('major_revision')
     const [class_student_id, set_class_student_id] = useState('')
 
     const [selected_academic_year, set_selected_academic_year] = useState('')
+
+    const [is_student_online_selected, set_is_student_online_selected] = useState(false)
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -317,6 +319,8 @@ export default function SubjectLesson(){
             if(activity_assessment_rule_selected !== ''){
                 get_grade_skill()
                 get_rule()
+                set_grade_skill_avg(0)
+                set_grade_skill_total_score(0)
                 base.$('#modalSubmit').modal('show')
             }
         }
@@ -361,6 +365,7 @@ export default function SubjectLesson(){
         var status = status_selected.status
         var assignment_agreement = data_arr[index].arr_assignment_agreement[index_assignment]
         var class_student = assignment_agreement.arr_class_student[index_class_student]
+        set_is_student_online_selected(class_student.is_online)
         if(data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted != null){
             
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
@@ -417,12 +422,34 @@ export default function SubjectLesson(){
         var url = ''
         var data_upload = {}
         var method = 'put'
+        var flag = 1
+
         if(activity_type_selected === 'quiz'){
             url = '/assessment/assignment'
             data_upload = {
                 id : assignment_submitted_id,
                 comment : teacher_notes,
             }
+
+            var status = ''
+
+            if(!is_student_online_selected){
+                status = 'done'
+            }
+            else{
+                if(radio_project_selected === 'major_revision'){
+                    status = 'need_much_correction'
+                }
+                else if(radio_project_selected === 'minor_revision'){
+                    status = 'need_correction'
+                }
+                else{
+                    status = 'done'
+                }
+            }
+
+
+            data_upload.status = status
 
             if(rule === 'Numerical'){
                 data_upload.score = numerical_score
@@ -450,6 +477,18 @@ export default function SubjectLesson(){
                     })
                 }
             }
+
+            for(var x in arr_skill){
+                if(arr_skill[x].score === ''){
+                    flag = 0
+                    break
+                }
+            }
+
+            if(teacher_notes === ''){
+                flag = 0
+            }
+
             url = '/grade/skill'
             data_upload = {
                 class_student : {id : class_student_id},
@@ -461,7 +500,24 @@ export default function SubjectLesson(){
         }
         else if(activity_type_selected === 'upload'){
             url = '/assessment/assignment'
-            var status = (radio_project_selected === 'revision' ? 'need_correction' : 'done')
+            
+            var status = ''
+
+            if(!is_student_online_selected){
+                status = 'done'
+            }
+            else{
+                if(radio_project_selected === 'major_revision'){
+                    status = 'need_much_correction'
+                }
+                else if(radio_project_selected === 'minor_revision'){
+                    status = 'need_correction'
+                }
+                else{
+                    status = 'done'
+                }
+            }
+
             data_upload = {
                 id : assignment_submitted_id,
                 status : status,
@@ -469,15 +525,21 @@ export default function SubjectLesson(){
             }
         }
 
-        var response = await base.request(url, method, data_upload)
-        if(response != null){
-            if(response.status == 'success'){
-                filterBtn()
-                base.$('#modalSubmit').modal('hide')
+        if(flag){
+            var response = await base.request(url, method, data_upload)
+            if(response != null){
+                if(response.status == 'success'){
+                    filterBtn()
+                    base.$('#modalSubmit').modal('hide')
+                }
             }
         }
+
         set_is_modal_btn_disable(false)
     }
+
+    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
+    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
 
     function changeScore(index, index_skill, val){
         var data_index = grade_skill_arr[index]
@@ -490,6 +552,22 @@ export default function SubjectLesson(){
             skill_data[index_skill].score = ''
         }
 
+        var avg = 0
+        var total_score = 0
+        var total_data = 0
+        for(var x in grade_skill_arr){
+            var arr_skill = grade_skill_arr[x].arr_skill
+            for(var y in arr_skill){
+                if(arr_skill[y].score !== ''){
+                    total_score += parseInt(arr_skill[y].score)
+                }
+            }
+            total_data += arr_skill.length
+        }
+        
+        avg = total_score / total_data
+        set_grade_skill_avg(parseFloat(avg).toFixed(2))
+        set_grade_skill_total_score((parseFloat(avg) / 5) * 100)
         base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
     }
 
@@ -735,6 +813,9 @@ export default function SubjectLesson(){
                 teacher_notes={teacher_notes}
                 set_radio_project={(value)=>changeRadioProject(value)}
                 viewFrom={'subject-lesson'}
+                is_student_online={is_student_online_selected}
+                grade_skill_avg={grade_skill_avg}
+                grade_skill_total_score={grade_skill_total_score}
             />
         </div>
     )

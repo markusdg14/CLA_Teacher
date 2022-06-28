@@ -119,6 +119,7 @@ export default function HomeroomDetail(){
     }, [user_data])
 
     useEffect(async ()=>{
+        console.log(header_selected)
         if(header_selected !== 'report_card_skill' && header_selected !== 'attendance_reward'){
             get_data()
         }

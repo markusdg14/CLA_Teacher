@@ -63,9 +63,11 @@ export default function CheckAssignmentDetail(){
 
     const [student_submission, set_student_submission] = useState('')
 
-    const [radio_project_selected, set_radio_project_selected] = useState('revision')
+    const [radio_project_selected, set_radio_project_selected] = useState('major_revision')
 
     const [pdf_blob, set_pdf_blob] = useState(null)
+
+    const [is_student_online, set_is_student_online] = useState(false)
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -123,6 +125,8 @@ export default function CheckAssignmentDetail(){
                 set_assignment_status(data.assessment_status.name)
                 set_assignment_status_data(data.assessment_status.data)
 
+                set_is_student_online(data.user.current_class_student.is_online)
+
                 data.assignment_score = '-'
 
                 var activity_type1 = 'assignment'
@@ -150,6 +154,8 @@ export default function CheckAssignmentDetail(){
                             notes = skill_category[0].arr_skill[0].grade_skill.comment
                             set_grade_skill_arr(skill_category)
                             set_teacher_notes(notes)
+
+                            console.log(skill_category)
                         }
                     }
                     else{
@@ -186,6 +192,7 @@ export default function CheckAssignmentDetail(){
                         if(data.assessment_status.data === 'done'){
                             var skill_category = data.arr_skill_category
                             var notes = ''
+                            console.log(skill_category)
                             for(var x in skill_category){
                                 var skill = skill_category[x].arr_skill
                                 for(var y in skill){
@@ -195,6 +202,7 @@ export default function CheckAssignmentDetail(){
                             notes = skill_category[0].arr_skill[0].grade_skill.comment
                             set_grade_skill_arr(skill_category)
                             set_teacher_notes(notes)
+
                         }
                     }
                     else {
@@ -326,7 +334,7 @@ export default function CheckAssignmentDetail(){
     }
 
     function backBtn(){
-        window.location.href = '/check-assignment'
+        window.location.href = '/check-activity'
     }
 
     function filterBtn(){
@@ -436,6 +444,26 @@ export default function CheckAssignmentDetail(){
                 }
             }
 
+            var status = ''
+
+            if(!is_student_online){
+                status = 'done'
+            }
+            else{
+                if(radio_project_selected === 'major_revision'){
+                    status = 'need_much_correction'
+                }
+                else if(radio_project_selected === 'minor_revision'){
+                    status = 'need_correction'
+                }
+                else{
+                    status = 'done'
+                }
+            }
+
+            data_upload.status = status
+
+
             if(rule === 'Numerical'){
                 data_upload.score = numerical_score
                 if(numerical_score === ''){
@@ -450,6 +478,8 @@ export default function CheckAssignmentDetail(){
                     flag = 0
                 }
             }
+
+            console.log(data_upload)
         }
         else  if(assignment_type === 'ungraded'){
             url = '/assessment/assignment'
@@ -476,6 +506,10 @@ export default function CheckAssignmentDetail(){
                 }
             }
 
+            if(teacher_notes === ''){
+                flag = 0
+            }
+
             url = '/grade/skill'
             data_upload = {
                 class_student : {id : class_student_id},
@@ -487,7 +521,24 @@ export default function CheckAssignmentDetail(){
         }
         else if(assignment_type === 'upload'){
             url = '/assessment/assignment'
-            var status = (radio_project_selected === 'revision' ? 'need_correction' : 'done')
+            
+            var status = ''
+
+            if(!is_student_online){
+                status = 'done'
+            }
+            else{
+                if(radio_project_selected === 'major_revision'){
+                    status = 'need_much_correction'
+                }
+                else if(radio_project_selected === 'minor_revision'){
+                    status = 'need_correction'
+                }
+                else{
+                    status = 'done'
+                }
+            }
+
             data_upload = {
                 id : assignment_submitted_id,
                 status : status,
@@ -503,13 +554,16 @@ export default function CheckAssignmentDetail(){
             var response = await base.request(url, method, data_upload)
             if(response != null){
                 if(response.status == 'success'){
-                    window.location.href = '/check-assignment'
+                    window.location.href = '/check-activity'
                 }
             }
         }
 
         set_is_modal_btn_disable(false)
     }
+
+    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
+    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
 
     function changeScore(index, index_skill, val){
         var data_index = grade_skill_arr[index]
@@ -522,6 +576,22 @@ export default function CheckAssignmentDetail(){
             skill_data[index_skill].score = ''
         }
 
+        var avg = 0
+        var total_score = 0
+        var total_data = 0
+        for(var x in grade_skill_arr){
+            var arr_skill = grade_skill_arr[x].arr_skill
+            for(var y in arr_skill){
+                if(arr_skill[y].score !== ''){
+                    total_score += parseInt(arr_skill[y].score)
+                }
+            }
+            total_data += arr_skill.length
+        }
+        
+        avg = total_score / total_data
+        set_grade_skill_avg(parseFloat(avg).toFixed(2))
+        set_grade_skill_total_score((parseFloat(avg) / 5) * 100)
         base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
     }
 
@@ -542,10 +612,13 @@ export default function CheckAssignmentDetail(){
 
     function modalSubmit(){
         get_grade_skill()
+        set_grade_skill_avg(0)
+        set_grade_skill_total_score(0)
         base.$('#modalSubmit').modal('show')
     }
 
     function viewGradeSkill(){
+        // get_grade_skill()
         base.$('#modalSubmit').modal('show')
     }
 
@@ -801,6 +874,9 @@ export default function CheckAssignmentDetail(){
                 teacher_notes={teacher_notes}
                 set_radio_project={(value)=>changeRadioProject(value)}
                 viewFrom={'check-assignment'}
+                is_student_online={is_student_online}
+                grade_skill_avg={grade_skill_avg}
+                grade_skill_total_score={grade_skill_total_score}
             />
             
         </div>
