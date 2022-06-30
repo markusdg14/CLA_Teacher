@@ -5,7 +5,7 @@ import CardSubject from '../../../components/cardSubject';
 import SelectOption from '../../../components/selectOption';
 
 
-export default function ReportGrade({class_student, assignment_agreement, grade_book_arr, term_arr, term_selected, changeTerm}){
+export default function ReportGrade({class_student, assignment_agreement, grade_book_arr, term_arr, term_selected, changeTerm, editScore}){
     var base = new Base()
 
     return(
@@ -76,7 +76,7 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
                                                                                     <>
                                                                                         {
                                                                                             grade_book_arr[data.id][data_agreement.id] != null &&
-                                                                                            <p className='m-0'>{grade_book_arr[data.id][data_agreement.id].score}</p>
+                                                                                            <p className='m-0'>{grade_book_arr[data.id][data_agreement.id].score} <i className="bi bi-pencil-fill ml-2" style={{cursor : 'pointer', fontSize : '.75rem'}} onClick={()=>editScore(index, index_agreement)}></i></p>
                                                                                         }
                                                                                     </>
                                                                             }

@@ -5,6 +5,7 @@ import Select from 'react-select'
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
 import ReportGrade from './reportGrade';
 import ReportSkill from './reportSkill';
+import ModalSubmit from '../checkAssignment/modalSubmit';
 
 export default function GradeBookDetail(){
     var base = new Base()
@@ -167,6 +168,254 @@ export default function GradeBookDetail(){
         set_term_selected(val)
     }
 
+    const [edit_score_selected, set_edit_score_selected] = useState({id : '', score : '', comment : '', activity_type : ''})
+    const [activity_assessment_rule_selected, set_activity_assessment_rule_selected] = useState('')
+    const [activity_rule_selected, set_activity_rule_selected] = useState('')
+    const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
+    const [grade_skill_arr, set_grade_skill_arr] = useState([])
+    const [rule, set_rule] = useState([])
+    const [numerical_score, set_numerical_score] = useState('')
+    const [assignment_status_data, set_assignment_status_data] = useState('')
+    const [teacher_notes, set_teacher_notes] = useState('')
+    const [rule_detail_arr, set_rule_detail_arr] = useState([])
+    const [radio_project_selected, set_radio_project_selected] = useState('major_revision')
+    const [class_student_id, set_class_student_id] = useState('')
+    const [is_student_online_selected, set_is_student_online_selected] = useState(false)
+
+    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
+    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
+
+    useEffect(async ()=>{
+        if(edit_score_selected.id != ''){
+            get_rule()
+            get_grade_skill()
+            get_rule()
+            set_grade_skill_avg(0)
+            set_grade_skill_total_score(0)
+            base.$('#modalSubmit').modal('show')
+        }
+    }, [edit_score_selected])
+
+    async function editScore(index, index_agreement){
+        var data = grade_book_arr[class_student[index].id][assignment_agreement[index_agreement].id]
+        data.activity_type = 'quiz'
+
+        set_activity_assessment_rule_selected(assignment_agreement[index_agreement].assessment_rule_id)
+        set_numerical_score(data.score)
+        
+        set_is_student_online_selected(class_student[index].is_online)
+        set_edit_score_selected(data)
+        
+    }
+
+    async function get_grade_skill(){
+        var url = '/skill/category?id=&subject_id=' + query.get('subject_id') + '&assignment_submitted_id=' + edit_score_selected.id
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+
+                for(var x in data){
+                    var arr_skill = data[x].arr_skill
+                    for(var y in arr_skill){
+                        arr_skill[y].score = ''
+                    }
+                }
+                set_grade_skill_arr(data)
+            }
+        }
+    }
+
+    async function get_rule(){
+        var url = '/assessment/rule?id=' + activity_assessment_rule_selected
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                set_rule(data.name)
+                set_rule_detail_arr(data.detail)
+            }
+        }
+    }
+
+    async function changeInputModal(val, type){
+        if(type === 'grade'){
+            set_activity_rule_selected(val)
+        }
+        if(type === 'notes'){
+            set_teacher_notes(val)
+        }
+    }
+
+    async function submitGrading(){
+        set_is_modal_btn_disable(true)
+        var url = ''
+        var data_upload = {}
+        var method = 'put'
+        var flag = 1
+
+        if(edit_score_selected.activity_type === 'quiz'){
+            url = '/assessment/assignment'
+            data_upload = {
+                id : edit_score_selected.id,
+                comment : teacher_notes,
+            }
+
+            var status = ''
+
+            if(!is_student_online_selected){
+                status = 'done'
+            }
+            else{
+                if(radio_project_selected === 'major_revision'){
+                    status = 'need_much_correction'
+                }
+                else if(radio_project_selected === 'minor_revision'){
+                    status = 'need_correction'
+                }
+                else{
+                    status = 'done'
+                }
+            }
+
+
+            data_upload.status = status
+
+            if(rule === 'Numerical'){
+                data_upload.score = numerical_score
+            }
+            else{
+                if(activity_rule_selected !== ''){
+                    data_upload.assessment_rule_detail = {id : activity_rule_selected}
+                }
+            }
+        }
+        else  if(edit_score_selected.activity_type === 'ungraded'){
+            url = '/assessment/assignment'
+            data_upload = {
+                id : edit_score_selected,
+            }
+        }
+        else if(edit_score_selected.activity_type === 'discussion'){
+            var arr_skill = []
+            for(var x in grade_skill_arr){
+                var skill_data = grade_skill_arr[x].arr_skill
+                for(var y in skill_data){
+                    arr_skill.push({
+                        skill : {id : skill_data[y].id},
+                        score : skill_data[y].score
+                    })
+                }
+            }
+
+            for(var x in arr_skill){
+                if(arr_skill[x].score === ''){
+                    flag = 0
+                    break
+                }
+            }
+
+            if(teacher_notes === ''){
+                flag = 0
+            }
+
+            url = '/grade/skill'
+            data_upload = {
+                class_student : {id : class_student_id},
+                assignment_submitted : {id : edit_score_selected},
+                comment : teacher_notes,
+                arr_skill : arr_skill
+            }
+            method = 'post'
+        }
+        else if(edit_score_selected.activity_type === 'upload'){
+            url = '/assessment/assignment'
+            
+            var status = ''
+
+            if(!is_student_online_selected){
+                status = 'done'
+            }
+            else{
+                if(radio_project_selected === 'major_revision'){
+                    status = 'need_much_correction'
+                }
+                else if(radio_project_selected === 'minor_revision'){
+                    status = 'need_correction'
+                }
+                else{
+                    status = 'done'
+                }
+            }
+
+            data_upload = {
+                id : edit_score_selected,
+                status : status,
+                comment : teacher_notes,
+            }
+        }
+
+        if(flag){
+            var response = await base.request(url, method, data_upload)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.reload()
+                }
+            }
+        }
+
+        set_is_modal_btn_disable(false)
+    }
+
+    function changeScore(index, index_skill, val){
+        var data_index = grade_skill_arr[index]
+        var skill_data = data_index.arr_skill
+
+        if(parseInt(val) <= 5 && parseInt(val) >= 1){
+            skill_data[index_skill].score = val
+        }
+        else{
+            skill_data[index_skill].score = ''
+        }
+
+        var avg = 0
+        var total_score = 0
+        var total_data = 0
+        for(var x in grade_skill_arr){
+            var arr_skill = grade_skill_arr[x].arr_skill
+            for(var y in arr_skill){
+                if(arr_skill[y].score !== ''){
+                    total_score += parseInt(arr_skill[y].score)
+                }
+            }
+            total_data += arr_skill.length
+        }
+        
+        avg = total_score / total_data
+        set_grade_skill_avg(parseFloat(avg).toFixed(2))
+        set_grade_skill_total_score((parseFloat(avg) / 5) * 100)
+        base.update_array(grade_skill_arr, set_grade_skill_arr, data_index, index)
+    }
+
+    function changeNumerical(value){
+        var indexValue = value.length - 1
+        var score = numerical_score
+        if(value.charCodeAt(indexValue) >= 48 && value.charCodeAt(indexValue) <= 57){
+            score = value
+        }
+        else if((indexValue < 0)){
+            score = ''
+        }
+        if(parseInt(value) > 100){
+            score = 100
+        }
+        set_numerical_score(score)
+    }
+
+    function changeRadioProject(value){
+        set_radio_project_selected(value)
+    }
+
 
     return(
         <div className='row'>
@@ -215,6 +464,7 @@ export default function GradeBookDetail(){
                         term_arr={term_arr}
                         term_selected={term_selected}
                         changeTerm={(val)=>changeTerm(val)}
+                        editScore={(index, index_agreement)=>editScore(index, index_agreement)}
                     />
                     </>
                     :
@@ -239,6 +489,27 @@ export default function GradeBookDetail(){
                     </>
                 }
             </div>
+
+            <ModalSubmit
+                assignment_type={edit_score_selected.activity_type}
+                rule_detail_arr={rule_detail_arr}
+                rule_selected={activity_rule_selected}
+                changeInput={(val, type)=>changeInputModal(val, type)}
+                submitGrading={()=>submitGrading()}
+                is_modal_btn_disable={is_modal_btn_disable}
+                grade_skill_arr={grade_skill_arr}
+                changeScore={(index, index_skill, val)=>changeScore(index, index_skill, val)}
+                rule={rule}
+                numerical_score={numerical_score}
+                changeNumerical={(value)=>changeNumerical(value)}
+                assignment_status_data={assignment_status_data}
+                teacher_notes={teacher_notes}
+                set_radio_project={(value)=>changeRadioProject(value)}
+                viewFrom={'subject-lesson'}
+                is_student_online={is_student_online_selected}
+                grade_skill_avg={grade_skill_avg}
+                grade_skill_total_score={grade_skill_total_score}
+            />
             
         </div>
     )

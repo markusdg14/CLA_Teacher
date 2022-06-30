@@ -69,6 +69,9 @@ export default function CheckAssignmentDetail(){
 
     const [is_student_online, set_is_student_online] = useState(false)
 
+    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
+    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -130,6 +133,10 @@ export default function CheckAssignmentDetail(){
                 data.assignment_score = '-'
 
                 var activity_type1 = 'assignment'
+
+                var avg = 0
+                var total_score = 0
+                var total_data = 0
                 
                 if(data.assignment_agreement != null){
                     set_grade(data.assignment_agreement.assignment_group.grade.name)
@@ -149,11 +156,17 @@ export default function CheckAssignmentDetail(){
                                 var skill = skill_category[x].arr_skill
                                 for(var y in skill){
                                     skill[y].score = skill[y].grade_skill.score
+                                    total_score += parseInt(skill[y].grade_skill.score)
                                 }
+                                total_data += skill.length
                             }
                             notes = skill_category[0].arr_skill[0].grade_skill.comment
                             set_grade_skill_arr(skill_category)
                             set_teacher_notes(notes)
+
+                            avg = total_score / total_data
+                            set_grade_skill_avg(parseFloat(avg).toFixed(2))
+                            set_grade_skill_total_score((parseFloat(avg) / 5) * 100)
 
                             console.log(skill_category)
                         }
@@ -197,11 +210,17 @@ export default function CheckAssignmentDetail(){
                                 var skill = skill_category[x].arr_skill
                                 for(var y in skill){
                                     skill[y].score = skill[y].grade_skill.score
+                                    total_score += parseInt(skill[y].grade_skill.score)
                                 }
+                                total_data += skill.length
                             }
                             notes = skill_category[0].arr_skill[0].grade_skill.comment
                             set_grade_skill_arr(skill_category)
                             set_teacher_notes(notes)
+
+                            avg = total_score / total_data
+                            set_grade_skill_avg(parseFloat(avg).toFixed(2))
+                            set_grade_skill_total_score((parseFloat(avg) / 5) * 100)
 
                         }
                     }
@@ -561,9 +580,6 @@ export default function CheckAssignmentDetail(){
 
         set_is_modal_btn_disable(false)
     }
-
-    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
-    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
 
     function changeScore(index, index_skill, val){
         var data_index = grade_skill_arr[index]
