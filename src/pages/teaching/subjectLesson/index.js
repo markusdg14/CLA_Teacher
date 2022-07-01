@@ -369,7 +369,6 @@ export default function SubjectLesson(){
         if(data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted != null){
             
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
-            console.log(assignment_agreement)
             
             if(status != ''){
                 if(last_submitted.assessment_status.data !== 'done'){

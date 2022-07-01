@@ -5,7 +5,7 @@ import CardSubject from '../../../components/cardSubject';
 import SelectOption from '../../../components/selectOption';
 
 
-export default function ReportSkill({student_arr, student_arr_temp, skill_student_selected, skill_student_name_selected, skill_ctg_arr, skill_list_arr, skill_assignment, skill_grade_arr, legend_arr, changeStudent, filterBtn, term_arr, term_selected, changeTerm, skill_grade_book_arr}){
+export default function ReportSkill({student_arr, student_arr_temp, skill_student_selected, skill_student_name_selected, skill_ctg_arr, skill_list_arr, skill_assignment, skill_grade_arr, legend_arr, changeStudent, filterBtn, term_arr, term_selected, changeTerm, skill_grade_book_arr, editSkillScore}){
 	var base = new Base()
 
 	return(
@@ -127,7 +127,7 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																													<>
 																													{
 																														skill_grade_arr[data_category.id][data_list.id][data_assignment.id] != null &&   
-																														<p className={"m-0"}>{skill_grade_arr[data_category.id][data_list.id][data_assignment.id].score}</p>
+																														<p className={"m-0"}>{skill_grade_arr[data_category.id][data_list.id][data_assignment.id].score} <i className="bi bi-pencil-fill ml-2" style={{cursor : 'pointer', fontSize : '.75rem'}} onClick={()=>editSkillScore(index_category, index_list, index_assignment)}></i></p>
 																													}
 																													</>
 																												}
@@ -174,7 +174,7 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																							skill_grade_book_arr[data_assignment.id].grade_book != null &&
 																							<>
 																							{
-																								<p className={"m-0"}>{skill_grade_book_arr[data_assignment.id].grade_book.score}</p>
+																								<p className={"m-0"}>{skill_grade_book_arr[data_assignment.id].total_score}</p>
 																							}
 																							</>
 																						}

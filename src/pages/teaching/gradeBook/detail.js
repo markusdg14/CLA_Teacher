@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from '
 import ReportGrade from './reportGrade';
 import ReportSkill from './reportSkill';
 import ModalSubmit from '../checkAssignment/modalSubmit';
+import ModalEditScore from './modalEditScore';
 
 export default function GradeBookDetail(){
     var base = new Base()
@@ -46,9 +47,30 @@ export default function GradeBookDetail(){
 
     const [legend_arr, set_legend_arr] = useState([])
 
+    const [edit_score_selected, set_edit_score_selected] = useState({id : '', score : '', comment : '', activity_type : ''})
+    const [activity_assessment_rule_selected, set_activity_assessment_rule_selected] = useState('')
+    const [activity_rule_selected, set_activity_rule_selected] = useState('')
+    const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
+    const [grade_skill_arr, set_grade_skill_arr] = useState([])
+    const [rule, set_rule] = useState([])
+    const [numerical_score, set_numerical_score] = useState('')
+    const [assignment_status_data, set_assignment_status_data] = useState('')
+    const [teacher_notes, set_teacher_notes] = useState('')
+    const [rule_detail_arr, set_rule_detail_arr] = useState([])
+    const [radio_project_selected, set_radio_project_selected] = useState('major_revision')
+    const [class_student_id, set_class_student_id] = useState('')
+    const [is_student_online_selected, set_is_student_online_selected] = useState(false)
+
+    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
+    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
+
+        base.$('#modalSubmit').on('hidden.bs.modal', function (event) {
+            set_edit_score_selected({id : '', score : '', comment : '', activity_type : ''})
+        })
     }, [])
 
     useEffect(()=>{
@@ -113,7 +135,15 @@ export default function GradeBookDetail(){
                     set_skill_list_arr(data.arr_skill)
                     set_skill_ctg_arr(data.arr_skill_category)
                     set_skill_grade_arr(data.arr_grade_skill)
-                    set_skill_grade_book_arr(data.arr_grade_book_skill)
+
+                    var assignment = data.arr_assignment.data
+                    var grade_book_skill = data.arr_grade_book_skill
+                    for(var x in assignment){
+                        grade_book_skill[assignment[x].id].total_score = (grade_book_skill[assignment[x].id].average / 5) * 100
+
+                        grade_book_skill[assignment[x].id].total_score = parseFloat(grade_book_skill[assignment[x].id].total_score).toFixed(2)
+                    }
+                    set_skill_grade_book_arr(grade_book_skill)
                 }
             }
         }
@@ -168,30 +198,16 @@ export default function GradeBookDetail(){
         set_term_selected(val)
     }
 
-    const [edit_score_selected, set_edit_score_selected] = useState({id : '', score : '', comment : '', activity_type : ''})
-    const [activity_assessment_rule_selected, set_activity_assessment_rule_selected] = useState('')
-    const [activity_rule_selected, set_activity_rule_selected] = useState('')
-    const [is_modal_btn_disable, set_is_modal_btn_disable] = useState(false)
-    const [grade_skill_arr, set_grade_skill_arr] = useState([])
-    const [rule, set_rule] = useState([])
-    const [numerical_score, set_numerical_score] = useState('')
-    const [assignment_status_data, set_assignment_status_data] = useState('')
-    const [teacher_notes, set_teacher_notes] = useState('')
-    const [rule_detail_arr, set_rule_detail_arr] = useState([])
-    const [radio_project_selected, set_radio_project_selected] = useState('major_revision')
-    const [class_student_id, set_class_student_id] = useState('')
-    const [is_student_online_selected, set_is_student_online_selected] = useState(false)
-
-    const [grade_skill_avg, set_grade_skill_avg] = useState(0)
-    const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
-
     useEffect(async ()=>{
         if(edit_score_selected.id != ''){
             get_rule()
-            get_grade_skill()
             get_rule()
             set_grade_skill_avg(0)
             set_grade_skill_total_score(0)
+
+            if(edit_score_selected === 'discussion'){
+                get_grade_skill()
+            }
             base.$('#modalSubmit').modal('show')
         }
     }, [edit_score_selected])
@@ -202,6 +218,8 @@ export default function GradeBookDetail(){
 
         set_activity_assessment_rule_selected(assignment_agreement[index_agreement].assessment_rule_id)
         set_numerical_score(data.score)
+
+        set_class_student_id(class_student[index].id)
         
         set_is_student_online_selected(class_student[index].is_online)
         set_edit_score_selected(data)
@@ -293,7 +311,7 @@ export default function GradeBookDetail(){
         else  if(edit_score_selected.activity_type === 'ungraded'){
             url = '/assessment/assignment'
             data_upload = {
-                id : edit_score_selected,
+                id : edit_score_selected.id,
             }
         }
         else if(edit_score_selected.activity_type === 'discussion'){
@@ -322,7 +340,7 @@ export default function GradeBookDetail(){
             url = '/grade/skill'
             data_upload = {
                 class_student : {id : class_student_id},
-                assignment_submitted : {id : edit_score_selected},
+                assignment_submitted : {id : edit_score_selected.id},
                 comment : teacher_notes,
                 arr_skill : arr_skill
             }
@@ -416,6 +434,43 @@ export default function GradeBookDetail(){
         set_radio_project_selected(value)
     }
 
+    const [grade_skill_selected, set_grade_skill_selected] = useState({id : '', score : ''})
+
+    useEffect(async ()=>{
+        if(grade_skill_selected.id != ''){
+            base.$('#modalEditScore').modal('show')
+        }
+    }, [grade_skill_selected])
+
+    function editSkillScore(index_category, index_list, index_assignment){
+        var data_grade_skill = skill_grade_arr[skill_ctg_arr[index_category].id][skill_list_arr[index_list].id][skill_assignment[index_assignment].id]
+
+        set_grade_skill_selected(data_grade_skill)
+    }
+
+    function changeGradeSkillScore(value){
+        var score = ''
+        if(parseInt(value) <= 5 && parseInt(value) >= 1){
+            score = value
+        }
+        else{
+            score = ''
+        }
+        base.update_object(grade_skill_selected, set_grade_skill_selected, score, 'score')
+    }
+
+    async function submitGradeSkillNew(){
+        if(grade_skill_selected.score != ''){
+            var url = '/grade/skill'
+    
+            var response = await base.request(url, 'put', grade_skill_selected)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.reload()
+                }
+            }
+        }
+    }
 
     return(
         <div className='row'>
@@ -485,6 +540,7 @@ export default function GradeBookDetail(){
                         term_selected={term_selected}
                         changeTerm={(val)=>changeTerm(val)}
                         skill_grade_book_arr={skill_grade_book_arr}
+                        editSkillScore={(index_category, index_list, index_assignment)=>editSkillScore(index_category, index_list, index_assignment)}
                     />
                     </>
                 }
@@ -510,6 +566,8 @@ export default function GradeBookDetail(){
                 grade_skill_avg={grade_skill_avg}
                 grade_skill_total_score={grade_skill_total_score}
             />
+
+            <ModalEditScore grade_skill_selected={grade_skill_selected} changeGradeSkillScore={(value)=>changeGradeSkillScore(value)} submitGradeSkillNew={()=>submitGradeSkillNew()} />
             
         </div>
     )
