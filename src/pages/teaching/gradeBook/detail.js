@@ -96,6 +96,8 @@ export default function GradeBookDetail(){
         if(header_selected === 'report_card_skill'){
             get_legend()
         }
+        set_term_selected('')
+        get_term()
     }, [header_selected])
 
     useEffect(()=>{
@@ -434,7 +436,7 @@ export default function GradeBookDetail(){
         set_radio_project_selected(value)
     }
 
-    const [grade_skill_selected, set_grade_skill_selected] = useState({id : '', score : ''})
+    const [grade_skill_selected, set_grade_skill_selected] = useState({id : '', score : '', project_skill : {skill : {name : '', skill_category : {name : ''}}}})
 
     useEffect(async ()=>{
         if(grade_skill_selected.id != ''){
@@ -444,6 +446,8 @@ export default function GradeBookDetail(){
 
     function editSkillScore(index_category, index_list, index_assignment){
         var data_grade_skill = skill_grade_arr[skill_ctg_arr[index_category].id][skill_list_arr[index_list].id][skill_assignment[index_assignment].id]
+
+        console.log(data_grade_skill)
 
         set_grade_skill_selected(data_grade_skill)
     }

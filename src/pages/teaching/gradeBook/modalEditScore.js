@@ -18,6 +18,7 @@ export default function ModalEditScore({grade_skill_selected, changeGradeSkillSc
 									<div className='row m-0'>
 										<div className='col-12 mb-3'>
 											<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Edit Score</h5>
+											<h6 className='m-0' style={{color : 'black'}}>{grade_skill_selected.project_skill.skill.skill_category.name} - {grade_skill_selected.project_skill.skill.name}</h6>
 										</div>
 
                                         <div className='col-12 mb-3'>
