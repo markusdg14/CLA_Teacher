@@ -119,6 +119,7 @@ export default function HomeroomDetail(){
     }, [user_data])
 
     useEffect(async ()=>{
+        set_term_selected('')
         console.log(header_selected)
         if(header_selected !== 'report_card_skill' && header_selected !== 'attendance_reward'){
             get_data()
@@ -127,6 +128,9 @@ export default function HomeroomDetail(){
             get_legend()
         }
         else if(header_selected === 'attendance_reward'){
+            get_term()
+        }
+        if(header_selected === 'report_card_grade'){
             get_term()
         }
 
@@ -182,7 +186,10 @@ export default function HomeroomDetail(){
             url += '&user_id=' + skill_student_selected
         }
         else if(header_selected === 'attendance_reward'){
-            url += '&term_id=' + term_selected + '&offset=' + attendance_reward_offset
+            url += '&term_id=' + term_selected + '&counter=' + attendance_reward_offset
+        }
+        else if(header_selected === 'report_card_grade'){
+            url += '&term_id=' + term_selected
         }
 
         var response = await base.request(url)
@@ -261,7 +268,7 @@ export default function HomeroomDetail(){
                         subject_data_arr[x].is_show = false
                     }
                     subject_data_arr[0].is_show = true
-                    console.log(data.arr_class_student)
+                    
                     set_grade_subject_arr(subject_data_arr)
                     set_grade_student_arr(data.arr_class_student)
                     set_grade_book_dtl_arr(data.arr_grade_book_detail)
@@ -293,13 +300,13 @@ export default function HomeroomDetail(){
                     set_reward_score(arr_reward)
 
                     set_reward_arr(data.arr_reward)
-                    set_date_arr(data.arr_date.arr)
+                    set_date_arr(data.arr_lesson_schedule.arr)
                     set_attendance_reward_month(base.moment(data.arr_date.arr[0]).format('MMMM'))
                     set_class_student_arr(data_student)
                     set_arr_point(data.arr_point)
 
-                    set_is_prev_offset(data.arr_date.previous_page)
-                    set_is_next_offset(data.arr_date.next_page)
+                    set_is_prev_offset(data.arr_lesson_schedule.previous_page)
+                    set_is_next_offset(data.arr_lesson_schedule.next_page)
                 }
                 else if(header_selected === 'habit_tracker'){
                     set_to_be_confirm_habit_arr(data.data)
@@ -733,7 +740,14 @@ export default function HomeroomDetail(){
                         </>
                         : header_selected === 'report_card_grade' ?
                         <>
-                        <HomeroomReportGrade grade_subject_arr={grade_subject_arr} grade_student_arr={grade_student_arr} grade_book_dtl_arr={grade_book_dtl_arr} toggleSubject={(index)=>toggleSubject(index)} />
+                        <HomeroomReportGrade
+                            grade_subject_arr={grade_subject_arr}
+                            grade_student_arr={grade_student_arr}
+                            grade_book_dtl_arr={grade_book_dtl_arr}
+                            toggleSubject={(index)=>toggleSubject(index)}
+                            term_arr={term_arr} term_selected={term_selected}
+                            changeTerm={(val)=>changeTerm(val)}
+                        />
                         </>
                         : header_selected === 'report_card_skill' ?
                         <>

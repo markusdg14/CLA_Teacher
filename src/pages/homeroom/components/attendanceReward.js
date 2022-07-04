@@ -61,7 +61,7 @@ export default function HomeroomAttendanceReward({term_arr, term_selected, chang
 															<>
 															{
 																date_arr.map((data_date, index_date)=>(
-																	<td className='text-center' key={index_date}>{base.moment(data_date).format('D')}</td>
+																	<td className='text-center' key={index_date}>{base.moment(data_date.date).format('D')}</td>
 																))
 															}
 															</>

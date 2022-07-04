@@ -31,7 +31,6 @@ export default function GradeBook(){
             if(!is_under_construction){
                 get_data('current')
             }
-            // get_data('past')
         }
     }, [user_data])
 
