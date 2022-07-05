@@ -10,7 +10,7 @@ import momentPlugin from '@fullcalendar/moment'
 export default function CalendarIndex(){
     var base = new Base()
 
-    const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}})
+    const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : ''}})
     const [event_arr, set_event_arr] = useState([])
     const [current_month, set_current_month] = useState('')
     const [calendar_btn_nav] = useState([
@@ -30,24 +30,28 @@ export default function CalendarIndex(){
     }, [])
 
     useEffect(()=>{
+        console.log(current_month)
         if(current_month !== ''){
-            get_data()
+            if(user_data.current_academic_year.id !== ''){
+                get_data()
+            }
         }
-    }, [current_month])
+    }, [current_month, user_data])
 
 
     async function get_data(){
         var month = base.moment(current_month).format('YYYY-MM')
-        var url = '/event?month=' + month
+        // var url = '/event?month=' + month
+        var url = '/academic-year/calendar?id=' + user_data.current_academic_year.id
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
-                var data = response.data.data
+                var data = response.arr_lesson_schedule
                 var data_arr = []
                 for(var x in data){
                     var detail_data = {
                         id : data[x].id,
-                        title : data[x].name,
+                        title : data[x].lesson.name,
                         start : base.moment(data[x].date).format('YYYY-MM-DD'),
                         borderColor : '#0EA5E9'
                     }
@@ -149,7 +153,7 @@ export default function CalendarIndex(){
                 </div>
             </div>
 
-            <div className='col-12 mt-5 pt-3'>
+            {/* <div className='col-12 mt-5 pt-3'>
                 <div className="card rounded shadow-sm">
                     <div className={"card-body p-0"}>
                         <div className='row m-0'>
@@ -201,7 +205,7 @@ export default function CalendarIndex(){
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             
         </div>

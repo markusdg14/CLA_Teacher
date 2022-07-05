@@ -18,7 +18,7 @@ export default function Header({title, user_data}){
         } else if (currentTime >= 20 && currentTime < 5){
             set_greeting("Good Night")
         }
-    })
+    }, [])
 
     return(
         <>
