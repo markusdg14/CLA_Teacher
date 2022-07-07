@@ -66,17 +66,19 @@ export default function SubjectLesson(){
 
     useEffect(async ()=>{
         if(user_data.id !== ''){
-            await get_filter_data_arr('grade')
-            await get_filter_data_arr('lesson')
-
-            if(query.get('grade_id') != null){
-                await set_filter_grade_selected(query.get('grade_id'))
-            }
-            if(query.get('class_id') != null){
-                await set_filter_class_selected(query.get('class_id'))
+            if(selected_academic_year !== ''){
+                await get_filter_data_arr('grade')
+                await get_filter_data_arr('lesson')
+    
+                if(query.get('grade_id') != null){
+                    await set_filter_grade_selected(query.get('grade_id'))
+                }
+                if(query.get('class_id') != null){
+                    await set_filter_class_selected(query.get('class_id'))
+                }
             }
         }
-    }, [user_data])
+    }, [user_data, selected_academic_year])
 
     useEffect(async ()=>{
         if(filter_grade_selected != ''){

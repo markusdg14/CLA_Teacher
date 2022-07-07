@@ -63,9 +63,11 @@ export default function TrackerIndex(){
 
 	useEffect(()=>{
 		if(user_data.id !== ''){
-			get_grade()
+			if(selected_academic_year !== ''){
+				get_grade()
+			}
 		}
-	}, [selected_academic_year])
+	}, [user_data, selected_academic_year])
 
 	useEffect(()=>{
 		if(selected_class !== ''){
