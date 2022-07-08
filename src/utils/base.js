@@ -7,13 +7,16 @@ import Jquery from 'jquery'
 import 'popper.js'
 import 'bootstrap'
 
+import io from 'socket.io-client'
+
 export default class Base extends Component{
     
-    base_url = 'https://lms-admin.quantumtri.com/api';
-    url_image = 'https://lms-admin.quantumtri.com/image';
-
-	// base_url = 'https://admin.christianlifeacademy-id.com/api'
-	// url_image = 'https://admin.christianlifeacademy-id.com/image';
+	
+	host = 'https://lms-admin.quantumtri.com'
+	// host = 'https://admin.christianlifeacademy-id.com'
+	
+    base_url = this.host + '/api';
+    url_image = this.host + '/image';
 	
     timeoutAxios = 300000
     currencyFormat = 'id-ID'
@@ -21,6 +24,8 @@ export default class Base extends Component{
     axios = axios
     moment = moment
     $ = Jquery
+
+	io = io
 
     constructor(props){
 		super(props)
