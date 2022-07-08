@@ -52,7 +52,7 @@ export default function NotificationIndex(){
         <div className='row'>
             
             <div className='col-12'>
-                <Header title={'Profile'} user_data={user_data} />
+                <Header title={'Notification'} user_data={user_data} />
             </div>
 
 
@@ -67,27 +67,38 @@ export default function NotificationIndex(){
                                         <div className='row'>
                                             
                                             {
-                                                data_arr.map((data, index)=>(
-                                                    <div className={'col-12' + (index > 0 ? ' mt-2' : '')} key={index}>
-                                                        <div className='row'>
-                                                            <div className='col-auto'>
-                                                                <i className="bi bi-circle-fill" style={{color : (data.read_at != null ? '#EAEAEA' : '#FC5A5A'), fontSize : '.75rem'}}></i>
-                                                            </div>
-                                                            <div className='col pl-0'>
+                                                data_arr.length > 0 ?
+                                                <>
+                                                    {
+                                                        data_arr.map((data, index)=>(
+                                                            <div className={'col-12' + (index > 0 ? ' mt-2' : '')} key={index}>
                                                                 <div className='row'>
-                                                                    <div className='col-12'>
-                                                                        <p className='m-0' style={{fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{data.title}</p>
-                                                                    </div>
                                                                     <div className='col-auto'>
-                                                                        <div className='px-3 py-1 rounded' style={{backgroundColor : '#F2F9E4'}}>
-                                                                            <p className='m-0' style={{fontSize : '.7rem', color : '#6F826E', fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{base.moment(data.created_at).format('DD MMMM YYYY | HH:mm')}</p>
+                                                                        <i className="bi bi-circle-fill" style={{color : (data.read_at != null ? '#EAEAEA' : '#FC5A5A'), fontSize : '.75rem'}}></i>
+                                                                    </div>
+                                                                    <div className='col pl-0'>
+                                                                        <div className='row'>
+                                                                            <div className='col-12'>
+                                                                                <p className='m-0' style={{fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{data.title}</p>
+                                                                            </div>
+                                                                            <div className='col-auto'>
+                                                                                <div className='px-3 py-1 rounded' style={{backgroundColor : '#F2F9E4'}}>
+                                                                                    <p className='m-0' style={{fontSize : '.7rem', color : '#6F826E', fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{base.moment(data.created_at).format('DD MMMM YYYY | HH:mm')}</p>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                ))
+                                                        ))
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                <div className='col-12 text-center'>
+                                                    <p className='m-0' style={{fontFamily : 'Inter', fontSize : '1.25rem', color : 'black'}}>No Data</p>
+                                                </div>
+                                                </>
                                             }
                                         
                                         </div>
