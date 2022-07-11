@@ -120,9 +120,9 @@ export default function HomeroomAttendanceReward({term_arr, term_selected, chang
 																										arr_point[data_student.id][data_reward.id] != null &&
 																										<>
 																										{
-																											arr_point[data_student.id][data_reward.id][data_date] != null ?
+																											arr_point[data_student.id][data_reward.id][data_date.id] != null ?
 																											<>
-																											<span className={"badge badge-pill p-1 px-2 rounded badge-" + (arr_point[data_student.id][data_reward.id][data_date].amount === '0' ? 'danger' : arr_point[data_student.id][data_reward.id][data_date].amount === '1' ? 'success' : arr_point[data_student.id][data_reward.id][data_date].amount === 'P' ? 'info' : '')}>{arr_point[data_student.id][data_reward.id][data_date].amount}</span>
+																											<span className={"badge badge-pill p-1 px-2 rounded badge-" + (arr_point[data_student.id][data_reward.id][data_date.id].amount === '0' ? 'danger' : arr_point[data_student.id][data_reward.id][data_date.id].amount === '1' ? 'success' : arr_point[data_student.id][data_reward.id][data_date.id].amount === 'P' ? 'info' : '')}>{arr_point[data_student.id][data_reward.id][data_date.id].amount}</span>
 																											</>
 																											:
 																											<span className={"badge badge-pill p-1 px-2 rounded badge-danger"}>{0}</span>

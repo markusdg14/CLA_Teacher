@@ -65,7 +65,7 @@ export default function NotificationIndex(){
                                     <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
                                     <div className='col-12 p-3 pt-4 pb-5'>
                                         <div className='row'>
-                                            
+
                                             {
                                                 data_arr.length > 0 ?
                                                 <>
@@ -81,6 +81,12 @@ export default function NotificationIndex(){
                                                                             <div className='col-12'>
                                                                                 <p className='m-0' style={{fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{data.title}</p>
                                                                             </div>
+                                                                            {
+                                                                                data.body != null &&
+                                                                                <div className='col-12 mt-1'>
+                                                                                    <p className='m-0' style={{fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{data.body}</p>
+                                                                                </div>
+                                                                            }
                                                                             <div className='col-auto'>
                                                                                 <div className='px-3 py-1 rounded' style={{backgroundColor : '#F2F9E4'}}>
                                                                                     <p className='m-0' style={{fontSize : '.7rem', color : '#6F826E', fontFamily : (data.read_at == null ? 'InterBold' : 'Inter')}}>{base.moment(data.created_at).format('DD MMMM YYYY | HH:mm')}</p>
@@ -100,6 +106,7 @@ export default function NotificationIndex(){
                                                 </div>
                                                 </>
                                             }
+                                            
                                         
                                         </div>
                                     </div>
