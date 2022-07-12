@@ -76,7 +76,10 @@ export default function ProfileIndex(){
 
             <div className='col-12 mt-5'>
                 <div className='row m-0'>
-                    <div className='col-12 mt-2 p-5 rounded' style={{backgroundColor : '#F8F9FE'}}>
+                    <div className='col-12 p-0'>
+                        <img src={base.img_learn} style={{height : 'auto', width : '100%'}} />
+                    </div>
+                    {/* <div className='col-12 mt-2 p-5 rounded' style={{backgroundColor : '#F8F9FE'}}>
                         <div className='row'>
                             <div className='col-auto d-flex align-items-center justify-content-center'>
                                 <div className=''>
@@ -88,7 +91,7 @@ export default function ProfileIndex(){
                                 <img src={base.img_study_2} />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

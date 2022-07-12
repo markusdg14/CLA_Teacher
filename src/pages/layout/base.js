@@ -23,6 +23,7 @@ import EditProfile from '../profile/edit';
 import SubjectLessonEdit from '../teaching/subjectLesson/editActivity';
 import ProfileChangePass from '../profile/changePassword';
 import NotificationIndex from '../notification';
+import AnnouncementAction from '../teaching/announcement/action';
 
 
 // import Navbar from './navbar'
@@ -74,6 +75,7 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/subject-lesson/detail"} element={<SubjectLessonDetail />}></Route>
 
                     <Route exact path={"/announcement"} element={<Announcement />}></Route>
+                    <Route exact path={"/announcement/action"} element={<AnnouncementAction />}></Route>
 
                     <Route exact path={"/grade-book"} element={<GradeBook />}></Route>
                     <Route exact path={"/grade-book/detail"} element={<GradeBookDetail />}></Route>

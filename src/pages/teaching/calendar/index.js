@@ -11,8 +11,11 @@ export default function CalendarIndex(){
     var base = new Base()
 
     const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : ''}})
+    const [schedule_arr, set_schedule_arr] = useState([])
     const [event_arr, set_event_arr] = useState([])
+    const [event_arr_sm, set_event_arr_sm] = useState([])
     const [current_month, set_current_month] = useState('')
+    const [selected_date, set_selected_date] = useState('')
     const [calendar_btn_nav] = useState([
         {icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2'},
         {icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'ml-2'},
@@ -29,17 +32,29 @@ export default function CalendarIndex(){
         set_current_month(base.moment().format('MMMM YYYY'))
     }, [])
 
+    // useEffect(()=>{
+    //     if(current_month !== ''){
+    //         if(user_data.current_academic_year.id !== ''){
+    //             get_schedule()
+    //         }
+    //     }
+    // }, [current_month, user_data])
+
     useEffect(()=>{
-        console.log(current_month)
         if(current_month !== ''){
-            if(user_data.current_academic_year.id !== ''){
-                get_data()
-            }
+            set_selected_date('')
+            get_data()
         }
-    }, [current_month, user_data])
+    }, [current_month])
+
+    useEffect(()=>{
+        if(user_data.id != ''){
+            get_schedule()
+        }
+    }, [user_data, event_arr])
 
 
-    async function get_data(){
+    async function get_schedule(){
         var month = base.moment(current_month).format('YYYY-MM')
         // var url = '/event?month=' + month
         var url = '/academic-year/calendar?id=' + user_data.current_academic_year.id
@@ -53,11 +68,61 @@ export default function CalendarIndex(){
                         id : data[x].id,
                         title : data[x].lesson.name,
                         start : base.moment(data[x].date).format('YYYY-MM-DD'),
-                        borderColor : '#0EA5E9'
+                        borderColor : '#0EA5E9',
+                        color : '#0EA5E91A',
+                        textColor : '#0369A1'
                     }
                     data_arr.push(detail_data)
                 }
 
+                for(var x in event_arr){
+                    data_arr.push(event_arr[x])
+                }
+
+                set_schedule_arr(data_arr)
+
+                setTimeout(() => {
+                    set_is_loading(false)
+                }, 750);
+            }
+        }
+    }
+    
+    async function get_data(type='monthly'){
+        var url = '/event'
+        if(type === 'monthly'){
+            url = '/event?month=' + base.moment(current_month).format('YYYY-MM')
+        }
+        else if(type === 'daily'){
+            url = '/event?month=' + base.moment(selected_date).format('YYYY-MM-DD')
+        }
+
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+                var data_arr = []
+                var arr_sm = []
+                for(var x in data){
+                    var event_time = base.moment(data[x].start_date).format('DD/MM/YYYY') + (base.moment(data[x].end_date).isAfter(base.moment(data[x].start_date)) ? (' - ' + base.moment(data[x].end_date).format('DD/MM/YYYY')) : '' )
+                    var detail_data = {
+                        id : data[x].id,
+                        title : data[x].name,
+                        start : base.moment(data[x].start_date).format('YYYY-MM-DD'),
+                        end : base.moment(data[x].end_date).format('YYYY-MM-DD'),
+                        borderColor : '#9A7506',
+                        color : '#FFF2CA',
+                        textColor : '#9A7506',
+                        time_label : event_time
+                    }
+                    data_arr.push(detail_data)
+
+                    arr_sm.push(base.moment(data[x].start_date).format('YYYY-MM-DD'))
+                }
+                
+                if(type === 'monthly'){
+                    set_event_arr_sm(arr_sm)
+                }
                 set_event_arr(data_arr)
 
                 setTimeout(() => {
@@ -138,9 +203,7 @@ export default function CalendarIndex(){
                                             eventTimeFormat={{hour : '2-digit', minute : '2-digit'}}
                                             eventSources={[
                                                 {
-                                                    events : event_arr,
-                                                    color : '#0EA5E91A',
-                                                    textColor : '#0369A1'
+                                                    events : schedule_arr,
                                                 }
                                             ]}
                                         />
@@ -153,7 +216,7 @@ export default function CalendarIndex(){
                 </div>
             </div>
 
-            {/* <div className='col-12 mt-5 pt-3'>
+            <div className='col-12 mt-5 pt-3'>
                 <div className="card rounded shadow-sm">
                     <div className={"card-body p-0"}>
                         <div className='row m-0'>
@@ -205,7 +268,7 @@ export default function CalendarIndex(){
                         </div>
                     </div>
                 </div>
-            </div> */}
+            </div>
 
             
         </div>

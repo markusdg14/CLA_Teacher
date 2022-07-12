@@ -9,6 +9,7 @@ import LessonBadge from '../../../components/lessonBadge';
 import CustomBadge from '../../../components/customBadge';
 import NoData from '../../../components/NoData';
 import SelectOption from '../../../components/selectOption';
+import NotAssigned from '../../../components/NotAssigned';
 
 
 export default function TrackerIndex(){
@@ -474,7 +475,7 @@ export default function TrackerIndex(){
 							<div className='col-12 mt-5 pt-5'>
 								{
 									!is_loading &&
-									<NoData />
+									<NotAssigned />
 								}
 							</div>
 						}

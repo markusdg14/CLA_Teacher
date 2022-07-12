@@ -5,6 +5,7 @@ import CardSubject from '../../../components/cardSubject';
 import NoData from '../../../components/NoData';
 import ActiveUnactiveData from '../../../components/activeUnactiveData';
 import UnderConstruction from '../../../components/underConstruction';
+import NotAssigned from '../../../components/NotAssigned';
 
 
 export default function GradeBook(){
@@ -87,8 +88,9 @@ export default function GradeBook(){
                 <>
                     {
                         data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
-                        <div className='col-12 mt-5 pt-5'>
-                            <NoData />
+                        <div className='col-12 pt-5' style={{marginTop : '6rem'}}>
+                            {/* <NoData /> */}
+                            <NotAssigned />
                         </div>
                         :
                         <>
