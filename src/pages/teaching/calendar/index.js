@@ -105,11 +105,12 @@ export default function CalendarIndex(){
                 var arr_sm = []
                 for(var x in data){
                     var event_time = base.moment(data[x].start_date).format('DD/MM/YYYY') + (base.moment(data[x].end_date).isAfter(base.moment(data[x].start_date)) ? (' - ' + base.moment(data[x].end_date).format('DD/MM/YYYY')) : '' )
+                    
                     var detail_data = {
                         id : data[x].id,
                         title : data[x].name,
                         start : base.moment(data[x].start_date).format('YYYY-MM-DD'),
-                        end : base.moment(data[x].end_date).format('YYYY-MM-DD'),
+                        end : base.moment(data[x].end_date).add(1, 'd').format('YYYY-MM-DD'),
                         borderColor : '#9A7506',
                         color : '#FFF2CA',
                         textColor : '#9A7506',
@@ -238,7 +239,7 @@ export default function CalendarIndex(){
                                                                     <div className='row'>
                                                                         <div className='col-auto'>
                                                                             <div className='bg-primary d-flex align-items-center justify-content-center rounded' style={{height : '3.5rem', width : '3.5rem'}}>
-                                                                                <p className='m-0 text-white' style={{fontFamily : 'InterBold', fontSize : '1.5rem'}}>{base.moment(data.date).format('DD')}</p>
+                                                                                <p className='m-0 text-white' style={{fontFamily : 'InterBold', fontSize : '1.5rem'}}>{base.moment(data.start).format('DD')}</p>
                                                                             </div>
                                                                         </div>
                                                                         <div className='col'>

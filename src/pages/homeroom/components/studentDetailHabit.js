@@ -107,7 +107,7 @@ export default function HomeroomStudentHabitDetail({habit_student_selected, sear
                                                                 <td className='align-middle'>{data.category_habit.name}</td>
                                                                 <td className='align-middle'>{data.name}</td>
                                                                 <td className='align-middle'>{data.talent_earned}</td>
-                                                                <td className='align-middle'>{base.moment(data.done_date).format('DD/MM HH:mm')}</td>
+                                                                <td className='align-middle'>{(data.confirm_at != null ? base.moment(data.confirm_at).format('DD/MM HH:mm') : '-')}</td>
                                                             </tr>
 
                                                         ))
@@ -158,10 +158,11 @@ export default function HomeroomStudentHabitDetail({habit_student_selected, sear
                                             <table className="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>ID</th>
+                                                        {/* <th>ID</th> */}
                                                         <th>Date Time</th>
                                                         <th>Talents In</th>
                                                         <th>Talents Out</th>
+                                                        <th>Status</th>
                                                         <th>Rupiah</th>
                                                     </tr>
                                                 </thead>
@@ -169,10 +170,11 @@ export default function HomeroomStudentHabitDetail({habit_student_selected, sear
                                                     {
                                                         talents_transaction_arr.map((data, index)=>(
                                                             <tr key={index}>
-                                                                <td className='align-middle td-fit-content'>{data.id}</td>
-                                                                <td className='align-middle'>{base.moment(data.created_at).format('DD/MM')}</td>
+                                                                {/* <td className='align-middle td-fit-content'>{data.id}</td> */}
+                                                                <td className='align-middle'>{base.moment(data.created_at).format('DD/MM/YY - HH:mm')}</td>
                                                                 <td className='align-middle text-secondary'>{data.type === 'in' ? '+' + data.amount : ''}</td>
                                                                 <td className='align-middle text-danger'>{data.type === 'out' ? '-' + data.amount : ''}</td>
+                                                                <td className='align-middle'>{(data.is_approve ? 'DONE' : 'PENDING')}</td>
                                                                 <td className='align-middle'>Rp. {parseFloat(data.amount_convert).toLocaleString(base.currencyFormat)}</td>
                                                             </tr>
 
