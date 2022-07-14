@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Base from '../../utils/base';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -16,17 +16,14 @@ export default function NotificationIndex(){
         set_user_data(check_user.user_data)
     }, [])
 
-    useEffect(async ()=>{
+    useEffect(()=>{
         if(user_data.id !== ''){
             get_data()
         }
-    }, [user_data])
-
-    useEffect(async ()=>{
-        if(data_arr.length > 0){
+        return () => {
             read_notif()
         }
-    }, [data_arr])
+    }, [user_data])
 
     async function get_data(){
         var url = '/notification'
@@ -43,7 +40,7 @@ export default function NotificationIndex(){
         var response = await base.request(url, 'put', {})
         if(response != null){
             if(response.status == 'success'){
-                console.log('read!')
+                // console.log('read!')
             }
         }
     }
