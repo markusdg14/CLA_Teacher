@@ -61,7 +61,7 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
 																					<>
 																					{
 																						grade_book_arr[data.id]['final_score'] != null &&
-																						<p className='m-0'>{grade_book_arr[data.id]['final_score'].score}</p>
+																						<p className='m-0'>{grade_book_arr[data.id]['final_score'].average_score}</p>
 																					}
 																					</>
 																				}
@@ -75,8 +75,10 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
 																					grade_book_arr[data.id] != null &&
 																					<>
 																					{
-																						grade_book_arr[data.id][data_agreement.id] != null &&
+																						grade_book_arr[data.id][data_agreement.id] != null ?
 																						<p className='m-0'>{grade_book_arr[data.id][data_agreement.id].score} <i className="bi bi-pencil-fill" style={{cursor : 'pointer', fontSize : '.6rem'}} onClick={()=>editScore(index, index_agreement)}></i></p>
+																						:
+																						<p className='m-0'>0</p>
 																					}
 																					</>
 																				}

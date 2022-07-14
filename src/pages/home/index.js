@@ -39,14 +39,14 @@ export default function HomeIndex(){
 	}, [schedule_page])
 
     async function get_todo(){
-        var url = '/todo?type=today'
+        var url = '/announcement?type=for_student_teacher'
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data.data
-                for(var x in data){
-                    data[x].title = data[x].todo
-                }
+                // for(var x in data){
+                //     data[x].title = data[x].todo
+                // }
                 set_to_do_list_arr(data)
             }
         }

@@ -54,7 +54,7 @@ export default function Announcement(){
     }
 
     async function get_data(){
-        var url = '/announcement?type=current_academic_year&grade_id=' + selected_grade
+        var url = '/announcement?type=from_teacher&grade_id=' + selected_grade
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
