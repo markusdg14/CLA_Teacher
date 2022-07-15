@@ -83,6 +83,9 @@ h1, h2, h3, h4, h5{
 p{
 	font-family: 'Inter';
 	color: #8A92A6;
+	@include media-breakpoint-down(md){
+		font-size: .75rem;
+	}
 }
 
 label{
@@ -638,5 +641,21 @@ a{
 		line-height: 1.5;
 		background-clip: padding-box;
 		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	}
+}
+
+.chat{
+	>p{
+		color: black;
+	}
+	&.sender{
+		background-color: #EBEFE2;
+	}
+	&.receiver{
+		background-color: #F1F1F1;
+	}
+	max-width: 50%;
+	@include media-breakpoint-down(md){
+		max-width: 75%;
 	}
 }

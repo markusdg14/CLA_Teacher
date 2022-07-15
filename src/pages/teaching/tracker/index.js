@@ -102,8 +102,11 @@ export default function TrackerIndex(){
 						data[x].is_selected = false
 						data[0].is_selected = true
 					}
-					set_selected_class(data[0].id)
-					set_class_arr(data)
+
+					if(data.length > 0){
+						set_selected_class(data[0].id)
+						set_class_arr(data)
+					}
 
 					set_is_loading(false)
 				}

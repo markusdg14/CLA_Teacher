@@ -24,6 +24,7 @@ import SubjectLessonEdit from '../teaching/subjectLesson/editActivity';
 import ProfileChangePass from '../profile/changePassword';
 import NotificationIndex from '../notification';
 import AnnouncementAction from '../teaching/announcement/action';
+import CheckAssignmentChat from '../teaching/checkAssignment/chat';
 
 
 // import Navbar from './navbar'
@@ -69,6 +70,7 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/teacher-tracker"} element={<TrackerIndex />}></Route>
                     <Route exact path={"/check-activity"} element={<CheckAssignment />}></Route>
                     <Route exact path={"/check-activity/detail"} element={<CheckAssignmentDetail />}></Route>
+                    <Route exact path={"/check-activity/chat"} element={<CheckAssignmentChat />}></Route>
 
                     <Route exact path={"/subject-lesson"} element={<SubjectLesson />}></Route>
                     <Route exact path={"/subject-lesson/edit-activity"} element={<SubjectLessonEdit />}></Route>

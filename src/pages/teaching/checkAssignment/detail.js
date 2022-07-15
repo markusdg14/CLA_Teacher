@@ -71,6 +71,7 @@ export default function CheckAssignmentDetail(){
 
     const [grade_skill_avg, set_grade_skill_avg] = useState(0)
     const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
+    const [chat_id, set_chat_id] = useState('')
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -240,6 +241,7 @@ export default function CheckAssignmentDetail(){
                 set_assignment_grade(data.assignment_score)
 
                 set_student_submission(data.description)
+                set_chat_id(data.chat.id)
 
                 
                 if(data.file_submitted.length > 0){
@@ -706,6 +708,13 @@ export default function CheckAssignmentDetail(){
                 </div>
             </div>
 
+            <div className='col-12 mt-3 text-right'>
+                {/* <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Chat with student</button> */}
+                <a href={'/check-activity/chat?id=' + query.get('id') + '&chat_id=' + chat_id} className='btn btn-sm btn-primary py-2 px-3 rounded'>Chat with Student
+                    {/* <span className='position-absolute' style={{top : '-.5rem', right : '.75rem'}}><i className="fas fa-circle" style={{color : '#FF6262'}}></i></span> */}
+                </a>
+            </div>
+
             {
                 assignment_type === 'ungraded' ?
                 <>
@@ -754,12 +763,7 @@ export default function CheckAssignmentDetail(){
                     {
                         assignment_status_data !== 'done' &&
                         <div className='col-12 mt-3 text-right'>
-                            {/* {
-                                total_file > 0 ?
-                                <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>get_basePdf()}>Grade</button>
-                                :
-                            } */}
-                                <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
+                            <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Grade</button>
                         </div>
                     }
                 </>

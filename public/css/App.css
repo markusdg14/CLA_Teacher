@@ -9757,6 +9757,11 @@ p {
   font-family: "Inter";
   color: #8A92A6;
 }
+@media (max-width: 991.98px) {
+  p {
+    font-size: 0.75rem;
+  }
+}
 
 label {
   font-family: "Inter";
@@ -10299,6 +10304,24 @@ a.fc-event {
   line-height: 1.5;
   background-clip: padding-box;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.chat {
+  max-width: 50%;
+}
+.chat > p {
+  color: black;
+}
+.chat.sender {
+  background-color: #EBEFE2;
+}
+.chat.receiver {
+  background-color: #F1F1F1;
+}
+@media (max-width: 991.98px) {
+  .chat {
+    max-width: 75%;
+  }
 }
 
 /*# sourceMappingURL=App.css.map */
