@@ -18,6 +18,7 @@ export default function CheckAssignmentChat(){
 	})
     const [message, set_message] = useState('')
     const [chat_arr, set_chat_arr] = useState([])
+    const [socket, set_socket] = useState(null)
 
     function useQuery(){
         const {search} = useLocation()
@@ -29,19 +30,26 @@ export default function CheckAssignmentChat(){
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
-        
-        const socket = base.io(base.host + ':6003', {})
-        
+        set_socket(base.io(base.host + ':6003', {}))
+    }, [])
+
+    useEffect(() => {
+      if(socket != null){
+        socket.removeAllListeners()
+
         socket.emit('subscribe', {
           channel: 'new_chat.' + query.get('chat_id'),
         }).on('App\\Events\\NewChatEvent', function(channel, data) {
-            var new_chat = data.chat_room
+            var new_chat = JSON.parse(JSON.stringify(data.chat_room))
             if(new_chat.sender_id !== user_data.id){
+                base.$("#chat_box").animate({ scrollTop: base.$('#chat_box').prop("scrollHeight")}, 150);
+
+                chat_arr.unshift(new_chat)
                 base.add_array(chat_arr, set_chat_arr, new_chat)
             }
         })
-
-    }, [])
+      }
+    }, [chat_arr, socket,])
 
     useEffect(()=>{
 		if(user_data.id !== ''){
@@ -54,6 +62,10 @@ export default function CheckAssignmentChat(){
             get_chat()
         }
     }, [assignment_data])
+
+    useEffect(()=>{
+        base.$("#chat_box").animate({ scrollTop: base.$('#chat_box').prop("scrollHeight")}, 150);
+    }, [chat_arr])
 
     async function get_data(){
 		var url = '/assessment/assignment?id=' + query.get('id')
@@ -94,11 +106,14 @@ export default function CheckAssignmentChat(){
             var response = await base.request(url, 'post', data)
             if(response != null){
                 if(response.status == 'success'){
+                    base.$("#chat_box").animate({ scrollTop: base.$('#chat_box').prop("scrollHeight")}, 150);
                     var new_chat = {
                         sender_id : user_data.id,
                         message : message,
                         created_at : base.moment().format()
                     }
+
+                    chat_arr.unshift(new_chat)
                     base.add_array(chat_arr, set_chat_arr, new_chat)
                     set_message('')
 
@@ -132,34 +147,33 @@ export default function CheckAssignmentChat(){
                             <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
                             <div className='col-12'>
                                 <div className='row'>
-                                    <div className='col-12 p-0' style={{maxHeight : '35rem', overflowY : 'scroll', overflowX : 'hidden'}}>
+                                    <div className='col-12 p-4' style={{borderBottom : '1px solid #eaeaea'}}>
+                                        <img className='position-absolute' src={base.img_leaves} style={{height : '5rem', top : '-.25rem', right : 0}} />
 
-                                        <div className='row'>
-                                            <div className='col-12 p-4' style={{borderBottom : '1px solid #eaeaea'}}>
-                                                <img className='position-absolute' src={base.img_leaves} style={{height : '5rem', top : '-.25rem', right : 0}} />
-
-                                                
-                                                <div className='row m-0'>
-                                                    <div className='col-auto'>
-                                                        <img src={base.img_no_profile} style={{height : '3.5rem', aspectRatio : 1, borderRadius : '3.5rem'}} />
-                                                    </div>
-                                                    <div className='col p-0 d-flex align-items-center '>
-                                                        <div>
-                                                            <p className='m-0 font-weight-bold' style={{color : 'black'}}>{assignment_data.user.name}</p>
-                                                            <p className='mb-0' style={{color : 'black', fontSize : '.75rem'}}><i className="fas fa-circle mr-2" style={{color : '#68D391'}}></i>Online</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className='col-auto px-4 mt-3 mt-lg-0'>
-                                                        <div className='bg-ea text-center px-5 py-2' style={{borderRadius : '.5rem', zIndex : 1000}}>
-                                                            <p className='m-0 font-weight-bold' style={{color : 'black'}}>{query.get('id')}</p>
-                                                        </div>
-                                                    </div>
+                                        
+                                        <div className='row m-0'>
+                                            <div className='col-auto'>
+                                                <img src={base.img_no_profile} style={{height : '3.5rem', aspectRatio : 1, borderRadius : '3.5rem'}} />
+                                            </div>
+                                            <div className='col p-0 d-flex align-items-center '>
+                                                <div>
+                                                    <p className='m-0 font-weight-bold' style={{color : 'black'}}>{assignment_data.user.name}</p>
+                                                    <p className='mb-0' style={{color : 'black', fontSize : '.75rem'}}><i className="fas fa-circle mr-2" style={{color : '#68D391'}}></i>Online</p>
                                                 </div>
                                             </div>
+                                            <div className='col-auto px-4 mt-3 mt-lg-0'>
+                                                <div className='bg-ea text-center px-5 py-2' style={{borderRadius : '.5rem', zIndex : 1000}}>
+                                                    <p className='m-0 font-weight-bold' style={{color : 'black'}}>{query.get('id')}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='col-12 p-0' style={{maxHeight : '35rem', overflowY : 'scroll', overflowX : 'hidden'}} id={'chat_box'}>
+                                        <div className='row'>
                                             <div className='col-12 p-4' style={{borderBottom : '1px solid #eaeaea'}}>
                                                 <div className='row m-0'>
                                                     {
-                                                        chat_arr.map((data, index)=>(
+                                                        chat_arr.slice(0).reverse().map((data, index)=>(
                                                             <>
                                                                 {
                                                                     data.sender_id === user_data.id ?
@@ -187,7 +201,7 @@ export default function CheckAssignmentChat(){
                                                     
                                                 </div>
                                             </div>
-                                        </div>  
+                                        </div>
                                     </div>
                                     <div className='col-12 p-4'>
                                         <div className='row m-0'>
