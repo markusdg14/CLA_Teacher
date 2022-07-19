@@ -44,8 +44,9 @@ export default function CheckAssignmentChat(){
             if(new_chat.sender_id !== user_data.id){
                 base.$("#chat_box").animate({ scrollTop: base.$('#chat_box').prop("scrollHeight")}, 150);
 
-                chat_arr.unshift(new_chat)
-                base.add_array(chat_arr, set_chat_arr, new_chat)
+                // chat_arr.unshift(new_chat)
+                // set_chat_arr(chat_arr)
+                base.unshift_array(chat_arr, set_chat_arr, new_chat)
             }
         })
       }
@@ -114,7 +115,7 @@ export default function CheckAssignmentChat(){
                     }
 
                     chat_arr.unshift(new_chat)
-                    base.add_array(chat_arr, set_chat_arr, new_chat)
+                    // base.add_array(chat_arr, set_chat_arr, new_chat)
                     set_message('')
 
                 }

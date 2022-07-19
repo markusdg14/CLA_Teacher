@@ -151,21 +151,6 @@ export default function TrackerIndex(){
 				var assignment_submitted = data.arr_assignment_submitted
 				var assignment_agreement = data.arr_assignment_agreement
 
-				// for(var x in assignment_submitted){
-				// 	submitted_arr[x] = {}
-				// 	var submitted = assignment_submitted[x]
-				// 	for(var y in submitted){
-				// 		submitted_arr[x][y] = {}
-				// 		var lesson = submitted[y]
-				// 		for(var z in lesson){
-				// 			if(lesson[z] != null){
-				// 				lesson[z].assessment_status.badge_type = (lesson[z].assessment_status.data === 'done' ? 'success' : lesson[z].assessment_status.data === 'on_checking' ? 'warning' : lesson[z].assessment_status.data === 'need_correction' ? 'info' : '')
-				// 			}
-				// 			submitted_arr[x][y][z] = lesson[z]
-				// 		}
-				// 	}
-				// }
-
 				set_activity_submitted(assignment_submitted)
 				set_activity_agreement(assignment_agreement)
 				set_submitted_data_arr(submitted_arr)
@@ -488,18 +473,6 @@ export default function TrackerIndex(){
 			</div>
 
 
-		</div>
-	)
-}
-
-function BadgeTable({title, type}){
-	const bgColor = (type === 'success' ? '#CEF2CE' : type === 'warning' ? '#FFF2CA' : '')
-	const textColor = (type === 'success' ? '#44A244' : type === 'warning' ? '#E6BA34' : '')
-	return (
-		<div className='h-100 px-2'>
-			<div className='m-0 p-2 px-3' style={{backgroundColor : bgColor, borderRadius : '1rem'}}>
-				<p className='m-0 font-weight-bold text-center' style={{color : textColor, fontSize : '.75rem', lineHeight : '1rem'}}>{title}</p>
-			</div>
 		</div>
 	)
 }

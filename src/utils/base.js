@@ -12,8 +12,8 @@ import io from 'socket.io-client'
 export default class Base extends Component{
     
 	
-	host = 'https://lms-admin.quantumtri.com'
-	// host = 'https://admin.christianlifeacademy-id.com'
+	// host = 'https://lms-admin.quantumtri.com'
+	host = 'https://admin.christianlifeacademy-id.com'
 	
     base_url = this.host + '/api';
     url_image = this.host + '/image';
@@ -106,6 +106,12 @@ export default class Base extends Component{
 	add_array(arr, set_state, data = {}){
 		var temp = [...arr]
 		temp.push(data)
+		set_state(temp)
+	}
+
+	unshift_array(arr, set_state, data = {}){
+		var temp = [...arr]
+		temp.unshift(data)
 		set_state(temp)
 	}
 
