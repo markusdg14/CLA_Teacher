@@ -15,6 +15,7 @@ export default function Navbar(){
 			{title : 'Check Activity', nav : '/check-activity', icon : 'bi bi-ui-checks'},
 			{title : 'Calendar', nav : '/calendar', icon : 'bi bi-calendar2-week-fill'},
 			{title : 'Grade Book', nav : '/grade-book', icon : 'bi bi-folder-fill'},
+			{title : 'Chat', nav : '/chat', icon : 'bi bi-chat-dots-fill'},
 		]},
 		{title : 'Homeroom', icon : '', url : '/homeroom', dropdown_arr : [
 			// {title : 'Class & Student', nav : '', icon : 'bi bi-pie-chart-fill'},

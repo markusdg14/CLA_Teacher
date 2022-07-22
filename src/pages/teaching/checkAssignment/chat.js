@@ -14,7 +14,10 @@ export default function CheckAssignmentChat(){
     const [assignment_data, set_assignment_data] = useState({
         id : '', name : '',
 		user : {id : '', name : ''},
-        assessment_status : {id : '', name : ''}
+        assessment_status : {id : '', name : ''},
+        assignment_agreement : {name : ''},
+        task_agreement : {title : '', project_agreement : {name : ''}},
+        activity_name : ''
 	})
     const [message, set_message] = useState('')
     const [chat_arr, set_chat_arr] = useState([])
@@ -74,6 +77,13 @@ export default function CheckAssignmentChat(){
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
+                data.activity_name = ''
+                if(query.get('type') === 'task'){
+                    data.activity_name = data.task_agreement.project_agreement.name + ' - ' + data.task_agreement.title
+                }
+                else if(query.get('type') === 'assignment'){
+                    data.activity_name = data.assignment_agreement.name
+                }
                 set_assignment_data(data)                
             }
         }
@@ -164,7 +174,7 @@ export default function CheckAssignmentChat(){
                                             </div>
                                             <div className='col-auto px-4 mt-3 mt-lg-0'>
                                                 <div className='bg-ea text-center px-5 py-2' style={{borderRadius : '.5rem', zIndex : 1000}}>
-                                                    <p className='m-0 font-weight-bold' style={{color : 'black'}}>{query.get('id')}</p>
+                                                    <p className='m-0 font-weight-bold' style={{color : 'black'}}>{assignment_data.activity_name}</p>
                                                 </div>
                                             </div>
                                         </div>

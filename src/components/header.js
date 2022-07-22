@@ -23,11 +23,8 @@ export default function Header({title, user_data}){
     return(
         <>
             <div className='row'>
-                {/* <div className='col-auto d-flex align-items-center'>
-                    <img src={user_data.image.image_display} style={{height : '6.75rem', width : '6.75rem', aspectRatio : 1, borderRadius : '6.75rem'}} />
-                </div> */}
                 <div className='col-auto d-flex align-items-center'>
-						<img className='headerProfileImg' src={user_data.image.image_display} />
+					<img className='headerProfileImg' src={user_data.image.image_display} />
 				</div>
                 <div className='col d-flex align-items-center p-0 p-lg-2'>
 					<div className='row headerSection'>
@@ -44,20 +41,11 @@ export default function Header({title, user_data}){
                                 </div>
                             </div>
                         </div>
-                        {/* <div className='bg-secondary px-3 py-1 rounded'>
-                        </div> */}
 					</div>
 				</div>
-                {/* <div className='col d-flex align-items-center'>
-                    <div>
-                        <h5 className='m-0 text-primary text-uppercase'>{greeting}</h5>
-                        <h2 className='m-0 mt-1 text-capitalize' style={{fontFamily : 'PlayfairDisplayBold'}}>{user_data.name}</h2>
-                        <p className='m-0 mt-1 text-uppercase'>{base.moment().format('dddd, DD MMMM YYYY')}</p>
-                    </div>
-                </div> */}
                 <div className='col-auto mt-3 mt-lg-0'>
                     <div className="card rounded shadow-sm">
-                        <div className={"card-body p-3" + (title !== 'dashboard' ? ' pr-5' : '')}>
+                        <div className={"card-body p-0 p-lg-3" + (title !== 'dashboard' ? ' pr-5' : '')}>
                             <div className={'row' + (title !== 'dashboard' ? ' m-0' : '')}>
                                 {
                                     title === 'dashboard' ? 

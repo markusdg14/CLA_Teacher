@@ -124,7 +124,7 @@ export default function HomeIndex(){
                 <Header title={'Dashboard'} user_data={user_data} />
             </div>
 
-            <div className='col-12 mt-5 pt-4'>
+            <div className='col-12 pt-4 mt-3'>
                 <HomeList
                     data_arr={to_do_list_arr}
                     title={'Annoucement'}
