@@ -28,8 +28,11 @@ export default function Navbar(){
 
 	const [unread_notif, set_unread_notif] = useState(0)
 
-	useEffect(()=>{
-		get_notif_unread()
+	useEffect(async ()=>{
+		var token = await localStorage.getItem('token')
+		if(token != null){
+			get_notif_unread()
+		}
 	}, [])
 
 	function useQuery() {
@@ -130,7 +133,7 @@ export default function Navbar(){
 							<i className="bi bi-bell-fill text-primary mr-2" style={{ fontSize: '1.25rem' }}></i>
 						</button>
 						<button className="navbar-toggler navbar-toggler-right border-0 p-0" type="button" onClick={() => sidebar(true)}>
-							<i className="fas fa-bars text-primary" style={{ fontSize: '1.75rem' }}></i>
+							<i className="fas fa-bars text-primary" style={{ fontSize: '1.25rem' }}></i>
 						</button>
 					</div>
 				</div>

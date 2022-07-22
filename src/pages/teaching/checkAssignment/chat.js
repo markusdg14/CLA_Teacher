@@ -69,7 +69,17 @@ export default function CheckAssignmentChat(){
 
     useEffect(()=>{
         base.$("#chat_box").animate({ scrollTop: base.$('#chat_box').prop("scrollHeight")}, 150);
+        set_read()
     }, [chat_arr])
+
+    async function set_read(){
+		var url = '/chat/room/read'
+        var response = await base.request(url, 'put', {chat : {id : query.get('chat_id')}})
+        if(response != null){
+            if(response.status == 'success'){            
+            }
+        }
+	}
 
     async function get_data(){
 		var url = '/assessment/assignment?id=' + query.get('id')

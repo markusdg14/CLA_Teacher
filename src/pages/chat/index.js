@@ -96,17 +96,48 @@ export default function ChatIndex(){
                                                                         </div>
                                                                         <div className='col pl-0'>
                                                                             <div className='row'>
-                                                                                <div className='col-12'>
-                                                                                    <p className='m-0' style={{fontFamily : 'InterBold', color : 'black'}}>{data.receiver.name}</p>
-                                                                                </div>
-                                                                                <div className='col-12'>
+                                                                                <div className='col'>
                                                                                     <div className='row'>
-                                                                                        <div className='col-auto'>
-                                                                                            <p className='m-0' style={{color : 'black', fontSize : '.75rem'}}>{data.activity_name}</p>
+                                                                                        <div className='col-12'>
+                                                                                            <p className='m-0' style={{fontFamily : 'InterBold', color : 'black'}}>{data.receiver.name}</p>
                                                                                         </div>
-                                                                                        <div className='col text-right'>
-                                                                                            <p className='m-0' style={{color : 'black', fontSize : '.75rem'}}>{(data.last_chat != null ? base.moment(data.last_chat.created_at).format('DD/MM HH:mm') : '-')}</p>
+                                                                                        <div className='col-12'>
+                                                                                            <div className='row'>
+                                                                                                <div className='col-auto d-flex align-items-center'>
+                                                                                                    <p className='m-0' style={{color : 'black', fontSize : '.75rem', fontFamily : (data.total_unread > 0 && 'InterBold')}}>{data.activity_name}</p>
+                                                                                                </div>
+                                                                                                <div className='col d-none d-lg-flex justify-content-end'>
+                                                                                                    <div className='row'>
+                                                                                                        <div className='col-auto d-flex align-items-center'>
+                                                                                                            <p className='m-0' style={{color : 'black', fontSize : '.75rem'}}>{(data.last_chat != null ? base.moment(data.last_chat.created_at).format('DD/MM HH:mm') : '-')}</p>
+                                                                                                        </div>
+                                                                                                        {
+                                                                                                            data.total_unread > 0 &&
+                                                                                                            <div className='col-auto pl-0'>
+                                                                                                                <div className='px-2 py-1' style={{backgroundColor : '#F2F9E4', borderRadius : '.25rem'}}>
+                                                                                                                    <p className='m-0' style={{fontSize : '.7rem'}}>{data.total_unread} Messages</p>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className='col d-block d-lg-none'>
+                                                                                    <div className='row'>
+                                                                                        <div className='col-12 text-right mt-1'>
+                                                                                            <p className='m-0' style={{color : 'black', fontSize : '.675rem'}}>{(data.last_chat != null ? base.moment(data.last_chat.created_at).format('DD/MM HH:mm') : '-')}</p>
+                                                                                        </div>
+                                                                                        {
+                                                                                            data.total_unread > 0 &&
+                                                                                            <div className='col d-flex justify-content-end'>
+                                                                                                <div className='px-2 py-1' style={{backgroundColor : '#F2F9E4', borderRadius : '.25rem'}}>
+                                                                                                    <p className='m-0' style={{fontSize : '.7rem'}}>{data.total_unread}</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        }
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
