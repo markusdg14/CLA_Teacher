@@ -44,23 +44,23 @@ export default function ProfileIndex(){
                 <div className='row'>
                     {
                         profile_menu_arr.map((data, index)=>(
-                            <div className={'col-12' + (index != 0 ? ' mt-3' : '')} key={index}>
+                            <div className={'col-12 col-lg-6' + (index != 0 ? ' mt-3 mt-lg-0' : '')} key={index}>
                                 <a href={data.nav} className='text-decoration-none'>
                                 <div className="card rounded shadow-sm" style={{cursor : 'pointer'}}>
-                                    <div className="card-body p-4">
+                                    <div className="card-body p-3 p-lg-4">
                                             <div className='row'>
                                                 <div className='col-auto'>
-                                                    <div className='bg-primary rounded d-flex align-items-center justify-content-center' style={{height : '3.5rem', width : '3.5rem'}}>
+                                                    <div className='bg-primary rounded d-flex align-items-center justify-content-center profileMenuIcon'>
                                                         <h5 className='m-0'><i className={"text-white " + (data.icon)}></i></h5>
                                                     </div>
                                                 </div>
                                                 <div className='col-auto d-flex align-items-center justify-content-center p-0 px-lg-3'>
-                                                    <div className=''>
+                                                    <div className='profileMenu'>
                                                         <h5 className='text-uppercase m-0'>{data.title}</h5>
-                                                        <p className='text-uppercase m-0'>{data.desc}</p>
+                                                        <p className='text-uppercase m-0 d-none d-lg-block'>{data.desc}</p>
                                                     </div>
                                                 </div>
-                                                <div className='col d-flex align-items-center justify-content-end pl-0'>
+                                                <div className='col d-flex align-items-center justify-content-end pl-0 profileMenuIcon'>
                                                     <h5 className='m-0'><i className="fas fa-chevron-right text-primary"></i></h5>
                                                 </div>
                                             </div>

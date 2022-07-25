@@ -68,7 +68,7 @@ export default function Header({title, user_data}){
                                     <>
                                     <div className='col-12 pl-4 pr-5 py-3'>
                                         <p className='m-0 text-secondary' style={{fontWeight : 700}}>You’re Currently in</p>
-                                        <h3 className='m-0 text-capitalize'>{title}</h3>
+                                        <h4 className='m-0 text-capitalize'>{title}</h4>
                                     </div>
                                     </>
                                 }

@@ -47,7 +47,7 @@ export default function HomeList({data_arr, title, icon}){
                                 </>
                                 :
                                 <div className='col-12 text-center'>
-                                    <p className='m-0' style={{fontFamily : 'Inter', fontSize : '1.25rem', color : 'black'}}>No Data</p>
+                                    <h6 className='m-0' style={{fontFamily : 'Inter', color : 'black'}}>No Data</h6>
                                 </div>
                             }
                         </div>

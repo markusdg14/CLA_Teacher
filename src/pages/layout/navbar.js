@@ -138,14 +138,21 @@ export default function Navbar(){
 					</div>
 				</div>
 				<div className={"sidebar" + (is_sidebar ? ' active' : '')}>
-					<div className='position-absolute p-5 ' style={{ right: 0, top: '5%', 'zIndex': '1' }}>
-						<span onClick={() => sidebar(false)} >
-							<i className="fas fa-times" style={{ fontSize: '2rem', cursor: 'pointer' }}></i>
-						</span>
-					</div>
-					<div className='row m-0'>
-						<div className='col-12' style={{ height: '100vh' }}>
-							<div className='d-flex align-middle h-100 align-items-center'>
+					<div className='row m-0 mt-4'>
+						<div className='col-12 py-3'>
+							<div className='row'>
+								<div className='col d-flex align-items-center'>
+									<img src={base.img_logo_text} className={'header_logo'} alt="ChristianLifeAcademy-Logo" style={{ width: 'auto', height : '1.5rem' }} />
+								</div>
+								<div className='col-auto d-flex align-items-center justify-content-end'>
+									<span onClick={() => sidebar(false)} >
+										<i className="bi bi-x" style={{ fontSize: '2rem', cursor: 'pointer' }}></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div className='col-12 mt-4'>
+							<div className='d-flex h-100 align-items-center'>
 
 								<div className='row'>
 									<div className='col-12 mt-3'>
@@ -154,21 +161,21 @@ export default function Navbar(){
 												<ul className="navbar-nav text-uppercase">
 													{
 														header_nav_arr.map((data, index) => (
-															<li className={"nav-item" + (index !== 0 ? ' ml-0 ml-lg-3' : '') + (pathname === data.url ? ' nav_active' : '')} key={index}>
+															<li className={"nav-item mb-2" + (index !== 0 ? ' ml-0 ml-lg-3' : '') + (pathname === data.url ? ' nav_active' : '')} key={index}>
 																{
 																	data.dropdown_arr.length > 0 ?
 																	<>
-																	<a className="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '1.5rem'}}>{data.title}</a>
+																	<a className="nav-link dropdown-toggle text-primary p-0" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '1.25rem'}}>{data.title}</a>
 																	<div className="dropdown-menu" aria-labelledby="navbarDropdown">
 																		{
 																			data.dropdown_arr.map((dataDropdown, indexDropdown)=>(
-																				<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '')} href={dataDropdown.nav} key={indexDropdown}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676', fontSize : '1.5rem'}}></i>{dataDropdown.title}</a>
+																				<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '')} href={dataDropdown.nav} key={indexDropdown}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676', fontSize : '1.25rem'}}></i>{dataDropdown.title}</a>
 																			))
 																		}
 																	</div>
 																	</>
 																	:
-																	<a className="nav-link js-scroll-trigger text-primary" href={data.url} style={{ fontSize: '1.5rem' }}>
+																	<a className="nav-link js-scroll-trigger text-primary p-0" href={data.url} style={{ fontSize: '1.25rem' }}>
 																		{
 																			data.icon != '' &&
 																			<h5><i className={data.icon}></i></h5>

@@ -618,7 +618,7 @@ export default function SubjectLesson(){
                                             <div className='col-12'>
                                                 <p className='m-0' style={{color : 'black'}}>Grade</p>
                                             </div>
-                                            <div className='col-12 mt-2'>
+                                            <div className='col-12 mt-1'>
                                             <div className='row'>
                                                 {
                                                     filter_grade_arr.map((data, index)=>(
@@ -635,23 +635,23 @@ export default function SubjectLesson(){
                                         </div>
                                     </div>
                                     
-                                    <div className='col-12 col-lg'>
+                                    <div className='col-12 col-lg mt-2 mt-lg-0'>
                                         <div className='row'>
                                             <div className='col-12'>
                                                 <p className='m-0' style={{color : 'black'}}>Subject</p>
                                             </div>
-                                            <div className='col-12 mt-2'>
+                                            <div className='col-12 mt-1'>
                                                 <Select options={filter_subject_arr} value={filter_subject_selected} isMulti={true} onChange={(value)=>changeFilter(0, 'subject', value)} isOptionDisabled={()=>filter_subject_selected.length >= 2} />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className='col-12 col-lg'>
+                                    <div className='col-12 col-lg mt-2 mt-lg-0'>
                                         <div className='row'>
                                             <div className='col-12'>
                                                 <p className='m-0' style={{color : 'black'}}>Lesson</p>
                                             </div>
-                                            <div className='col-12 mt-2'>
+                                            <div className='col-12 mt-1'>
                                                 <Select options={filter_lesson_arr} value={filter_lesson_selected} isMulti={true} onChange={(value)=>changeFilter(0, 'lesson', value)} isOptionDisabled={()=>filter_lesson_selected.length >= 2} />
                                             </div>
                                         </div>
@@ -676,7 +676,7 @@ export default function SubjectLesson(){
 
                             {
                                 data_arr.length > 0 ?
-                                <div className='col-12 mt-5'>
+                                <div className='col-12 mt-5 px-0 px-lg-3'>
                                     <div className='row'>
                                         {
                                             data_arr.map((data, index)=>(

@@ -771,21 +771,21 @@ export default function CheckAssignmentDetail(){
 
             <div className='col-12 mt-5' style={{borderTop : '1px solid #999999'}}>
                 <div className='row'>
-                    <div className='col-12 pt-5'>
+                    <div className='col-12 pt-4 pt-lg-5'>
                         <div className="card rounded shadow-sm">
                             <div className={"card-body p-0"}>
                                 <div className={'row m-0'}>
                                     <div className='col-12 p-3 pt-4'>
                                         <div className='row m-0'>
-                                            <div className='col'>
+                                            <div className='col-12 col-lg'>
                                                 <label>Grade</label>
                                                 <SelectOption data_arr={grade_arr} selected={grade_selected} title={'Grade'} changeInput={(value)=>changeFilter(value, 'grade')} />
                                             </div>
-                                            <div className='col'>
+                                            <div className='col-12 col-lg mt-2 mt-lg-0'>
                                                 <label>Subject</label>
                                                 <SelectOption data_arr={subject_arr} selected={subject_selected} title={'Subject'} changeInput={(value)=>changeFilter(value, 'subject')} />
                                             </div>
-                                            <div className='col d-flex align-items-end'>
+                                            <div className='col d-flex align-items-end mt-3 mt-lg-0'>
                                                 <button className='btn btn-primary rounded w-100' onClick={()=>filterBtn()}>Filter</button>
                                             </div>
                                         </div>

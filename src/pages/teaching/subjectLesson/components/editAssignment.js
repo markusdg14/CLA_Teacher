@@ -28,7 +28,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                         </div>
                                         <div className='col-12 mt-5'>
                                             <div className='row'>
-                                                <div className='col'>
+                                                <div className='col-12 col-lg'>
                                                     <FormInput 
                                                         title={'Lesson'}
                                                         changeInput={(value)=>console.log(value)}
@@ -39,7 +39,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                                         readOnly={true}
                                                     />
                                                 </div>
-                                                <div className='col'>
+                                                <div className='col-12 col-lg mt-3 mt-lg-0'>
                                                     <FormInput 
                                                         title={'Grade'}
                                                         changeInput={(value)=>console.log(value)}
@@ -50,7 +50,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                                         readOnly={true}
                                                     />
                                                 </div>
-                                                <div className='col'>
+                                                <div className='col-12 col-lg mt-3 mt-lg-0'>
                                                     <FormInput 
                                                         title={'Subject'}
                                                         changeInput={(value)=>console.log(value)}
@@ -67,7 +67,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                             <div className='row'>
                                                 {
                                                     selected_assignment.type === 'assignment' &&
-                                                    <div className='col'>
+                                                    <div className='col-12 col-lg'>
                                                         <FormInput 
                                                             title={'Type of Assignment'}
                                                             changeInput={(value)=>console.log(value)}
@@ -79,7 +79,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                                         />
                                                     </div>
                                                 }
-                                                <div className={(selected_assignment.type === 'assignment' ? 'col' : 'col-4')}>
+                                                <div className={(selected_assignment.type === 'assignment' ? 'col-12 col-lg' : 'col-12 col-lg-4')}>
                                                     <FormInput 
                                                         title={'Grading System'}
                                                         changeInput={(value)=>console.log(value)}
@@ -130,7 +130,7 @@ export default function EditAssignment({saveAssignment, selected_lesson, selecte
                                         </div>
                                         <div className='col-12 mt-3'>
                                             <label className='text-primary'>{selected_assignment.type === 'task' ? 'Detail Task' : 'Detail Assignment'}</label>
-                                            <textarea className="form-control rounded mt-2" rows={5} onChange={(e)=>changeInput(e.target.value, 'description')} style={{resize : 'none', border : '1px solid #EAEAEA'}} value={selected_assignment.description} placeholder=""></textarea>
+                                            <textarea className="form-control rounded mt-0 mt-lg-2" rows={5} onChange={(e)=>changeInput(e.target.value, 'description')} style={{resize : 'none', border : '1px solid #EAEAEA'}} value={selected_assignment.description} placeholder=""></textarea>
                                         </div>
 
                                         <div className='col-12 mt-3'>

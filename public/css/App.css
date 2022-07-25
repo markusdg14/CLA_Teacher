@@ -9832,7 +9832,7 @@ h2 {
 
 .nav_active {
   font-weight: bold;
-  border-bottom: 4px solid #B1CF24;
+  border-bottom: 2px solid #B1CF24;
 }
 
 .readonlyCheckbox {
@@ -10005,6 +10005,10 @@ input:focus {
     transform: rotate(90deg);
   }
 
+  .noDataTxt {
+    font-size: 0.5rem;
+  }
+
   .background-right {
     position: absolute !important;
     bottom: 5rem;
@@ -10018,6 +10022,11 @@ input:focus {
   .td-fit-content-sm {
     width: 1%;
     white-space: nowrap;
+  }
+
+  .profileMenu > h5 {
+    font-size: 0.75rem;
+    font-family: "Inter" !important;
   }
 }
 .td-fit-content {
@@ -10039,6 +10048,12 @@ input:focus {
 #accordionLesson > .card:not(:first-of-type) {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+@media (max-width: 991.98px) {
+  .form-control, a, .btn {
+    font-size: 0.75rem;
+  }
 }
 
 .border {
@@ -10125,7 +10140,7 @@ a.fc-event {
 }
 
 .fc-event {
-  background-color: #0EA5E91A;
+  background-color: rgba(14, 165, 233, 0.1019607843);
 }
 .fc-event > .fc-daygrid-event-dot {
   border: none;
@@ -10176,7 +10191,7 @@ a.fc-event {
 }
 
 .gradePicker {
-  background-color: #F6FEE480;
+  background-color: rgba(246, 254, 228, 0.5019607843);
   border-radius: 1.5rem;
   padding: 0.5rem 2rem;
   border: 1px solid #B1CF24;
@@ -10305,6 +10320,11 @@ a.fc-event {
   background-clip: padding-box;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+@media (max-width: 991.98px) {
+  .react-datepicker__input-container > input {
+    font-size: 0.75rem;
+  }
+}
 
 .chat {
   max-width: 50%;
@@ -10321,6 +10341,22 @@ a.fc-event {
 @media (max-width: 991.98px) {
   .chat {
     max-width: 75%;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .profileMenuIcon {
+    height: 2rem;
+    width: 2rem;
+  }
+  .profileMenuIcon > h5 {
+    font-size: 0.75rem !important;
+  }
+}
+@media (min-width: 992px) {
+  .profileMenuIcon {
+    height: 3.5rem;
+    width: 3.5rem;
   }
 }
 

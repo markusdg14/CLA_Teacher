@@ -42,7 +42,7 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                         <div className='row m-0'>
                                             {
                                                 reward_arr.map((data, index)=>(
-                                                    <div className='col-6 mb-3' key={index}>
+                                                    <div className='col-12 col-lg-6 mb-3' key={index}>
                                                         <div className='row'>
                                                             <div className='col-6 d-flex align-items-center'>
                                                                 <p className='m-0'>{data.name}</p>

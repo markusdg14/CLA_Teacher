@@ -80,7 +80,7 @@ export default function ChatIndex(){
                             <div className="card-body p-0">
                                 <div className='row m-0'>
                                     <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-                                    <div className='col-12 p-3 pt-4 pb-5'>
+                                    <div className='col-12 p-3 py-4'>
                                         <div className='row'>
 
                                             {

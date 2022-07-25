@@ -157,7 +157,7 @@ h2{
 
 .nav_active{
 	font-weight: bold;
-	border-bottom: 4px solid #B1CF24;
+	border-bottom: 2px solid #B1CF24;
 }
 
 .readonlyCheckbox{
@@ -338,6 +338,9 @@ input{
 			transform: rotate(90deg);
 		}
 	}
+	.noDataTxt{
+		font-size: .5rem;
+	}
 	.background-right{
 		position : absolute !important;
 		bottom : 5rem;
@@ -350,6 +353,12 @@ input{
 	.td-fit-content-sm{
 		width: 1%;
 		white-space: nowrap;
+	}
+	.profileMenu{
+		>h5{
+			font-size: .75rem;
+			font-family: 'Inter' !important;
+		}
 	}
 }
 
@@ -374,6 +383,12 @@ input{
 			border-top-left-radius: 0;
 			border-top-right-radius: 0;
 		}
+	}
+}
+
+.form-control, a, .btn{
+	@include media-breakpoint-down(md){
+		font-size: .75rem;
 	}
 }
 
@@ -641,6 +656,10 @@ a{
 		line-height: 1.5;
 		background-clip: padding-box;
 		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+		@include media-breakpoint-down(md){
+			font-size: .75rem;
+		}
 	}
 }
 
@@ -658,4 +677,18 @@ a{
 	@include media-breakpoint-down(md){
 		max-width: 75%;
 	}
+}
+
+.profileMenuIcon{
+	@include media-breakpoint-down(md){
+		height: 2rem;
+		width: 2rem;
+		>h5{
+			font-size: .75rem !important;
+		}
+	}
+	@include media-breakpoint-up(lg){
+		height: 3.5rem;
+		width: 3.5rem;
+	}	
 }
