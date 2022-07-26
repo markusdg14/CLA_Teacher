@@ -28,23 +28,12 @@ export default function HomeroomDashboard({rank_student_arr, schedule_lesson_day
 								<div className='row m-0'>
 									<div className='col-12 mb-3 pr-3'>
 										<div className='row m-0'>
-											<div className='col-12 col-lg'>
+											<div className='col-12 col-lg px-0 px-lg-3'>
 												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Student Lesson</h5>
 											</div>
-											{/* <div className='col-12 col-lg-auto text-right mt-3 mt-lg-0 d-flex justify-content-end'>
-												<div className='row m-0 mr-0 mr-lg-5'>
-													{
-														lesson_tracker_btn_arr.map((data, index)=>(
-															<div className={'col-auto p-0 ' + data.margin}>
-																<h4 className='m-0' style={{cursor : 'pointer'}} onClick={()=>lessonTrackerBtn(data.type)}><i className={data.icon + " text-secondary"}></i></h4>
-															</div>
-														))
-													}
-												</div>
-											</div> */}
 										</div>
 									</div>
-									<div className='col-12'>
+									<div className='col-12 px-0 px-lg-3'>
 										<div className="table-responsive">
 											<table className="w-100" style={{height : '10rem'}}>
 												<tbody>
@@ -120,14 +109,14 @@ export default function HomeroomDashboard({rank_student_arr, schedule_lesson_day
 								<div className='row m-0'>
 									<div className='col-12 mb-3 pr-3'>
 										<div className='row m-0'>
-											<div className='col-12 col-lg'>
+											<div className='col-12 col-lg px-0 px-lg-3'>
 												<h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>School Subject</h5>
 											</div>
 										</div>
 									</div>
 									<div className='col-12'>
 										<div className='row m-0'>
-											<div className='col'>
+											<div className='col px-0 px-lg-3'>
 												<div className="input-group border rounded">
 													<div className="input-group-prepend">
 														<span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
@@ -140,7 +129,7 @@ export default function HomeroomDashboard({rank_student_arr, schedule_lesson_day
 											</div>
 										</div>
 									</div>
-									<div className='col-12 mt-3'>
+									<div className='col-12 mt-3 px-0 px-lg-3'>
 										<div className='row m-0'>
 											<div className='col-12'>
 												<div className="table-responsive">

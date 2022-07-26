@@ -6,7 +6,7 @@ export default function NotAssigned(){
 
     return(
         <>
-        <div className='row'>
+        <div className='row m-0'>
             <div className='col-12 mt-2 p-0 pb-4 rounded' style={{backgroundColor : '#F8F9FE'}}>
                 <div className='row m-0'>
                     <div className='col-12 text-center studentNoAccess' style={{marginTop : '-10rem'}}>

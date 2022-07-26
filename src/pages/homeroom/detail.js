@@ -226,30 +226,6 @@ export default function HomeroomDetail(){
 
                     var arr_schedule = []
                     var data_schedule_arr = data.arr_schedule
-                    // for(let day of data.arr_day){
-                    //     for(let time of data.arr_time){
-                    //         var time_moment = base.moment(time.id, 'HH:mm')
-                    //         if(arr_schedule[day.id] == null)
-                    //             arr_schedule[day.id] = []
-                    //         if(arr_schedule[day.id][time.id] == null)
-                    //             arr_schedule[day.id][time.id] = {}
-
-                    //         for(var x in data_schedule_arr){
-                    //             if(data_schedule_arr[x][time.id] != null){
-                    //                 var start_time = base.moment(data_schedule_arr[x][time.id].start_time).format('HH:mm')
-                    //                 start_time = base.moment(start_time, 'HH:mm')
-                    //                 var end_time = base.moment(data_schedule_arr[x][time.id].end_time).format('HH:mm')
-                    //                 end_time = base.moment(end_time, 'HH:mm')
-                    //                 if(data_schedule_arr[x][time.id].day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
-                    //                     arr_schedule[day.id][time.id] = data_schedule_arr[x][time.id]
-                    //                     break
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
-
-
                     set_schedule_arr(data_schedule_arr)
 
                     var assign_teacher = data.arr_assign_teacher
@@ -700,7 +676,7 @@ export default function HomeroomDetail(){
                 <div className="card rounded shadow-sm">
                     <div className={"card-body p-0"}>
                         <div className={'row m-0'}>
-                            <div className='col-12 py-5 px-4'>
+                            <div className='col-12 py-4 px-3 py-lg-5 px-lg-4'>
                                 <div className='row m-0'>
                                     {
                                         header_menu_arr.map((data, index)=>(

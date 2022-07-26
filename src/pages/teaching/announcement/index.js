@@ -117,7 +117,7 @@ export default function Announcement(){
                 is_under_construction ?
                 <UnderConstruction />
                 :
-                <div className='col-12 mt-5 pt-4'>
+                <div className='col-12 mt-0 mt-lg-4 pt-4'>
                     <div className='row'>
                         <div className='col-12 col-lg-3'>
                             <div className='row'>
@@ -182,7 +182,7 @@ export default function Announcement(){
                                                                                         data.status === 'scheduled' &&
                                                                                         <>
                                                                                             <button className='btn btn-danger mr-2' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>deleteAnnouncement('open_modal', index)}><i className="bi bi-trash-fill text-white" style={{fontSize : '.75rem'}}></i></button>
-                                                                                            <a href={'/announcement/action?type=edit&id=' + data.id} className='btn btn-secondary' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}}><i className="bi bi-pen-fill text-white" style={{fontSize : '.75rem'}}></i></a>
+                                                                                            <button onClick={()=>window.location.href = '/announcement/action?type=edit&id=' + data.id} className='btn btn-secondary' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}}><i className="bi bi-pen-fill text-white" style={{fontSize : '.75rem'}}></i></button>
                                                                                         </>
                                                                                     }
                                                                                 </td>
