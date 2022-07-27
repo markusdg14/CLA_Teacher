@@ -10140,7 +10140,7 @@ a.fc-event {
 }
 
 .fc-event {
-  background-color: rgba(14, 165, 233, 0.1019607843);
+  background-color: #0EA5E91A;
 }
 .fc-event > .fc-daygrid-event-dot {
   border: none;
@@ -10191,9 +10191,9 @@ a.fc-event {
 }
 
 .gradePicker {
-  background-color: rgba(246, 254, 228, 0.5019607843);
+  background-color: #F6FEE480;
   border-radius: 1.5rem;
-  padding: 0.5rem 2rem;
+  padding: 0.25rem 1.5rem;
   border: 1px solid #B1CF24;
   cursor: pointer;
 }

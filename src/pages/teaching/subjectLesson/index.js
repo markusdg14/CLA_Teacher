@@ -285,6 +285,8 @@ export default function SubjectLesson(){
     const [is_disable_btn_modal, set_is_disable_btn_modal] = useState(false)
     const [lesson_selected, set_lesson_selected] = useState(null)
     const [index_lesson_selected, set_index_lesson_selected] = useState('')
+    const [selected_agreement_id, set_selected_agreement_id] = useState('')
+    const [selected_student_id, set_selected_student_id] = useState('')
 
     useEffect(async ()=>{
         if(lesson_selected != null){
@@ -379,41 +381,80 @@ export default function SubjectLesson(){
             
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
             
-            if(status != ''){
-                if(last_submitted.assessment_status.data !== 'done'){
-                    if(status === 'done'){
-                        set_activity_subject_selected(data_index.subject.id)
-                        set_class_student_id(class_student.id)
-                        if(class_student.last_assignment_submitted != null){
-                            set_assignment_submitted_id(class_student.last_assignment_submitted.id)
-                            set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
-                        }
-                        if(assignment_agreement.data_type === 'assignment'){
-                            set_activity_type_selected(assignment_agreement.assignment_type.data)
-                            set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
-                        }
-                        else if(assignment_agreement.data_type === 'task'){
-                            set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
-                            set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
-                        }
+            if(last_submitted.assessment_status.data !== 'done'){
+                if(status === 'done'){
+                    set_activity_subject_selected(data_index.subject.id)
+                    set_class_student_id(class_student.id)
+                    if(class_student.last_assignment_submitted != null){
+                        set_assignment_submitted_id(class_student.last_assignment_submitted.id)
+                        set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
                     }
-                    else{
-                        var url = '/assessment/assignment'
-                        var data_upload = {
-                            id : last_submitted.id,
-                            status : status,
-                        }
-                
-                        var response = await base.request(url, 'put', data_upload)
-                        if(response != null){
-                            if(response.status == 'success'){
-                                filterBtn()
-                            }
+                    if(assignment_agreement.data_type === 'assignment'){
+                        set_activity_type_selected(assignment_agreement.assignment_type.data)
+                        set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
+                    }
+                    else if(assignment_agreement.data_type === 'task'){
+                        set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
+                        set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
+                    }
+                }
+                else{
+                    var url = '/assessment/assignment'
+                    var data_upload = {
+                        id : last_submitted.id,
+                        status : status,
+                    }
+            
+                    var response = await base.request(url, 'put', data_upload)
+                    if(response != null){
+                        if(response.status == 'success'){
+                            filterBtn()
                         }
                     }
                 }
             }
+        }
+        else{
+            if(status === 'done'){
+                set_activity_subject_selected(data_index.subject.id)
+                set_class_student_id(class_student.id)
+                set_selected_student_id(class_student.user_id)
+                // if(class_student.last_assignment_submitted != null){
+                //     set_assignment_submitted_id(class_student.last_assignment_submitted.id)
+                //     set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
+                // }
+                set_selected_agreement_id(assignment_agreement.id)
+                if(assignment_agreement.data_type === 'assignment'){
+                    set_activity_type_selected(assignment_agreement.assignment_type.data)
+                    set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
+                }
+                else if(assignment_agreement.data_type === 'task'){
+                    set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
+                    set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
+                }
+            }
+            else{
+                var url = '/assessment/assignment'
+                var data_upload = {
+                    status : status,
+                }
 
+                if(assignment_agreement.data_type === 'task'){
+                    data_upload.task_agreement = {id : assignment_agreement.id}
+                }
+                else{
+                    data_upload.assignment_agreement = {id : assignment_agreement.id}
+                }
+
+                data_upload.user_id = class_student.user_id
+        
+                var response = await base.request(url, 'post', data_upload)
+                if(response != null){
+                    if(response.status == 'success'){
+                        window.location.reload()
+                    }
+                }
+            }
         }
     }
 
@@ -438,6 +479,15 @@ export default function SubjectLesson(){
             data_upload = {
                 id : assignment_submitted_id,
                 comment : teacher_notes,
+            }
+
+            if(assignment_submitted_id !== ''){
+                data_upload.id = assignment_submitted_id
+            }
+            else{
+                method = 'post'
+                data_upload.assignment_agreement = {id : selected_agreement_id}
+                data_upload.user_id = selected_student_id
             }
 
             var status = ''
@@ -471,8 +521,14 @@ export default function SubjectLesson(){
         }
         else  if(activity_type_selected === 'ungraded'){
             url = '/assessment/assignment'
-            data_upload = {
-                id : assignment_submitted_id,
+            data_upload = {}
+            if(assignment_submitted_id !== ''){
+                data_upload.id = assignment_submitted_id
+            }
+            else{
+                method = 'post'
+                data_upload.assignment_agreement = {id : selected_agreement_id}
+                data_upload.user_id = selected_student_id
             }
         }
         else if(activity_type_selected === 'discussion'){
@@ -501,10 +557,17 @@ export default function SubjectLesson(){
             url = '/grade/skill'
             data_upload = {
                 class_student : {id : class_student_id},
-                assignment_submitted : {id : assignment_submitted_id},
                 comment : teacher_notes,
                 arr_skill : arr_skill
             }
+
+            if(assignment_submitted_id !== ''){
+                data_upload.assignment_submitted = {id : assignment_submitted_id}
+            }
+            else{
+                data_upload.task_agreement = {id : selected_agreement_id}
+            }
+            
             method = 'post'
         }
         else if(activity_type_selected === 'upload'){
@@ -528,9 +591,17 @@ export default function SubjectLesson(){
             }
 
             data_upload = {
-                id : assignment_submitted_id,
                 status : status,
                 comment : teacher_notes,
+            }
+
+            if(assignment_submitted_id !== ''){
+                data_upload.id = assignment_submitted_id
+            }
+            else{
+                method = 'post'
+                data_upload.assignment_agreement = {id : selected_agreement_id}
+                data_upload.user_id = selected_student_id
             }
         }
 
@@ -538,8 +609,8 @@ export default function SubjectLesson(){
             var response = await base.request(url, method, data_upload)
             if(response != null){
                 if(response.status == 'success'){
-                    filterBtn()
                     base.$('#modalSubmit').modal('hide')
+                    window.location.reload()
                 }
             }
         }
@@ -652,7 +723,7 @@ export default function SubjectLesson(){
                                                 <p className='m-0' style={{color : 'black'}}>Lesson</p>
                                             </div>
                                             <div className='col-12 mt-1'>
-                                                <Select options={filter_lesson_arr} value={filter_lesson_selected} isMulti={true} onChange={(value)=>changeFilter(0, 'lesson', value)} isOptionDisabled={()=>filter_lesson_selected.length >= 2} />
+                                                <Select options={filter_lesson_arr} value={filter_lesson_selected} isMulti={true} onChange={(value)=>changeFilter(0, 'lesson', value)} isOptionDisabled={()=>filter_lesson_selected.length >= 4} />
                                             </div>
                                         </div>
                                     </div>
@@ -754,7 +825,7 @@ export default function SubjectLesson(){
                                                                                                                             data_status.data_arr.map((data_arr_status, index_arr_status)=>(
                                                                                                                                 <div className={'col-4 pr-0 pl-2' + (index_status == 0 ? ' mb-1' : '')} key={index_arr_status}>
                                                                                                                                     <div className='row m-0'>
-                                                                                                                                        <div className='col-auto' style={{cursor : (data_class_student.last_assignment_submitted != null ? 'pointer' : 'default')}} onClick={()=>changeStatus(index, index_assignment, index_class_student, index_status, index_arr_status)}>
+                                                                                                                                        <div className='col-auto' style={{cursor : 'pointer'}} onClick={()=>changeStatus(index, index_assignment, index_class_student, index_status, index_arr_status)}>
                                                                                                                                             <div className='row'>
                                                                                                                                                 <div className='col-auto p-0 d-flex align-items-center'>
                                                                                                                                                     <p className='m-0' style={{fontSize : '.7rem'}}>

@@ -87,24 +87,6 @@ export default function HomeIndex(){
 
         var arr_schedule = []
         var data = user_data.arr_schedule
-        // for(let day of day_arr){
-        //     for(let time of arr_time){
-        //         var time_moment = base.moment(time.id, 'HH:mm')
-        //         if(arr_schedule[day.id] == null)
-        //             arr_schedule[day.id] = []
-                    
-        //         if(arr_schedule[day.id][time.name] == null)
-        //             arr_schedule[day.id][time.name] = {}
-                    
-        //         var start_time = base.moment(data.start_time_format, 'HH:mm')
-        //         var end_time = base.moment(data.end_time_format, 'HH:mm')
-        //         if(data.day == day.id && time_moment.isSameOrAfter(start_time) && time_moment.isBefore(end_time)){
-        //             arr_schedule[day.id][time.name] = data
-        //             break
-        //         }
-        //     }
-        // }
-
         set_schedule_arr(data)
     }
 
@@ -182,7 +164,7 @@ export default function HomeIndex(){
                                                                                             <div className='p-2 d-flex align-items-center' style={{borderLeft : '.5rem solid #DE496E', backgroundColor : '#DE496E33', borderRadius : '.5rem'}}>
                                                                                                     <div>
                                                                                                         <p className='m-0 schedule_subject h-100' style={{color : '#6B7280', lineHeight : '1rem'}}>
-                                                                                                            {schedule_arr[data_day.id][data_time.name].type === 'schedule' ? schedule_arr[data_day.id][data_time.name].subject.name : schedule_arr[data_day.id][data_time.name].name}
+                                                                                                            {schedule_arr[data_day.id][data_time.name].type === 'schedule' ? schedule_arr[data_day.id][data_time.name].subject.name + ' - ' + schedule_arr[data_day.id][data_time.name].class_model.grade.name : schedule_arr[data_day.id][data_time.name].name}
                                                                                                         </p>
                                                                                                     </div>
                                                                                             </div>

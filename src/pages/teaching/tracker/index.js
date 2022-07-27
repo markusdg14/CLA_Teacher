@@ -20,14 +20,7 @@ export default function TrackerIndex(){
 	const [class_arr, set_class_arr] = useState([])
 	const [selected_class, set_selected_class] = useState('')
 
-	const [academic_year_arr, set_academic_year_arr] = useState([])
 	const [selected_academic_year, set_selected_academic_year] = useState('')
-	const [selected_academic_year_name, set_selected_academic_year_name] = useState('')
-
-	const [tracker_btn_arr] = useState([
-		{icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2'},
-		{icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'ml-2'},
-	])
 
 	const [student_arr, set_student_arr] = useState([])
 
@@ -35,12 +28,14 @@ export default function TrackerIndex(){
 
 	const [lesson_arr, set_lesson_arr] = useState([])
 
-	const [submitted_data_arr, set_submitted_data_arr] = useState([])
-
 	const [is_loading, set_is_loading] = useState(true)
+	const [is_loading_data, set_is_loading_data] = useState(true)
 
 	const [activity_agreement, set_activity_agreement] = useState([])
 	const [activity_submitted, set_activity_submitted] = useState({})
+	const [counter, set_counter] = useState(0)
+	const [is_prev, set_is_prev] = useState(false)
+	const [is_next, set_is_next] = useState(false)
 
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
@@ -56,12 +51,6 @@ export default function TrackerIndex(){
 		{title : 'HS', color : '#FC5A5A'},
 	])
 
-	// useEffect(()=>{
-	// 	if(user_data.id !== ''){
-	// 		get_academic_year()
-	// 	}
-	// }, [user_data])
-
 	useEffect(()=>{
 		if(user_data.id !== ''){
 			if(selected_academic_year !== ''){
@@ -74,21 +63,10 @@ export default function TrackerIndex(){
 		if(selected_class !== ''){
 			set_student_arr([])
 			set_is_loading(true)
+			set_is_loading_data(true)
 			get_data()
 		}
-	}, [selected_class])
-
-	async function get_academic_year(){
-		var url = '/academic-year/all'
-		var response = await base.request(url)
-		if(response != null){
-			if(response.status == 'success'){
-				var data = response.data
-				set_academic_year_arr(data)
-				set_selected_academic_year('')
-			}
-		}
-	}
+	}, [selected_class, counter])
 
 	async function get_grade(){
 		if(selected_academic_year != ''){
@@ -115,7 +93,7 @@ export default function TrackerIndex(){
 	}
 
 	async function get_data(){
-		var url = '/class/student-tracker?id=' + selected_class
+		var url = '/class/student-tracker?id=' + selected_class + '&counter=' + counter
 		var response = await base.request(url)
 		if(response != null){
 			if(response.status == 'success'){
@@ -153,12 +131,19 @@ export default function TrackerIndex(){
 
 				set_activity_submitted(assignment_submitted)
 				set_activity_agreement(assignment_agreement)
-				set_submitted_data_arr(submitted_arr)
+
+				
+				setTimeout(() => {
+					set_is_loading_data(false)
+					set_is_prev(data.arr_lesson_schedule.previous_page)
+					set_is_next(data.arr_lesson_schedule.next_page)
+				}, 750);
 			}
 		}
 	}
 
 	function chooseGrade(index){
+		set_counter(0)
 		var data_index = class_arr[index]
 		var initSelected = data_index.is_selected
 		for(var x in class_arr){
@@ -171,30 +156,17 @@ export default function TrackerIndex(){
 		base.update_array(class_arr, set_class_arr, data_index, index)
 	}
 
-	function trackerBtn(type){
-
-	}
-
-	function toggle_table(index){
-		var data_index = student_arr[index]
-		var initShow = data_index.is_show
-		for(var x in student_arr){
-			student_arr[x].is_show = false
-		}
-		student_arr[index].is_show = !initShow
-		base.update_array(student_arr, set_student_arr, data_index, index)
-	}
-
-	function changeAcademicYear(value){
-		set_selected_academic_year(value)
-		var academic_year_selected = {id : '', name : ''}
-		for(var x in academic_year_arr){
-			if(academic_year_arr[x].id === value){
-				academic_year_selected = academic_year_arr[x]
+	function navBtn(type){
+		if(is_prev){
+			if(type === 'prev'){
+				set_counter(parseInt(counter)-1)
 			}
-
 		}
-		set_selected_academic_year_name(academic_year_selected.name)
+		if(is_next){
+			if(type === 'next'){
+				set_counter(parseInt(counter)+1)
+			}
+		}
 	}
 
 	return(
@@ -215,7 +187,7 @@ export default function TrackerIndex(){
 										<div className='row'>
 											{
 												class_arr.map((data, index)=>(
-													<div className='col-auto mb-2' key={index}>
+													<div className='col-auto mb-2 pr-0' key={index}>
 														<div className={'gradePicker' + (data.is_selected ? ' selected' : '')} onClick={()=>chooseGrade(index)}>
 															<p className='m-0'>{data.title}</p>
 														</div>
@@ -245,132 +217,140 @@ export default function TrackerIndex(){
 								</div>
 							</div>
 
-							<div className='col-12 mt-2'>
+							<div className='col-12 mt-2 d-flex align-items-center justify-content-end'>
 								<div className='row'>
-									{
-										student_arr.map((data_student, index_student)=>(
-											<div className='col-12' key={index_student}>
-												<div className={'row m-0'}>
-													<div className='col-12 p-3 pt-4'>
-														<div className='row'>
-															<div className='col-12'>
-																<div className='row'>
-																	<div className='col-auto d-flex align-items-center'>
-																		<img src={data_student.image_display} style={{height : '2.5rem', width : '2.5rem', borderRadius : '2.5rem'}} />
-																	</div>
-																	<div className='col d-flex align-items-center p-0'>
-																		<p className='m-0'>{data_student.name}</p>
+									<div className='col-auto pr-1'>
+										<div className='d-flex align-items-center h-100'>
+											<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('prev')} disabled={!is_prev}><i className="bi bi-arrow-left-short"></i> Prev Lesson</button>
+										</div>
+									</div>
+									<div className='col-auto pl-1'>
+										<div className='d-flex align-items-center h-100'>
+											<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('next')} disabled={!is_next}>Next Lesson <i className="bi bi-arrow-right-short"></i></button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							{
+								is_loading_data ?
+								<>
+									<div className='col-12'>
+										<div className='row m-0'>
+											<div className='col-12 text-center'>
+												<img src={base.img_mind} style={{height : '20rem'}} />
+												<h2 className='m-0' style={{color : '#575A89', fontSize : '1.5rem'}}>Loading data...</h2>
+											</div>
+										</div>
+									</div>
+								</>
+								:
+								<>
+								<div className='col-12'>
+									<div className='row'>
+										{
+											student_arr.map((data_student, index_student)=>(
+												<div className='col-12' key={index_student}>
+													<div className={'row m-0'}>
+														<div className='col-12 p-3 pt-4'>
+															<div className='row'>
+																<div className='col-12'>
+																	<div className='row'>
+																		<div className='col'>
+																			<div className='row'>
+																				<div className='col-auto d-flex align-items-center'>
+																					<img src={data_student.image_display} style={{height : '2.5rem', width : '2.5rem', borderRadius : '2.5rem'}} />
+																				</div>
+																				<div className='col d-flex align-items-center p-0'>
+																					<p className='m-0'>{data_student.name}</p>
+																				</div>
+																			</div>
+																		</div>
 																	</div>
 																</div>
-															</div>
-															<div className='col-12 p-0 mt-3'>
-																<div className="table-responsive rounded">
-																	<table class="table table-striped table-borderless m-0 bg-white">
-																		<thead>
-																			<tr>
-																				<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
-																					<p className='text-primary m-0'>Subject</p>
-																				</th>
-																				{
-																					lesson_arr.map((data, index)=>(
-																						<th className='border-0 px-0 text-center' style={{color : '#8A92A6', width : '6rem'}} key={index}>
-																							<p className='m-0'>{data.lesson}</p>
-																						</th>
-																					))
-																				}
-																			</tr>
-																		</thead>
-																		<tbody>
-																			{
-																				subject_arr.map((data_subject, index_subject)=>(
-																					<tr key={index_subject}>
-																						<td className='p-2 px-4 align-middle td-fit-content'>
-																							<p className='m-0'>{data_subject.name}</p>
-																						</td>
-
-																						{
-																							lesson_arr.map((data_lesson, index_lesson)=>(
-																								<td className={'m-0 p-0' + (activity_agreement[data_lesson.lesson_id] == null ? ' align-middle' : '')}>
-																									<div className='row m-0'>
-																										{
-																											activity_agreement[data_lesson.lesson_id] != null &&
-																											<>
-																												{
-																													activity_agreement[data_lesson.lesson_id][data_subject.id] != null ?
-																													<>
-																														{
-																															activity_agreement[data_lesson.lesson_id][data_subject.id].map((data_activity, index_activity)=>(
-																																<>
-																																	{
-																																		activity_submitted[data_student.class_student_id] != null &&
-																																		<>
-																																			{
-																																				activity_submitted[data_student.class_student_id][data_subject.id] != null &&
-																																				<>
-																																				<div className='col-12' key={index_activity} style={{backgroundColor : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].status_color : '')}}>
-																																				{
-																																					activity_submitted[data_student.class_student_id][data_subject.id] != null &&
-																																					<>
-																																					{
-																																						activity_submitted[data_student.class_student_id][data_subject.id] != null &&
-																																						<>
-																																						{
-																																							activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id] != null &&
-																																							<>
-																																							<p className='m-0' style={{color : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].text_color : '')}}>
-																																								{
-																																									data_activity.type === 'assignment' ? data_activity.name : data_activity.title
-																																								}
-																																							</p>
-																																							</>
-																																						}
-																																						</>
-																																					}
-																																				</>
-																																				}
-																																				</div>
-																																			</>
-																																			}
-																																		</>
-																																	}
-																																</>
-																															))
-																														}
-																													</>
-																													:
-																													<>
-																													<div className='col-12 text-center'>
-																														{/* <h5 className='m-0'><i className="fas fa-lock text-white"></i></h5> */}
-																													</div>
-																													</>
-																												}
-																											</>
-																										}
-																									</div>
-																								</td>
-																							))
-																						}
-																					</tr>
-																				))
-																			}
-																			<tr>
-																			</tr>
-																		</tbody>
-																	</table>
-																	{/* <table className="table table-borderless w-100">
-																		<tbody>
+																<div className='col-12 p-0 mt-2'>
+																	<div className="table-responsive rounded">
+																		<table class="table table-striped table-borderless m-0 bg-white">
+																			<thead>
+																				<tr>
+																					<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
+																						<p className='text-primary m-0'>Subject</p>
+																					</th>
+																					{
+																						lesson_arr.map((data, index)=>(
+																							<th className='border-0 px-0 text-center' style={{color : '#8A92A6', width : '6rem'}} key={index}>
+																								<p className='m-0'>{data.lesson}</p>
+																							</th>
+																						))
+																					}
+																				</tr>
+																			</thead>
+																			<tbody>
 																				{
 																					subject_arr.map((data_subject, index_subject)=>(
 																						<tr key={index_subject}>
-																							<td className='p-2 align-middle border-0 td-fit-content'>
+																							<td className='p-2 px-4 align-middle td-fit-content'>
 																								<p className='m-0'>{data_subject.name}</p>
 																							</td>
 
 																							{
-																								lesson_arr.map((data, index)=>(
-																									<td className='p-2 align-middle' key={index}>
-																										<div className='h-100 px-2'>
-																											<div className='m-0 p-2 px-3 rounded' style={{backgroundColor : '#F7F7F7', height : '2.5rem'}}></div>
+																								lesson_arr.map((data_lesson, index_lesson)=>(
+																									<td className={'m-0 p-0' + (activity_agreement[data_lesson.lesson_id] == null ? ' align-middle' : '')}>
+																										<div className='row m-0'>
+																											{
+																												activity_agreement[data_lesson.lesson_id] != null &&
+																												<>
+																													{
+																														activity_agreement[data_lesson.lesson_id][data_subject.id] != null ?
+																														<>
+																															{
+																																activity_agreement[data_lesson.lesson_id][data_subject.id].map((data_activity, index_activity)=>(
+																																	<>
+																																		{
+																																			activity_submitted[data_student.class_student_id] != null &&
+																																			<>
+																																				{
+																																					activity_submitted[data_student.class_student_id][data_subject.id] != null &&
+																																					<>
+																																					<div className='col-12' key={index_activity} style={{backgroundColor : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].status_color : '')}}>
+																																					{
+																																						activity_submitted[data_student.class_student_id][data_subject.id] != null &&
+																																						<>
+																																						{
+																																							activity_submitted[data_student.class_student_id][data_subject.id] != null &&
+																																							<>
+																																							{
+																																								activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id] != null &&
+																																								<>
+																																								<p className='m-0' style={{color : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].text_color : '')}}>
+																																									{
+																																										data_activity.type === 'assignment' ? data_activity.name : data_activity.title
+																																									}
+																																								</p>
+																																								</>
+																																							}
+																																							</>
+																																						}
+																																					</>
+																																					}
+																																					</div>
+																																				</>
+																																				}
+																																			</>
+																																		}
+																																	</>
+																																))
+																															}
+																														</>
+																														:
+																														<>
+																														<div className='col-12 text-center'>
+																															{/* <h5 className='m-0'><i className="fas fa-lock text-white"></i></h5> */}
+																														</div>
+																														</>
+																													}
+																												</>
+																											}
 																										</div>
 																									</td>
 																								))
@@ -378,83 +358,24 @@ export default function TrackerIndex(){
 																						</tr>
 																					))
 																				}
-																		</tbody>
-																	</table> */}
+																				<tr>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</div>
 																</div>
-																{/* <div className="table-responsive">
-																	<table className="table table-borderless w-100">
-																		<thead>
-																			<tr>
-																				<th className='border-0 align-middle' style={{color : '#8A92A6', width : '6rem'}}>
-																					<h5 className='text-primary m-0'>{base.moment().format('MMMM')}</h5>
-																				</th>
-																				{
-																					lesson_arr.map((data, index)=>(
-																						<th className='border-0 px-0 text-center' style={{color : '#8A92A6', width : '6rem'}} key={index}>
-																							<p className='m-0'>{data.day_name}</p>
-																							<p className='mb-0 text-secondary' style={{fontSize : '.75rem'}}>{data.lesson}</p>
-																						</th>
-																					))
-																				}
-																			</tr>
-																		</thead>
-																		<tbody>
-																			{
-																				student_arr.map((data, index)=>(
-																					<tr key={index}>
-																						<td className='px-0 pt-0' colSpan={lesson_arr.length + 1}>
-																							<div className='p-2 d-flex align-items-center' onClick={()=>toggle_table(index)} style={{height : '3rem', backgroundColor : '#EBEFE2', cursor : 'pointer', color : '9FA2B4'}}>
-																								{data.name}
-																								<i className={"ml-3 fas fa-chevron-" + (data.is_show ? 'up' : 'down')}></i>
-																							</div>
-
-																							{
-																								data.is_show &&
-																								<>
-																									{
-																										subject_arr.map((dataSubject, indexSubject)=>(
-																											<tr key={indexSubject}>
-																												<td className='text-primary'><i class="bi bi-circle-fill mr-2"></i> {dataSubject.name}</td> 
-																												
-																												{
-																													lesson_arr.map((dataSubmitted, indexSubmitted)=>(
-																														<td className='text-center px-0' style={{width : '6rem'}} key={indexSubmitted}>
-																															<div className="">
-																																{
-																																	submitted_data_arr[data.id] != null &&
-																																	<>
-																																		{
-																																			submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id] != null &&
-																																			<span className={"badge badge-pill p-2 px-3 rounded badge-" + (submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.badge_type)}>{submitted_data_arr[data.id][dataSubject.id][dataSubmitted.id].assessment_status.name}</span>
-																																		}
-																																	</>
-																																}
-																															</div>
-																														</td>
-																													))
-																												}
-																											</tr>
-																										))
-																									}
-																								</>
-																							}
-																						</td>
-																					</tr>
-																				))
-																			}
-																		</tbody>
-																	</table>
-																</div> */}
 															</div>
 														</div>
 													</div>
 												</div>
-											</div>
 
-										))
-									}
+											))
+										}
+									</div>
 								</div>
-							</div>
+								</>
+							}
+
 						</>
 						:
 						<>
