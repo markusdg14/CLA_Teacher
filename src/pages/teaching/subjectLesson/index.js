@@ -11,6 +11,7 @@ import ModalConfirm from './components/confirmModal';
 import ModalSubmit from '../checkAssignment/modalSubmit';
 import NotAssigned from '../../../components/NotAssigned';
 import LoadingData from '../../../components/loading';
+import ModalSubmitAll from './components/modalSubmitAll';
 
 export default function SubjectLesson(){
     var base = new Base()
@@ -274,6 +275,25 @@ export default function SubjectLesson(){
                                         ]
                                     },
                                 ]
+                            }
+                        }
+                    }
+
+                    for(var x in data){
+                        for(var y in data[x].arr_assignment_agreement){
+                            data[x].arr_assignment_agreement[y].is_done = true
+                            var class_student = data[x].arr_assignment_agreement[y].arr_class_student
+                            for(var z in class_student){
+                                if(class_student[z].last_assignment_submitted == null){
+                                    data[x].arr_assignment_agreement[y].is_done = false
+                                    break
+                                }
+                                else{
+                                    if(class_student[x].last_assignment_submitted.assessment_status.data !== 'done'){
+                                        data[x].arr_assignment_agreement[y].is_done = false
+                                        break
+                                    }
+                                }
                             }
                         }
                     }
@@ -678,6 +698,51 @@ export default function SubjectLesson(){
         set_radio_project_selected(value)
     }
 
+    const [allSubmit_activity_selected, set_allSubmit_activity_selected] = useState({id : '', arr_class_student : []})
+    const [disable_all_btn, set_disable_all_btn] = useState(false)
+
+    function doneAll(index, index_assignment){
+        set_allSubmit_activity_selected(data_arr[index].arr_assignment_agreement[index_assignment])
+        base.$('#modalSubmitAll').modal('show')
+    }
+
+    async function okAll(){
+        set_disable_all_btn(true)
+        var url = '/assessment/assignment'
+        var data_upload = {}
+        var method = 'post'
+        var flag = 1
+
+        var class_student = allSubmit_activity_selected.arr_class_student
+        
+        for(var x in class_student){
+            if(class_student[x].last_assignment_submitted != null){
+                method = 'put'
+                data_upload.id = class_student[x].last_assignment_submitted.id
+            }
+            else{
+                data_upload.assignment_agreement = {id : allSubmit_activity_selected.id}
+                data_upload.user_id = class_student[x].user_id
+            }
+            data_upload.status = 'done'
+            var response = await base.request(url, method, data_upload)
+            if(response != null){
+                if(response.status == 'success'){
+                    if(x == class_student.length-1){
+                        base.$('#modalSubmit').modal('hide')
+                        window.location.reload()
+                    }
+                }
+                else{
+                    set_disable_all_btn(false)
+                }
+            }
+            else{
+                set_disable_all_btn(false)
+            }
+        }
+    }
+
     return(
         <div className='row'>
 
@@ -798,15 +863,32 @@ export default function SubjectLesson(){
                                                                                 <div className='row'>
                                                                                     <div className='col-12 p-3' style={{borderBottom : '1px solid #eaeaea'}}>
                                                                                         <div className='row'>
-                                                                                            <div className='col-auto d-flex align-items-center'>
+                                                                                            <div className='col-auto d-flex align-items-center pr-2'>
                                                                                                 <h6 className='m-0'><i className={(data_assignment.icon) + " text-primary"} style={{fontSize : 18}}></i></h6>
                                                                                             </div>
-                                                                                            <div className='col pl-0 d-flex align-items-center'>
+                                                                                            <div className='col px-0 d-flex align-items-center'>
                                                                                                 <h6 className='m-0'>{data_assignment.activity_name}</h6>
                                                                                             </div>
-                                                                                            <div className='col'>
+                                                                                            {
+                                                                                                data_assignment.assignment_type != null &&
+                                                                                                <>
+                                                                                                    {
+                                                                                                        data_assignment.assignment_type.data === 'ungraded' &&
+                                                                                                        <>
+                                                                                                        {
+                                                                                                            !data_assignment ?
+                                                                                                            <div className='col d-flex align-items-center p-0'>
+                                                                                                                <button className='btn btn-sm btn-outline-primary rounded py-2' onClick={()=>doneAll(index, index_assignment)}>Ok All</button>
+                                                                                                            </div>
+                                                                                                            : <></>
+                                                                                                        }
+                                                                                                        </>
+                                                                                                    }
+                                                                                                </>
+                                                                                            }
+                                                                                            <div className='col pl-0'>
                                                                                                 <div className='row'>
-                                                                                                    <div className='col'>
+                                                                                                    <div className='col pr-2'>
                                                                                                         <div>
                                                                                                             <p className='m-0 text-right' style={{fontFamily : 'InterBold', fontSize : '.75rem'}}>Terkumpul {data_assignment.total_submitted}/{data_assignment.total_student} Student</p>
                                                                                                             <p className='m-0 text-right' style={{fontSize : '.7rem'}}>DUE : {data_assignment.deadline_date != null ? base.moment(data_assignment.deadline_date).format('DD/MM/YYYY HH:mm') : '-'}</p>
@@ -942,6 +1024,8 @@ export default function SubjectLesson(){
                 grade_skill_avg={grade_skill_avg}
                 grade_skill_total_score={grade_skill_total_score}
             />
+            
+            <ModalSubmitAll okAll={()=>okAll()} disable_all_btn={disable_all_btn} />
         </div>
     )
 }
