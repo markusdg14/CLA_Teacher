@@ -6,6 +6,7 @@ import NoData from '../../../components/NoData';
 import ActiveUnactiveData from '../../../components/activeUnactiveData';
 import UnderConstruction from '../../../components/underConstruction';
 import NotAssigned from '../../../components/NotAssigned';
+import LoadingData from '../../../components/loading';
 
 
 export default function GradeBook(){
@@ -14,6 +15,8 @@ export default function GradeBook(){
     const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : ''}})
     const [data_active_arr, set_data_active_arr] = useState([])
     const [data_unactive_arr, set_data_unactive_arr] = useState([])
+
+    const [is_loading_data, set_is_loading_data] = useState(true)
 
     const [data_type_arr, set_data_type_arr] = useState([
         {title : 'Academic Year Active', type : 'active', is_show : true},
@@ -47,6 +50,10 @@ export default function GradeBook(){
                 else if(type === 'past'){
                     set_data_unactive_arr(data)
                 }
+
+                setTimeout(() => {
+                    set_is_loading_data(false)
+                }, 750);
             }
         }
     }
@@ -87,34 +94,43 @@ export default function GradeBook(){
                 :
                 <>
                     {
-                        data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
-                        <div className='col-12 pt-5' style={{marginTop : '6rem'}}>
-                            {/* <NoData /> */}
-                            <NotAssigned />
-                        </div>
+                        is_loading_data ?
+                        <>
+                        <LoadingData />
+                        </>
                         :
                         <>
-                        <div className='col-12 mt-5 pt-4'>
-                            <div className="card rounded shadow-sm">
-                                <div className={"card-body p-0"}>
-                                    <div className={'row m-0'}>
-                                        <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-                                        <div className='col-12 p-3 pt-4'>
-                                            <div className='row m-0'>
-                                                {
-                                                    data_type_arr.map((dataType, indexType)=>(
-                                                        <div className={'col-12' + (indexType > 0 ? ' mt-3' : '')} key={indexType}>
-                                                            <ActiveUnactiveData collapseType={()=>collapseType(indexType)} dataType={dataType} data_arr={(dataType.type === 'active' ? data_active_arr : data_unactive_arr)} viewType={'subject'} toDetail={(index)=>toDetail(index, dataType.type)} />
-                                                        </div>
-                                                    ))
-                                                }
+                        {
+                            data_active_arr.length === 0 && data_unactive_arr.length === 0 ?
+                            <div className='col-12 pt-5' style={{marginTop : '6rem'}}>
+                                {/* <NoData /> */}
+                                <NotAssigned />
+                            </div>
+                            :
+                            <>
+                            <div className='col-12 mt-5 pt-4'>
+                                <div className="card rounded shadow-sm">
+                                    <div className={"card-body p-0"}>
+                                        <div className={'row m-0'}>
+                                            <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+                                            <div className='col-12 p-3 pt-4'>
+                                                <div className='row m-0'>
+                                                    {
+                                                        data_type_arr.map((dataType, indexType)=>(
+                                                            <div className={'col-12' + (indexType > 0 ? ' mt-3' : '')} key={indexType}>
+                                                                <ActiveUnactiveData collapseType={()=>collapseType(indexType)} dataType={dataType} data_arr={(dataType.type === 'active' ? data_active_arr : data_unactive_arr)} viewType={'subject'} toDetail={(index)=>toDetail(index, dataType.type)} />
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
-                                    
                                 </div>
                             </div>
-                        </div>
+                            </>
+                        }
                         </>
                     }
                 </>
