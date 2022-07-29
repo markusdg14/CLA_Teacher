@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Base from '../../../utils/base';
 import Header from '../../../components/header';
 import NoData from '../../../components/NoData';
+import LoadingData from '../../../components/loading';
 
 
 export default function CheckAssignment(){
@@ -21,6 +22,7 @@ export default function CheckAssignment(){
 	const [search, set_search] = useState('')
 	const [page, set_page] = useState('1')
     const [last_page, set_last_page] = useState('')
+	const [is_loading_data, set_is_loading_data] = useState(true)
 
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
@@ -68,11 +70,16 @@ export default function CheckAssignment(){
 				}
 				set_data_arr(data)
 				set_last_page(response.data.last_page)
+
+				setTimeout(() => {
+					set_is_loading_data(false)
+				}, 750);
 			}
 		}
 	}
 
 	function chooseTab(index){
+		set_is_loading_data(true)
 		set_search('')
 		set_page(1)
 		var data_index = tab_arr[index]
@@ -97,6 +104,7 @@ export default function CheckAssignment(){
 	}
 
 	async function navPage(type){
+		set_is_loading_data(true)
         if(type === 'back'){
             set_page(parseInt(page)-1)
         }
@@ -149,80 +157,89 @@ export default function CheckAssignment(){
 													</div>
 												</div>
 												{
-													data_arr.length > 0 ?
+													is_loading_data ?
+													<div className='row m-0 mb-4'>
+														<LoadingData />
+													</div>
+													:
 													<>
-													<div className='row m-0'>
-														<div className='col-12'>
-															<div className="table-responsive">
-																<table className="table table-striped">
-																	<thead>
-																		<tr>
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Nama Student</th>
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Grade</th>
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Subject Lesson</th>
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Activity</th>
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Submitted</th>
-																		{
-																			active_tab === 'all' &&
-																			<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Checked</th>
-																		}
-																		<th style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																	{
-																		data_arr.map((data, index)=>(
-																			<tr key={index}>
-																				<td className='td-fit-content align-middle'>
-																					<img src={data.user.image_display} className={'d-none d-lg-inline-block mr-3'} style={{height : '3rem', width : '3rem', borderRadius : '3rem', aspectRatio : 1}} />
-																					<p className='m-0 d-lg-inline-block text-capitalize'>{data.user.name}</p>
-																				</td>
-																				<td className='td-fit-content align-middle'>
-																					<p className='m-0'>{data.grade}</p>
-																				</td>
-																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.subject_lesson}</p></td>
-																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{
-																					data.assignment_agreement != null ? data.assignment_agreement.name : data.task_agreement.title + ' - ' + data.task_agreement.project_agreement.name}</p></td>
-																				<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.submitted_date_format}</p></td>
+														{
+															data_arr.length > 0 ?
+															<>
+															<div className='row m-0'>
+																<div className='col-12'>
+																	<div className="table-responsive">
+																		<table className="table table-striped">
+																			<thead>
+																				<tr>
+																				<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Nama Student</th>
+																				<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Grade</th>
+																				<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Subject Lesson</th>
+																				<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Activity</th>
+																				<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Submitted</th>
 																				{
 																					active_tab === 'all' &&
-																					<td className='td-fit-content align-middle'>
-																						{
-																							data.teacher != null ?
-																							<p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.teacher.name}</p>
-																							:
-																							<p className='m-0' style={{color : 'black'}}>-</p>
-																						}
-																					</td>
+																					<th style={{fontFamily : 'InterBold', color : '#6B7280'}}>Checked</th>
 																				}
-																				<td className='td-fit-content align-middle'>
-																					<a href={'/check-activity/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
-																				</td>
-																			</tr>
-																		))
-																	}
-																	</tbody>
-																</table>
-															</div>
-														</div>
-													</div>
-													<div className='row m-0'>
-														<div className='col-12 mt-4'>
-															<div className='row'>
-																<div className='col'>
-																	<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('back')}><i className="bi bi-arrow-left-short"></i> Back</button>
+																				<th style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																			{
+																				data_arr.map((data, index)=>(
+																					<tr key={index}>
+																						<td className='td-fit-content align-middle'>
+																							<img src={data.user.image_display} className={'d-none d-lg-inline-block mr-3'} style={{height : '3rem', width : '3rem', borderRadius : '3rem', aspectRatio : 1}} />
+																							<p className='m-0 d-lg-inline-block text-capitalize'>{data.user.name}</p>
+																						</td>
+																						<td className='td-fit-content align-middle'>
+																							<p className='m-0'>{data.grade}</p>
+																						</td>
+																						<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.subject_lesson}</p></td>
+																						<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{
+																							data.assignment_agreement != null ? data.assignment_agreement.name : data.task_agreement.title + ' - ' + data.task_agreement.project_agreement.name}</p></td>
+																						<td className='td-fit-content align-middle'><p className='m-0' style={{color : 'black'}}>{data.submitted_date_format}</p></td>
+																						{
+																							active_tab === 'all' &&
+																							<td className='td-fit-content align-middle'>
+																								{
+																									data.teacher != null ?
+																									<p className='m-0' style={{color : 'black'}}>{data.checked_date_format} by {data.teacher.name}</p>
+																									:
+																									<p className='m-0' style={{color : 'black'}}>-</p>
+																								}
+																							</td>
+																						}
+																						<td className='td-fit-content align-middle'>
+																							<a href={'/check-activity/detail?id=' + data.id + '&type=' + data.type} className='btn btn-sm btn-primary rounded py-2 px-4 shadow-sm'>View</a>
+																						</td>
+																					</tr>
+																				))
+																			}
+																			</tbody>
+																		</table>
+																	</div>
 																</div>
-																<div className='col text-right'>
-																	<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('next')}>Next <i className="bi bi-arrow-right-short"></i></button>
+															</div>
+															<div className='row m-0'>
+																<div className='col-12 mt-4'>
+																	<div className='row'>
+																		<div className='col'>
+																			<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('back')} disabled={(page === '1' ? true : false)}><i className="bi bi-arrow-left-short"></i> Back</button>
+																		</div>
+																		<div className='col text-right'>
+																			<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('next')} disabled={(page === last_page ? true : false)}>Next <i className="bi bi-arrow-right-short"></i></button>
+																		</div>
+																	</div>
 																</div>
 															</div>
-														</div>
-													</div>
+															</>
+															:
+															<div className='mt-5 pt-3'>
+																<NoData bg={'none'} />
+															</div>
+														}
 													</>
-													:
-													<div className='mt-5 pt-3'>
-														<NoData bg={'none'} />
-													</div>
 												}
 											</div>
 										</div>
