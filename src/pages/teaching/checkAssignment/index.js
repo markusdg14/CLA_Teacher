@@ -19,6 +19,8 @@ export default function CheckAssignment(){
 	const [data_arr, set_data_arr] = useState([])
 
 	const [search, set_search] = useState('')
+	const [page, set_page] = useState('1')
+    const [last_page, set_last_page] = useState('')
 
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
@@ -33,10 +35,10 @@ export default function CheckAssignment(){
 
 	useEffect(async ()=>{
 		get_data()
-	}, [data_type, search])
+	}, [data_type, search, page])
 
 	async function get_data(){
-		var url = '/assessment/assignment?assessment_status=' + data_type + '&search=' + search
+		var url = '/assessment/assignment?assessment_status=' + data_type + '&search=' + search + '&page=' + page
 		var response = await base.request(url)
 		if(response != null){
 			if(response.status == 'success'){
@@ -65,12 +67,14 @@ export default function CheckAssignment(){
 					}
 				}
 				set_data_arr(data)
+				set_last_page(response.data.last_page)
 			}
 		}
 	}
 
 	function chooseTab(index){
 		set_search('')
+		set_page(1)
 		var data_index = tab_arr[index]
 		var initActive = data_index.is_active
 		for(var x in tab_arr){
@@ -88,9 +92,18 @@ export default function CheckAssignment(){
 	}
 
 	function changeSearch(value){
+		set_page(1)
 		set_search(value)
 	}
 
+	async function navPage(type){
+        if(type === 'back'){
+            set_page(parseInt(page)-1)
+        }
+        else if(type === 'next'){
+            set_page(parseInt(page)+1)
+        }
+    }
 
 	return(
 		<div className='row'>
@@ -159,7 +172,7 @@ export default function CheckAssignment(){
 																		data_arr.map((data, index)=>(
 																			<tr key={index}>
 																				<td className='td-fit-content align-middle'>
-																					<img src={data.user.image_display} className={'d-none d-lg-inline-block mr-3'} style={{height : '3rem', width : '3rem', aspectRatio : 1}} />
+																					<img src={data.user.image_display} className={'d-none d-lg-inline-block mr-3'} style={{height : '3rem', width : '3rem', borderRadius : '3rem', aspectRatio : 1}} />
 																					<p className='m-0 d-lg-inline-block text-capitalize'>{data.user.name}</p>
 																				</td>
 																				<td className='td-fit-content align-middle'>
@@ -190,6 +203,19 @@ export default function CheckAssignment(){
 																</table>
 															</div>
 														</div>
+														{
+															last_page > 1 &&
+															<div className='col-12 mt-4'>
+																<div className='row'>
+																	<div className='col'>
+																		<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('back')}><i className="bi bi-arrow-left-short"></i> Back</button>
+																	</div>
+																	<div className='col text-right'>
+																		<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('next')}>Next <i className="bi bi-arrow-right-short"></i></button>
+																	</div>
+																</div>
+															</div>
+														}
 													</div>
 													</>
 													:

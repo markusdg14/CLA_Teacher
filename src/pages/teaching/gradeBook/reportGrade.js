@@ -61,7 +61,7 @@ export default function ReportGrade({class_student, assignment_agreement, grade_
 																					<>
 																					{
 																						grade_book_arr[data.id]['final_score'] != null &&
-																						<p className='m-0'>{grade_book_arr[data.id]['final_score'].average_score}</p>
+																						<p className='m-0'>{parseFloat(grade_book_arr[data.id]['final_score'].average_score).toFixed(2)}</p>
 																					}
 																					</>
 																				}
