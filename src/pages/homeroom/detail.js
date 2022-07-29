@@ -643,7 +643,9 @@ export default function HomeroomDetail(){
             var response = await base.request(url, 'post', data_post)
             if(response != null){
                 if(response.status == 'success'){
-                    window.location.reload()
+                    // window.location.reload()
+                    base.$('#attendanceRewardModal').modal('hide')
+                    get_data()
                 }
             }
 

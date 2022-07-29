@@ -131,25 +131,27 @@ export default function CheckAssignment(){
 										<div className={'row m-0'}>
 											<img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
 											<div className='col-12 p-3 pt-4'>
+												<div className='row'>
+													<div className='col-12 mb-3'>
+														<div className='row'>
+															<div className='col'>
+																<div className="input-group border rounded">
+																	<div className="input-group-prepend">
+																		<span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
+																	</div>
+																	<input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" value={search} onChange={(e)=>changeSearch(e.target.value)} />
+																</div>
+															</div>
+															<div className='col-auto d-flex align-items-center'>
+																<p className='m-0' style={{color : 'black'}}><i className="bi bi-sort-up"></i> Sort</p>
+															</div>
+														</div>
+													</div>
+												</div>
 												{
 													data_arr.length > 0 ?
 													<>
 													<div className='row m-0'>
-														<div className='col-12 mb-3'>
-															<div className='row'>
-																<div className='col'>
-																	<div className="input-group border rounded">
-																		<div className="input-group-prepend">
-																			<span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
-																		</div>
-																		<input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" value={search} onChange={(e)=>changeSearch(e.target.value)} />
-																	</div>
-																</div>
-																<div className='col-auto d-flex align-items-center'>
-																	<p className='m-0' style={{color : 'black'}}><i className="bi bi-sort-up"></i> Sort</p>
-																</div>
-															</div>
-														</div>
 														<div className='col-12'>
 															<div className="table-responsive">
 																<table className="table table-striped">
@@ -203,19 +205,18 @@ export default function CheckAssignment(){
 																</table>
 															</div>
 														</div>
-														{
-															last_page > 1 &&
-															<div className='col-12 mt-4'>
-																<div className='row'>
-																	<div className='col'>
-																		<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('back')}><i className="bi bi-arrow-left-short"></i> Back</button>
-																	</div>
-																	<div className='col text-right'>
-																		<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('next')}>Next <i className="bi bi-arrow-right-short"></i></button>
-																	</div>
+													</div>
+													<div className='row m-0'>
+														<div className='col-12 mt-4'>
+															<div className='row'>
+																<div className='col'>
+																	<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('back')}><i className="bi bi-arrow-left-short"></i> Back</button>
+																</div>
+																<div className='col text-right'>
+																	<button className='btn btn-warning shadow-sm px-3 px-lg-5' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navPage('next')}>Next <i className="bi bi-arrow-right-short"></i></button>
 																</div>
 															</div>
-														}
+														</div>
 													</div>
 													</>
 													:
