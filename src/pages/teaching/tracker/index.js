@@ -62,9 +62,17 @@ export default function TrackerIndex(){
 	useEffect(()=>{
 		if(user_data.id !== ''){
 			if(selected_academic_year !== ''){
-				if(query.get('counter') != null){
-					set_counter(query.get('counter'))
-				}
+				// if(query.get('counter') != null){
+				// 	if(query.get('counter') != ''){
+				// 		set_counter(query.get('counter'))
+				// 	}
+				// 	else{
+				// 		set_counter(0)
+				// 	}
+				// }
+				// else{
+				// 	set_counter(0)
+				// }
 				if(query.get('class_id') != null){
 					set_selected_class(query.get('class_id'))
 				}
@@ -79,7 +87,7 @@ export default function TrackerIndex(){
 			set_is_loading(true)
 			set_is_loading_data(true)
 			get_data()
-			window.history.pushState({}, null, '/teacher-tracker?class_id=' + selected_class + '&counter=' + counter)
+			window.history.pushState({}, null, '/teacher-tracker?class_id=' + selected_class)
 		}
 	}, [selected_class, counter])
 
@@ -108,7 +116,7 @@ export default function TrackerIndex(){
 	}
 
 	async function get_data(){
-		var url = '/class/student-tracker?id=' + selected_class + '&counter=' + counter
+		var url = '/class/student-tracker?id=' + selected_class
 		var response = await base.request(url)
 		if(response != null){
 			if(response.status == 'success'){
