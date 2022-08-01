@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Base from '../../../utils/base';
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
 import Header from '../../../components/header';
 
 import HomeList from '../../../components/homeList';
@@ -15,6 +15,13 @@ import LoadingData from '../../../components/loading';
 
 export default function TrackerIndex(){
 	var base = new Base()
+
+	function useQuery(){
+        const {search} = useLocation()
+        return useMemo(() => new URLSearchParams(search), [search]);
+    }
+
+    let query = useQuery()
 
 	const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}})
 
@@ -55,6 +62,12 @@ export default function TrackerIndex(){
 	useEffect(()=>{
 		if(user_data.id !== ''){
 			if(selected_academic_year !== ''){
+				if(query.get('counter') != null){
+					set_counter(query.get('counter'))
+				}
+				if(query.get('class_id') != null){
+					set_selected_class(query.get('class_id'))
+				}
 				get_grade()
 			}
 		}
@@ -66,6 +79,7 @@ export default function TrackerIndex(){
 			set_is_loading(true)
 			set_is_loading_data(true)
 			get_data()
+			window.history.pushState({}, null, '/teacher-tracker?class_id=' + selected_class + '&counter=' + counter)
 		}
 	}, [selected_class, counter])
 
@@ -218,20 +232,27 @@ export default function TrackerIndex(){
 								</div>
 							</div>
 
-							<div className='col-12 mt-2 d-flex align-items-center justify-content-end'>
-								<div className='row'>
-									<div className='col-auto pr-1'>
-										<div className='d-flex align-items-center h-100'>
-											<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('prev')} disabled={!is_prev}><i className="bi bi-arrow-left-short"></i> Prev Lesson</button>
+							{
+								!is_loading_data ?
+								<div className='col-12 mt-2 d-flex align-items-center justify-content-end'>
+									<div className='row'>
+										<div className='col-auto pr-1'>
+											<div className='d-flex align-items-center h-100'>
+												<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('prev')} disabled={!is_prev}><i className="bi bi-arrow-left-short"></i> Prev Lesson</button>
+											</div>
 										</div>
-									</div>
-									<div className='col-auto pl-1'>
-										<div className='d-flex align-items-center h-100'>
-											<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('next')} disabled={!is_next}>Next Lesson <i className="bi bi-arrow-right-short"></i></button>
+										<div className='col-auto pl-1'>
+											<div className='d-flex align-items-center h-100'>
+												<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('next')} disabled={!is_next}>Next Lesson <i className="bi bi-arrow-right-short"></i></button>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+								:
+								<>
+								</>
+							}
+
 
 							{
 								is_loading_data ?

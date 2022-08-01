@@ -289,7 +289,7 @@ export default function SubjectLesson(){
                                     break
                                 }
                                 else{
-                                    if(class_student[x].last_assignment_submitted.assessment_status.data !== 'done'){
+                                    if(class_student[z].last_assignment_submitted.assessment_status.data !== 'done'){
                                         data[x].arr_assignment_agreement[y].is_done = false
                                         break
                                     }

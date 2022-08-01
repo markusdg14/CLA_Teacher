@@ -3,6 +3,7 @@ import Base from '../../../utils/base';
 import Header from '../../../components/header';
 import NoData from '../../../components/NoData';
 import UnderConstruction from '../../../components/underConstruction';
+import NotAssigned from '../../../components/NotAssigned';
 
 
 export default function Announcement(){
@@ -118,95 +119,104 @@ export default function Announcement(){
                 <UnderConstruction />
                 :
                 <div className='col-12 mt-0 mt-lg-4 pt-4'>
-                    <div className='row'>
-                        <div className='col-12 col-lg-3'>
-                            <div className='row'>
-                                {
-                                    grade_arr.map((data, index)=>(
-                                        <div className='col-auto col-lg-12' key={index}>
-                                            <div className={'p-3 rounded'} style={{backgroundColor : (data.is_selected ? '#F6FEE480' : 'transparent'), cursor : 'pointer'}} onClick={()=>selectGrade(index)}>
-                                                <p className='m-0'>{data.name}</p>
+                    {
+                        grade_arr.length > 0 ?
+                        <div className='row'>
+                            <div className='col-12 col-lg-3'>
+                                <div className='row'>
+                                    {
+                                        grade_arr.map((data, index)=>(
+                                            <div className='col-auto col-lg-12' key={index}>
+                                                <div className={'p-3 rounded'} style={{backgroundColor : (data.is_selected ? '#F6FEE480' : 'transparent'), cursor : 'pointer'}} onClick={()=>selectGrade(index)}>
+                                                    <p className='m-0'>{data.name}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))
-                                }
+                                        ))
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        <div className='col-12 col-lg-9 mt-3 mt-lg-0'>
-                            <div className="card rounded shadow-sm">
-                                <div className={"card-body p-0"}>
-                                    <div className={'row m-0'}>
-                                        <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
-                                        <div className='col-12 p-3 pt-4'>
-                                            <div className='row m-0'>
-                                                <div className='col-12'>
-                                                    <div className='row'>
-                                                        <div className='col-12 col-lg'>
-                                                            <div className="input-group border rounded">
-                                                                <div className="input-group-prepend">
-                                                                    <span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
+                            <div className='col-12 col-lg-9 mt-3 mt-lg-0'>
+                                <div className="card rounded shadow-sm">
+                                    <div className={"card-body p-0"}>
+                                        <div className={'row m-0'}>
+                                            <img className='rounded' src={base.img_borderTop_primary} style={{width : '100%', height : '.75rem'}} />
+                                            <div className='col-12 p-3 pt-4'>
+                                                <div className='row m-0'>
+                                                    <div className='col-12'>
+                                                        <div className='row'>
+                                                            <div className='col-12 col-lg'>
+                                                                <div className="input-group border rounded">
+                                                                    <div className="input-group-prepend">
+                                                                        <span className="input-group-text bg-white border-0 bg-transparent pr-0" id="basic-addon1"><i className="bi bi-search"></i></span>
+                                                                    </div>
+                                                                    <input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" />
                                                                 </div>
-                                                                <input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" />
+                                                            </div>
+                                                            <div className='col-12 col-lg-auto mt-3 mt-lg-0 text-right'>
+                                                                <a href='/announcement/action?type=add' className='btn btn-primary rounded'>Add Announcement</a>
                                                             </div>
                                                         </div>
-                                                        <div className='col-12 col-lg-auto mt-3 mt-lg-0 text-right'>
-                                                            <a href='/announcement/action?type=add' className='btn btn-primary rounded'>Add Announcement</a>
-                                                        </div>
                                                     </div>
+
+                                                    {
+                                                        data_arr.length > 0 ?
+                                                        <div className='col-12 mt-3'>
+                                                            <div className='table-responsive'>
+                                                                <table className="table table-striped">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announcement</th>
+                                                                            <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Created</th>
+                                                                            <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announced</th>
+                                                                            <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Status</th>
+                                                                            <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {
+                                                                            data_arr.map((data, index)=>(
+                                                                                <tr key={index}>
+                                                                                    <td className='align-middle'>{data.title}</td>
+                                                                                    <td className='align-middle'>{data.created}</td>
+                                                                                    <td className='align-middle'>{data.announced}</td>
+                                                                                    <td className='align-middle text-capitalize'>{data.status}</td>
+                                                                                    <td className='td-fit-content'>
+                                                                                        {
+                                                                                            data.status === 'scheduled' &&
+                                                                                            <>
+                                                                                                <button className='btn btn-danger mr-2' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>deleteAnnouncement('open_modal', index)}><i className="bi bi-trash-fill text-white" style={{fontSize : '.75rem'}}></i></button>
+                                                                                                <button onClick={()=>window.location.href = '/announcement/action?type=edit&id=' + data.id} className='btn btn-secondary' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}}><i className="bi bi-pen-fill text-white" style={{fontSize : '.75rem'}}></i></button>
+                                                                                            </>
+                                                                                        }
+                                                                                    </td>
+                                                                                </tr>
+                                                                            ))
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className='col-12 mt-5 pt-5'>
+                                                            <NoData bg={'none'} />
+                                                        </div>
+                                                    }
+
                                                 </div>
-
-                                                {
-                                                    data_arr.length > 0 ?
-                                                    <div className='col-12 mt-3'>
-                                                        <div className='table-responsive'>
-                                                            <table className="table table-striped">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announcement</th>
-                                                                        <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Created</th>
-                                                                        <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Announced</th>
-                                                                        <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}>Status</th>
-                                                                        <th className='border-0' style={{fontFamily : 'InterBold', color : '#6B7280'}}></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {
-                                                                        data_arr.map((data, index)=>(
-                                                                            <tr key={index}>
-                                                                                <td className='align-middle'>{data.title}</td>
-                                                                                <td className='align-middle'>{data.created}</td>
-                                                                                <td className='align-middle'>{data.announced}</td>
-                                                                                <td className='align-middle text-capitalize'>{data.status}</td>
-                                                                                <td className='td-fit-content'>
-                                                                                    {
-                                                                                        data.status === 'scheduled' &&
-                                                                                        <>
-                                                                                            <button className='btn btn-danger mr-2' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}} onClick={()=>deleteAnnouncement('open_modal', index)}><i className="bi bi-trash-fill text-white" style={{fontSize : '.75rem'}}></i></button>
-                                                                                            <button onClick={()=>window.location.href = '/announcement/action?type=edit&id=' + data.id} className='btn btn-secondary' style={{borderRadius : '2.5rem', height : '2.5rem', width : '2.5rem'}}><i className="bi bi-pen-fill text-white" style={{fontSize : '.75rem'}}></i></button>
-                                                                                        </>
-                                                                                    }
-                                                                                </td>
-                                                                            </tr>
-                                                                        ))
-                                                                    }
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    <div className='col-12 mt-5 pt-5'>
-                                                        <NoData bg={'none'} />
-                                                    </div>
-                                                }
-
                                             </div>
                                         </div>
+                                        
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        :
+                        <div className='row'>
+                            <div className='col-12 pt-5' style={{marginTop : '6rem'}}>
+                                <NotAssigned />
+                            </div>
+                        </div>
+                    }
                 </div>
             }
 

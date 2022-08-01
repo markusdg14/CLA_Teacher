@@ -246,12 +246,21 @@ export default function CheckAssignmentDetail(){
                 
                 if(data.file_submitted.length > 0){
                     var file = data.file_submitted[0].file_name
+                    var file_type = 'pdf'
     
                     if(data.file_name != null){
                         file = data.file_name
                     }
+                    
+                    var doc_url = 'assignment/submitted'
+
+                    file_type = file.split('.')[1]
+                    if(file_type !== 'pdf'){
+                        doc_url += '/image'
+                    }
+
                     WebViewer({
-                        path : '/lib', initialDoc : base.url_photo('assignment/submitted', file),
+                        path : '/lib', initialDoc : base.url_photo(doc_url, file),
                     }, viewerDiv.current).then((instance) => {
                         const {documentViewer} = instance.Core
                         const annotManager = documentViewer.getAnnotationManager();
