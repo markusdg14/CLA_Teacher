@@ -116,7 +116,7 @@ export default function TrackerIndex(){
 	}
 
 	async function get_data(){
-		var url = '/class/student-tracker?id=' + selected_class
+		var url = '/class/student-tracker?id=' + selected_class + '&counter=' + counter
 		var response = await base.request(url)
 		if(response != null){
 			if(response.status == 'success'){
