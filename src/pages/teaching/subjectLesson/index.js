@@ -96,8 +96,11 @@ export default function SubjectLesson(){
 
     useEffect(async ()=>{
         if(query.get('grade_id') != null){
-            if(data_arr.length === 0)
+            if(data_arr.length === 0){
+                set_is_loading_data(true)
+                set_data_arr([])
                 filterBtn()
+            }
         }
     }, [filter_grade_selected, filter_class_selected, filter_subject_selected, filter_lesson_selected])
 
@@ -194,8 +197,6 @@ export default function SubjectLesson(){
     const [subject_selected, set_subject_selected] = useState('')
 
     async function filterBtn(){
-        set_is_loading_data(true)
-        set_data_arr([])
         var flag = 1
 
         if(filter_grade_selected === ''){
@@ -410,6 +411,7 @@ export default function SubjectLesson(){
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
             
             if(last_submitted.assessment_status.data !== 'done'){
+                
                 if(status === 'done'){
                     set_activity_subject_selected(data_index.subject.id)
                     set_class_student_id(class_student.id)
@@ -479,7 +481,9 @@ export default function SubjectLesson(){
                 var response = await base.request(url, 'post', data_upload)
                 if(response != null){
                     if(response.status == 'success'){
-                        window.location.reload()
+                        // window.location.reload()
+                        filterBtn()
+                        base.$('#modalSubmit').modal('hide')
                     }
                 }
             }
@@ -637,8 +641,9 @@ export default function SubjectLesson(){
             var response = await base.request(url, method, data_upload)
             if(response != null){
                 if(response.status == 'success'){
+                    filterBtn()
                     base.$('#modalSubmit').modal('hide')
-                    window.location.reload()
+                    // window.location.reload()
                 }
             }
         }
@@ -729,8 +734,10 @@ export default function SubjectLesson(){
             if(response != null){
                 if(response.status == 'success'){
                     if(x == class_student.length-1){
+                        // base.$('#modalSubmit').modal('hide')
+                        filterBtn()
                         base.$('#modalSubmit').modal('hide')
-                        window.location.reload()
+                        // window.location.reload()
                     }
                 }
                 else{
@@ -876,7 +883,7 @@ export default function SubjectLesson(){
                                                                                                         data_assignment.assignment_type.data === 'ungraded' &&
                                                                                                         <>
                                                                                                         {
-                                                                                                            !data_assignment ?
+                                                                                                            !data_assignment.is_done ?
                                                                                                             <div className='col d-flex align-items-center p-0'>
                                                                                                                 <button className='btn btn-sm btn-outline-primary rounded py-2' onClick={()=>doneAll(index, index_assignment)}>Ok All</button>
                                                                                                             </div>
