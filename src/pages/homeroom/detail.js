@@ -107,6 +107,13 @@ export default function HomeroomDetail(){
     const [attendance_date, set_attendance_date] = useState('')
     const [attendance_all_one, set_attendance_all_one] = useState(false)
 
+    const [attendance_start_date, set_attendance_start_date] = useState('')
+    const [attendance_end_date, set_attendance_end_date] = useState('')
+    const [attendance_class_student, set_attendance_class_student] = useState('')
+    const [attendance_date_arr, set_attendance_date_arr] = useState([])
+    const [point_transaction_arr, set_point_transaction_arr] = useState([])
+    const [attendance_point_data, set_attendance_point_data] = useState(null)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -568,8 +575,20 @@ export default function HomeroomDetail(){
         base.$('#attendanceRewardModal').modal('show')
     }
 
+    useEffect(()=>{
+        if(attendance_class_student !== '' && attendance_start_date !== '' && attendance_end_date !== ''){
+            get_point_transaction()
+        }
+    }, [attendance_start_date, attendance_end_date, attendance_class_student])
+
     async function changeAttendance(value, type, index=0){
         if(type === 'student'){
+            for(var x in class_student_arr){
+                if(class_student_arr[x].user_id === value){
+                    set_attendance_class_student(class_student_arr[x].id)
+                    break
+                }
+            }
             set_attendance_reward_student_selected(value)
         }
         else if(type === 'reward'){
@@ -591,7 +610,62 @@ export default function HomeroomDetail(){
 
         }
         else if(type === 'date'){
-            set_attendance_date(new Date(value))
+            var start_date = base.moment(value).startOf('isoWeek').format('YYYY-MM-DD')
+            var end_date = base.moment(value).startOf('isoWeek').add(4, 'd').format('YYYY-MM-DD')
+            set_attendance_start_date(start_date)
+            set_attendance_end_date(end_date)
+            set_attendance_date(new Date(start_date))
+        }
+    }
+
+    async function get_point_transaction(){
+        var url = '/point/transaction?class_student_id=' + attendance_class_student + '&start_date=' + attendance_start_date + '&end_date=' + attendance_end_date
+        
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+                var date_arr = []
+                
+                for(var x=0;x<5;x++){
+                    date_arr.push({
+                        name : base.moment(attendance_date).startOf('isoWeek').add(x, 'd').format('ddd, DD MMM YYYY'),
+                        id : base.moment(attendance_date).startOf('isoWeek').add(x, 'd').format('DD-MM-YYYY')
+                    })
+                }
+
+                for(var x in data){
+                    data[x].date_format = base.moment(data[x].updated_at).format('DD-MM-YYYY')
+
+                }
+
+                var point_transaction_data = []
+
+                for(let reward of reward_arr){
+                    for(let date of date_arr){
+                        if(point_transaction_data[reward.id] == null){
+                            point_transaction_data[reward.id] = {}
+                        }
+                        if(point_transaction_data[reward.id][date.name] == null){
+                            point_transaction_data[reward.id][date.name] = {}
+                        }
+
+                        for(let point of data){
+                            if(point.reward_id === reward.id && point.date_format === date.id){
+                                point_transaction_data[reward.id][date.name] = point
+                                break
+                            }
+                        }
+                    }
+                }
+
+                console.log(point_transaction_data)
+
+                set_attendance_point_data(point_transaction_data)
+
+                set_attendance_date_arr(date_arr)
+                set_point_transaction_arr(data)
+            }
         }
     }
 
@@ -816,6 +890,9 @@ export default function HomeroomDetail(){
                 postReward={()=>postReward()}
                 attendance_all_one={attendance_all_one}
                 attendance_date={attendance_date}
+                attendance_date_arr={attendance_date_arr}
+                point_transaction_arr={point_transaction_arr}
+                attendance_point_data={attendance_point_data}
             />
 
         </div>

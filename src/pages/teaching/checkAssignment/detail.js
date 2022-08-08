@@ -717,12 +717,9 @@ export default function CheckAssignmentDetail(){
                 </div>
             </div>
 
-            <div className='col-12 mt-3 text-right'>
-                {/* <button className='btn btn-primary shadow-sm rounded px-5 py-2' onClick={()=>modalSubmit()}>Chat with student</button> */}
-                <a href={'/check-activity/chat?id=' + query.get('id') + '&chat_id=' + chat_id + '&type=' + activity_type} className='btn btn-sm btn-primary py-2 px-3 rounded'>Chat with Student
-                    {/* <span className='position-absolute' style={{top : '-.5rem', right : '.75rem'}}><i className="fas fa-circle" style={{color : '#FF6262'}}></i></span> */}
-                </a>
-            </div>
+            {/* <div className='col-12 mt-3 text-right'>
+                <a href={'/check-activity/chat?id=' + query.get('id') + '&chat_id=' + chat_id + '&type=' + activity_type} className='btn btn-sm btn-primary py-2 px-3 rounded'>Chat with Student</a>
+            </div> */}
 
             {/* {
                 assignment_type === 'ungraded' ?
