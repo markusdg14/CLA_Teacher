@@ -4,8 +4,7 @@ import Base from '../../../utils/base';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr, attendance_all_one, attendance_date, attendance_date_arr,
-    point_transaction_arr, attendance_point_data}){
+export default function AttendanceRewardModal({submission, changeAttendance, changeInput, postReward, student_arr, attendance_reward_student_selected, attendance_score_arr, reward_score_arr, reward_arr, attendance_all_one, attendance_date}){
     var base = new Base()
 
     return(
@@ -29,7 +28,7 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                             <div className='col-auto'>
                                                 <label>Date</label>
                                                 <DatePicker
-                                                    selected={(attendance_date === '' ? '' : new Date(attendance_date))}
+                                                    selected={(attendance_date === '' ? new Date() : new Date(attendance_date))}
                                                     onChange={date => changeAttendance(date, 'date')}
                                                     maxDate={new Date()}
                                                     timeFormat="HH:mm"
@@ -40,103 +39,26 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                     </div>
 
                                     <div className='col-12 mt-3'>
-                                        <div className='row'>
-                                            <div className='col-12 p-0'>
-                                                <div className="table-responsive">
-                                                    <table className="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Date</th>
+                                        <div className='row m-0'>
+                                            {
+                                                reward_arr.map((data, index)=>(
+                                                    <div className='col-12 col-lg-6 mb-3' key={index}>
+                                                        <div className='row'>
+                                                            <div className='col-6 d-flex align-items-center'>
+                                                                <p className='m-0'>{data.name}</p>
+                                                            </div>
+                                                            <div className='col-6'>
                                                                 {
-                                                                    reward_arr.map((data, index)=>(
-                                                                        <th key={index}>{data.name}</th>
-                                                                    ))
+                                                                    data.name === 'Spiritual Growth' ?
+                                                                    <input type={'number'} className='form-control rounded' style={{borderColor : '#EAEAEA'}} value={(attendance_all_one ? '1' : '0')} readOnly />
+                                                                    :
+                                                                    <SelectOption data_arr={(data.name === 'Attendance' ? attendance_score_arr : reward_score_arr)} selected={data.score} title={''} changeInput={(value)=>changeAttendance(value, 'reward', index)} />
                                                                 }
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                attendance_date_arr.map((data, index)=>(
-                                                                    <tr key={index}>
-                                                                        <td>
-                                                                            {data.name}
-                                                                        </td>
-                                                                    {
-                                                                        reward_arr.map((data_reward, index_reward)=>(
-                                                                            <td key={index_reward}>
-                                                                                {
-                                                                                    attendance_point_data != null ?
-                                                                                    <>
-                                                                                    {
-                                                                                        attendance_point_data[data_reward.id] != null ?
-                                                                                        <>
-                                                                                        {
-                                                                                            attendance_point_data[data_reward.id][data.name].id != null ?
-                                                                                            <>
-                                                                                            <div className='row'>
-                                                                                                {
-                                                                                                    data_reward.name === 'Attendance' ?
-                                                                                                    <>
-                                                                                                    {
-                                                                                                        attendance_score_arr.map((data_score, index_attendance_score)=>(
-                                                                                                            <RadioScore index={index_attendance_score} name={data_score.name} id={data_score.id} is_checked={data_score.id == attendance_point_data[data_reward.id][data.name].amount} radio_id={'radio-' + data.id + '-' + data_reward.id + '-' + data_score.id} />
-                                                                                                        ))
-                                                                                                    }
-                                                                                                    </>
-                                                                                                    :
-                                                                                                    <>
-                                                                                                    {
-                                                                                                        reward_score_arr.map((data_score, index_reward_score)=>(
-                                                                                                            <RadioScore index={index_reward_score} name={data_score.name} id={data_score.id} is_checked={data_score.id == attendance_point_data[data_reward.id][data.name].amount} radio_id={'radio-' + data.id + '-' + data_reward.id + '-' + data_score.id} />
-                                                                                                        ))
-                                                                                                    }
-                                                                                                    </>
-                                                                                                }
-                                                                                            </div>
-                                                                                            </>
-                                                                                            :
-                                                                                            <>
-                                                                                            <div className='row'>
-                                                                                                {/* {
-                                                                                                    data_reward.name === 'Attendance' ?
-                                                                                                    <>
-                                                                                                    {
-                                                                                                        attendance_score_arr.map((data_score, index_attendance_score)=>(
-                                                                                                            <RadioScore index={index_attendance_score} name={data_score.name} id={data_score.id} is_checked={data_score.is_checked} />
-                                                                                                        ))
-                                                                                                    }
-                                                                                                    </>
-                                                                                                    :
-                                                                                                    <>
-                                                                                                    {
-                                                                                                        reward_score_arr.map((data_score, index_reward_score)=>(
-                                                                                                            <RadioScore index={index_reward_score} name={data_score.name} id={data_score.id} is_checked={data_score.is_checked} />
-                                                                                                        ))
-                                                                                                    }
-                                                                                                    </>
-                                                                                                } */}
-                                                                                            </div>
-                                                                                            </>
-                                                                                        }
-                                                                                        </>
-                                                                                        :
-                                                                                        <></>
-                                                                                    }
-                                                                                    </>
-                                                                                    :
-                                                                                    <></>
-                                                                                }
-                                                                            </td>
-                                                                        ))
-                                                                    }
-                                                                    </tr>
-                                                                ))
-                                                            }
-                                                            <tr></tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            }
                                         </div>
                                     </div>
 
@@ -154,19 +76,6 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    )
-}
-
-function RadioScore({index, name, id, is_checked, radio_id}){
-    return(
-        <div className='col-auto' key={index}>
-            <div className="form-check">
-                <input className="form-check-input" type="radio" name="exampleRadios" id={radio_id} value={id} checked={is_checked} onChange={()=>console.log(index)} />
-                <label className="form-check-label" htmlFor={radio_id} style={{color : 'black'}}>
-                    {name}
-                </label>
             </div>
         </div>
     )

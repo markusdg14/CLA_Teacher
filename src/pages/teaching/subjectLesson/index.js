@@ -316,6 +316,7 @@ export default function SubjectLesson(){
     const [index_lesson_selected, set_index_lesson_selected] = useState('')
     const [selected_agreement_id, set_selected_agreement_id] = useState('')
     const [selected_student_id, set_selected_student_id] = useState('')
+    const [status_activity_selected, set_status_activity_selected] = useState('')
 
     useEffect(async ()=>{
         if(lesson_selected != null){
@@ -427,6 +428,7 @@ export default function SubjectLesson(){
                         set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
                         set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
                     }
+                    set_status_activity_selected(status)
                 }
                 else{
                     var url = '/assessment/assignment'
@@ -539,6 +541,10 @@ export default function SubjectLesson(){
                 }
             }
 
+            if(status_activity_selected !== ''){
+                status = status_activity_selected
+            }
+
 
             data_upload.status = status
 
@@ -605,7 +611,7 @@ export default function SubjectLesson(){
         else if(activity_type_selected === 'upload'){
             url = '/assessment/assignment'
             
-            var status = ''
+            var status = status_activity_selected
 
             if(!is_student_online_selected){
                 status = 'done'
@@ -620,6 +626,10 @@ export default function SubjectLesson(){
                 else{
                     status = 'done'
                 }
+            }
+
+            if(status_activity_selected !== ''){
+                status = status_activity_selected
             }
 
             data_upload = {
@@ -643,7 +653,6 @@ export default function SubjectLesson(){
                 if(response.status == 'success'){
                     filterBtn()
                     base.$('#modalSubmit').modal('hide')
-                    // window.location.reload()
                 }
             }
         }
