@@ -735,18 +735,20 @@ export default function SubjectLesson(){
                 data_upload.id = class_student[x].last_assignment_submitted.id
             }
             else{
+                method = 'post'
                 data_upload.assignment_agreement = {id : allSubmit_activity_selected.id}
                 data_upload.user_id = class_student[x].user_id
             }
             data_upload.status = 'done'
+            
             var response = await base.request(url, method, data_upload)
             if(response != null){
                 if(response.status == 'success'){
                     if(x == class_student.length-1){
-                        // base.$('#modalSubmit').modal('hide')
                         filterBtn()
+                        set_disable_all_btn(false)
+                        base.$('#modalSubmitAll').modal('hide')
                         base.$('#modalSubmit').modal('hide')
-                        // window.location.reload()
                     }
                 }
                 else{
