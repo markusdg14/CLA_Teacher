@@ -107,9 +107,28 @@ export default function HomeroomDetail(){
     const [attendance_date, set_attendance_date] = useState('')
     const [attendance_all_one, set_attendance_all_one] = useState(false)
 
+    const [attendance_start_date, set_attendance_start_date] = useState('')
+    const [attendance_end_date, set_attendance_end_date] = useState('')
+    const [attendance_class_student, set_attendance_class_student] = useState('')
+    const [attendance_date_arr, set_attendance_date_arr] = useState([])
+    const [attendance_point_data, set_attendance_point_data] = useState(null)
+    const [attendance_reward_arr, set_attendance_reward_arr] = useState([])
+    const [point_transaction_arr, set_point_transaction_arr] = useState([])
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
+
+        base.$('#attendanceRewardModal').on('hidden.bs.modal', function () {
+            set_attendance_class_student('')
+            set_attendance_start_date('')
+            set_attendance_date('')
+            set_attendance_end_date('')
+            set_attendance_reward_student_selected('')
+            set_attendance_date_arr([])
+            set_attendance_point_data(null)
+            set_attendance_reward_arr([])
+        })
     }, [])
 
     useEffect(async ()=>{
@@ -120,7 +139,6 @@ export default function HomeroomDetail(){
 
     useEffect(async ()=>{
         set_term_selected('')
-        console.log(header_selected)
         if(header_selected !== 'report_card_skill' && header_selected !== 'attendance_reward'){
             get_data()
         }
@@ -568,8 +586,20 @@ export default function HomeroomDetail(){
         base.$('#attendanceRewardModal').modal('show')
     }
 
+    useEffect(()=>{
+        if(attendance_class_student !== '' && attendance_date !== ''){
+            get_point_transaction()
+        }
+    }, [attendance_date, attendance_class_student])
+
     async function changeAttendance(value, type, index=0){
         if(type === 'student'){
+            for(var x in class_student_arr){
+                if(class_student_arr[x].user_id === value){
+                    set_attendance_class_student(class_student_arr[x].id)
+                    break
+                }
+            }
             set_attendance_reward_student_selected(value)
         }
         else if(type === 'reward'){
@@ -591,64 +621,141 @@ export default function HomeroomDetail(){
 
         }
         else if(type === 'date'){
+            var start_date = base.moment(value).startOf('isoWeek').format('YYYY-MM-DD')
+            var end_date = base.moment(value).startOf('isoWeek').add(4, 'd').format('YYYY-MM-DD')
+            set_attendance_start_date(start_date)
+            set_attendance_end_date(end_date)
             set_attendance_date(new Date(value))
         }
     }
 
+    async function get_point_transaction(){
+        var url = '/point/transaction/student?class_student_id=' + attendance_class_student + '&date=' + base.moment(attendance_date).format('YYYY-MM-DD')
+        
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                set_attendance_date_arr(data.arr_date)
+                set_attendance_reward_arr(data.arr_reward)
+                set_attendance_point_data(data.arr_point_transaction)
+            }
+        }
+    }
+
+    // async function postReward(){
+    //     var flag = 1
+    //     var class_student_id = ''
+
+    //     if(attendance_reward_student_selected === ''){
+    //         flag = 0
+    //     }
+
+        
+    //     var arr_reward = []
+    //     for(var x in reward_score){
+    //         if(reward_score[x].name === 'Spiritual Growth'){
+    //             if(attendance_all_one){
+    //                 reward_score[x].score = '1'
+    //             }
+    //             else {
+    //                 reward_score[x].score = '0'
+    //             }
+    //         }
+    //         if(reward_score[x].score != ''){
+    //             arr_reward.push({
+    //                 reward : {id : reward_score[x].id},
+    //                 amount : reward_score[x].score
+    //             })
+    //         }
+    //         else {
+    //             flag = 0
+    //             break
+    //         }
+    //     }
+
+    //     if(flag){
+    //         for(var x in class_student_arr){
+    //             if(class_student_arr[x].user_id === attendance_reward_student_selected){
+    //                 class_student_id = class_student_arr[x].id
+    //             }
+    //         }
+    //         var data_post = {
+    //             class_student : {id : class_student_id},
+    //             arr_attendance_reward : arr_reward,
+    //             date : (attendance_date === '' ? base.moment().format('YYYY-MM-DD') : base.moment(attendance_date).format('YYYY-MM-DD'))
+    //         }
+
+    //         var url = '/point/transaction'
+        
+    //         var response = await base.request(url, 'post', data_post)
+    //         if(response != null){
+    //             if(response.status == 'success'){
+    //                 // window.location.reload()
+    //                 base.$('#attendanceRewardModal').modal('hide')
+    //                 get_data()
+    //             }
+    //         }
+    //     }
+    // }
+
+    async function changeRadioAttendance(index_score, index_date, index_reward){
+        var data_score = reward_score_arr
+        if(reward_arr[index_reward].name === 'Attendance'){
+            data_score = attendance_score_arr
+        }
+
+        var attendance_point_selected = attendance_point_data[attendance_date_arr[index_date]][attendance_reward_arr[index_reward].id]
+
+        if(attendance_point_selected != null){
+            attendance_point_selected.amount = data_score[index_score].id
+            // base.update_object(attendance_point_data, set_attendance_point_data, data_score[index_score].id, attendance_point_selected.amount)
+        }
+        else{
+            attendance_point_data[attendance_date_arr[index_date]][attendance_reward_arr[index_reward].id] = {}
+            attendance_point_data[attendance_date_arr[index_date]][attendance_reward_arr[index_reward].id].amount = data_score[index_score].id
+        }
+
+        base.update_object(attendance_point_data, set_attendance_point_data, data_score[index_score].id, attendance_point_data[attendance_date_arr[index_date]][attendance_reward_arr[index_reward].id].amount)
+    }
+
     async function postReward(){
-        var flag = 1
-        var class_student_id = ''
-
-        if(attendance_reward_student_selected === ''){
-            flag = 0
+        var data_post = {
+            class_student : {id : attendance_class_student},
         }
 
-        
-        var arr_reward = []
-        for(var x in reward_score){
-            if(reward_score[x].name === 'Spiritual Growth'){
-                if(attendance_all_one){
-                    reward_score[x].score = '1'
+        var arr_attendance_reward = []
+        for(var x in attendance_date_arr){
+            var data = {}
+            data.date = attendance_date_arr[x]
+            var arr = []
+            for(var y in attendance_reward_arr){
+                var data_reward = attendance_point_data[attendance_date_arr[x]][attendance_reward_arr[y].id]
+                if(data_reward != null){
+                    data_reward.reward = {id : attendance_reward_arr[y].id}
+                    arr.push(data_reward)
                 }
-                else {
-                    reward_score[x].score = '0'
-                }
             }
-            if(reward_score[x].score != ''){
-                arr_reward.push({
-                    reward : {id : reward_score[x].id},
-                    amount : reward_score[x].score
-                })
-            }
-            else {
-                flag = 0
-                break
-            }
+            data.arr = arr
+            arr_attendance_reward.push(data)
         }
-
-        if(flag){
-            for(var x in class_student_arr){
-                if(class_student_arr[x].user_id === attendance_reward_student_selected){
-                    class_student_id = class_student_arr[x].id
-                }
-            }
-            var data_post = {
-                class_student : {id : class_student_id},
-                arr_attendance_reward : arr_reward,
-                date : (attendance_date === '' ? base.moment().format('YYYY-MM-DD') : base.moment(attendance_date).format('YYYY-MM-DD'))
-            }
-
-            var url = '/point/transaction'
+        data_post.arr_attendance_reward = arr_attendance_reward
+        var url = '/point/transaction'
         
-            var response = await base.request(url, 'post', data_post)
-            if(response != null){
-                if(response.status == 'success'){
-                    // window.location.reload()
-                    base.$('#attendanceRewardModal').modal('hide')
-                    get_data()
-                }
+        var response = await base.request(url, 'put', data_post)
+        if(response != null){
+            if(response.status == 'success'){
+                base.$('#attendanceRewardModal').modal('hide')
+                set_attendance_class_student('')
+                set_attendance_start_date('')
+                set_attendance_date('')
+                set_attendance_end_date('')
+                set_attendance_reward_student_selected('')
+                set_attendance_date_arr([])
+                set_attendance_point_data(null)
+                set_attendance_reward_arr([])
+                get_data()
             }
-
         }
     }
 
@@ -809,13 +916,17 @@ export default function HomeroomDetail(){
             <AttendanceRewardModal
                 student_arr={student_arr}
                 attendance_reward_student_selected={attendance_reward_student_selected}
-                reward_arr={reward_score}
+                attendance_reward_arr={attendance_reward_arr}
                 attendance_score_arr={attendance_score_arr}
                 reward_score_arr={reward_score_arr}
                 changeAttendance={(value, type, index)=>changeAttendance(value, type, index)}
                 postReward={()=>postReward()}
                 attendance_all_one={attendance_all_one}
                 attendance_date={attendance_date}
+                attendance_date_arr={attendance_date_arr}
+                point_transaction_arr={point_transaction_arr}
+                attendance_point_data={attendance_point_data}
+                changeRadio={(index_score, index_date, index_reward)=>changeRadioAttendance(index_score, index_date, index_reward)}
             />
 
         </div>
