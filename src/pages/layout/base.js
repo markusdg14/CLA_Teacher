@@ -26,6 +26,7 @@ import NotificationIndex from '../notification';
 import AnnouncementAction from '../teaching/announcement/action';
 import CheckAssignmentChat from '../teaching/checkAssignment/chat';
 import ChatIndex from '../chat';
+import ChatRoom from '../chat/room';
 
 
 // import Navbar from './navbar'
@@ -81,6 +82,7 @@ export default class BaseLayout extends Base{
                     <Route exact path={"/announcement/action"} element={<AnnouncementAction />}></Route>
 
                     <Route exact path={"/chat"} element={<ChatIndex />}></Route>
+                    <Route exact path={"/chat-room"} element={<ChatRoom />}></Route>
 
                     <Route exact path={"/grade-book"} element={<GradeBook />}></Route>
                     <Route exact path={"/grade-book/detail"} element={<GradeBookDetail />}></Route>

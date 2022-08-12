@@ -3,6 +3,7 @@ import Base from '../../utils/base';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from '../../components/header';
+import ModalNewChat from './modalNewChat';
 
 
 export default function ChatIndex(){
@@ -33,16 +34,7 @@ export default function ChatIndex(){
             if(response.status == 'success'){
                 var data = response.data.data
                 for(var x in data){
-                    var agreement_id = '', activity_type = 'assignment'
-                    if(data[x].assignment_submitted.assignment_agreement != null){
-                        data[x].activity_name = data[x].assignment_submitted.assignment_agreement.name + ' | ' + data[x].assignment_submitted.assignment_agreement.assignment_group.subject.name + ' | ' + data[x].assignment_submitted.assignment_agreement.assignment_group.lesson.name
-                    }
-                    else{
-                        data[x].activity_name = data[x].assignment_submitted.task_agreement.project_agreement.name + ' - ' + data[x].assignment_submitted.task_agreement.title + ' | ' + data[x].assignment_submitted.task_agreement.project_agreement.subject.name + ' | ' + data[x].assignment_submitted.task_agreement.lesson.name
-                        activity_type = 'task'
-                    }
-
-                    data[x].chat_url = '/check-activity/chat?id=' + data[x].assignment_submitted_id + '&chat_id=' + data[x].id + '&type=' + activity_type
+                    data[x].chat_url = '/chat-room?id=' + data[x].id
 
                     data[x].receiver.image_display = base.img_no_profile
                     if(data[x].receiver.file_name != null){
@@ -65,6 +57,10 @@ export default function ChatIndex(){
         }
     }
 
+    async function newChat(){
+        base.$('#modalNewChat').modal('show')
+    }
+
     return(
         <div className='row'>
             
@@ -75,7 +71,10 @@ export default function ChatIndex(){
 
             <div className='col-12 mt-5'>
                 <div className='row'>
-                    <div className='col-12'>
+                    <div className='col-12 text-right'>
+                        <button className='btn btn-primary rounded' onClick={()=>newChat()}>New Chat</button>
+                    </div>
+                    <div className='col-12 mt-3'>
                         <div className="card rounded shadow-sm h-100 w-100">
                             <div className="card-body p-0">
                                 <div className='row m-0'>
@@ -179,6 +178,8 @@ export default function ChatIndex(){
                     </div>
                 </div>
             }
+
+            <ModalNewChat />
 
         </div>
     )

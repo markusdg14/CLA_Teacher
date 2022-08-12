@@ -124,7 +124,7 @@ export default function HomeroomDetail(){
             set_attendance_start_date('')
             set_attendance_date('')
             set_attendance_end_date('')
-            set_attendance_reward_student_selected('')
+            // set_attendance_reward_student_selected('')
             set_attendance_date_arr([])
             set_attendance_point_data(null)
             set_attendance_reward_arr([])
@@ -283,9 +283,18 @@ export default function HomeroomDetail(){
                 else if(header_selected === 'attendance_reward'){
                     var data_student = data.arr_class_student
                     for(var x in data_student){
+                        
                         data_student[x].is_show = false
+                        if(attendance_reward_student_selected !== ''){
+                            if(attendance_reward_student_selected === data_student[x].user_id){
+                                data_student[x].is_show = true
+                            }
+                        }
                     }
-                    data_student[0].is_show = true
+
+                    if(attendance_reward_student_selected === ''){
+                        data_student[0].is_show = true
+                    }
 
                     var arr_reward = data.arr_reward
                     for(var x in arr_reward){
@@ -583,6 +592,7 @@ export default function HomeroomDetail(){
     }
 
     async function addAttendanceReward(){
+        set_attendance_reward_student_selected('')
         base.$('#attendanceRewardModal').modal('show')
     }
 
@@ -700,14 +710,14 @@ export default function HomeroomDetail(){
         if(response != null){
             if(response.status == 'success'){
                 base.$('#attendanceRewardModal').modal('hide')
-                set_attendance_class_student('')
-                set_attendance_start_date('')
-                set_attendance_date('')
-                set_attendance_end_date('')
-                set_attendance_reward_student_selected('')
-                set_attendance_date_arr([])
-                set_attendance_point_data(null)
-                set_attendance_reward_arr([])
+                // set_attendance_class_student('')
+                // set_attendance_start_date('')
+                // set_attendance_date('')
+                // set_attendance_end_date('')
+                // set_attendance_reward_student_selected('')
+                // set_attendance_date_arr([])
+                // set_attendance_point_data(null)
+                // set_attendance_reward_arr([])
                 get_data()
             }
         }
