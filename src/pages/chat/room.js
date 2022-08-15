@@ -28,7 +28,7 @@ export default function ChatRoom(){
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
-        set_socket(base.io(base.host + ':6003', {}))
+        set_socket(base.io(base.host + ':' + base.socket_port, {}))
     }, [])
 
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function ChatRoom(){
         socket.removeAllListeners()
 
         socket.emit('subscribe', {
-          channel: 'new_chat.' + query.get('chat_id'),
+          channel: 'new_chat.' + query.get('id'),
         }).on('App\\Events\\NewChatEvent', function(channel, data) {
             var new_chat = JSON.parse(JSON.stringify(data.chat_room))
             if(new_chat.sender_id !== user_data.id){
@@ -69,7 +69,7 @@ export default function ChatRoom(){
 
     async function set_read(){
 		var url = '/chat/room/read'
-        var response = await base.request(url, 'put', {chat : {id : query.get('chat_id')}})
+        var response = await base.request(url, 'put', {chat : {id : query.get('id')}})
         if(response != null){
             if(response.status == 'success'){
             }
@@ -146,7 +146,7 @@ export default function ChatRoom(){
         <div className='row'>
 
             <div className='col-12'>
-                <Header title={'Lesson 1 - Math'} user_data={user_data} />
+                <Header user_data={user_data} />
             </div>
 
             {/* <div className='col-12 mt-5 pt-4'>

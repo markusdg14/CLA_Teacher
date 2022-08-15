@@ -24,6 +24,10 @@ export default function CheckAssignment(){
     const [last_page, set_last_page] = useState('')
 	const [is_loading_data, set_is_loading_data] = useState(true)
 
+	const [searchTimeout, set_searchTimeout] = useState(null)
+
+	const [sort, set_sort] = useState('desc')
+
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
 		set_user_data(check_user.user_data)
@@ -34,13 +38,30 @@ export default function CheckAssignment(){
 	//         get_data()
 	//     }
 	// }, [user_data])
+	
+	useEffect(async ()=>{
+		if(searchTimeout != null){
+			clearTimeout(searchTimeout)	
+		}
+
+		set_is_loading_data(true)
+		set_searchTimeout(setTimeout(() => {
+			set_data_arr([])
+			set_last_page('')
+			get_data()
+		}, 1000))
+	}, [search])
 
 	useEffect(async ()=>{
+		set_is_loading_data(true)
+		set_data_arr([])
+		set_last_page('')
+		set_page(1)
 		get_data()
-	}, [data_type, search, page])
+	}, [data_type, page, sort])
 
 	async function get_data(){
-		var url = '/assessment/assignment?assessment_status=' + data_type + '&search=' + search + '&page=' + page
+		var url = '/assessment/assignment?assessment_status=' + data_type + '&search=' + search + '&page=' + page + '&sort=' + JSON.stringify([{name : 'created_at', sort : sort}])
 		var response = await base.request(url)
 		if(response != null){
 			if(response.status == 'success'){
@@ -82,6 +103,7 @@ export default function CheckAssignment(){
 		set_is_loading_data(true)
 		set_search('')
 		set_page(1)
+		set_sort('desc')
 		var data_index = tab_arr[index]
 		var initActive = data_index.is_active
 		for(var x in tab_arr){
@@ -112,6 +134,15 @@ export default function CheckAssignment(){
             set_page(parseInt(page)+1)
         }
     }
+
+	async function changeSort(){
+		if(sort === 'desc'){
+			set_sort('asc')
+		}
+		else{
+			set_sort('desc')
+		}
+	}
 
 	return(
 		<div className='row'>
@@ -151,7 +182,7 @@ export default function CheckAssignment(){
 																</div>
 															</div>
 															<div className='col-auto d-flex align-items-center'>
-																<p className='m-0' style={{color : 'black'}}><i className="bi bi-sort-up"></i> Sort</p>
+																<p className='m-0' style={{color : 'black', cursor : 'pointer'}} onClick={()=>changeSort()}><i className={sort === 'desc' ? "bi bi-sort-up" : "bi bi-sort-down"}></i> Sort</p>
 															</div>
 														</div>
 													</div>

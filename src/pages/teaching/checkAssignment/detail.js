@@ -71,7 +71,6 @@ export default function CheckAssignmentDetail(){
 
     const [grade_skill_avg, set_grade_skill_avg] = useState(0)
     const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
-    const [chat_id, set_chat_id] = useState('')
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -241,7 +240,6 @@ export default function CheckAssignmentDetail(){
                 set_assignment_grade(data.assignment_score)
 
                 set_student_submission(data.description)
-                set_chat_id(data.chat.id)
 
                 
                 if(data.file_submitted.length > 0){
@@ -462,6 +460,8 @@ export default function CheckAssignmentDetail(){
         var method = 'put'
 
         var flag = 1
+
+        console.log(assignment_type)
         
         if(assignment_type === 'quiz'){
             url = '/assessment/assignment'
@@ -515,6 +515,10 @@ export default function CheckAssignmentDetail(){
             url = '/assessment/assignment'
             data_upload = {
                 id : assignment_submitted_id,
+                file : {
+                    file : baseFile,
+                    file_name : assignment_submitted_id + '.pdf'
+                }
             }
         }
         else if(assignment_type === 'discussion'){
@@ -716,10 +720,6 @@ export default function CheckAssignmentDetail(){
                     </div>
                 </div>
             </div>
-
-            {/* <div className='col-12 mt-3 text-right'>
-                <a href={'/check-activity/chat?id=' + query.get('id') + '&chat_id=' + chat_id + '&type=' + activity_type} className='btn btn-sm btn-primary py-2 px-3 rounded'>Chat with Student</a>
-            </div> */}
 
             {/* {
                 assignment_type === 'ungraded' ?

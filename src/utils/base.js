@@ -11,9 +11,11 @@ import io from 'socket.io-client'
 
 export default class Base extends Component{
     
-	
-	host = 'https://lms-admin.quantumtri.com'
-	// host = 'https://admin.christianlifeacademy-id.com'
+	// host = 'https://lms-admin.quantumtri.com'
+	host = 'https://admin.christianlifeacademy-id.com'
+
+	// socket_port = 6003
+	socket_port = 6004
 	
     base_url = this.host + '/api';
     url_image = this.host + '/image';

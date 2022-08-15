@@ -82,9 +82,9 @@ export default function HomeroomStudentHabitDetail({habit_student_selected, sear
                                                     <input type="text" className="form-control border-0 bg-transparent" placeholder="Search" aria-describedby="basic-addon1" value={search} onChange={(e)=>changeSearch(e.target.value)} />
                                                 </div>
                                             </div>
-                                            <div className='col-auto d-flex align-items-center'>
+                                            {/* <div className='col-auto d-flex align-items-center'>
                                                 <p className='m-0' style={{color : 'black'}}><i className="bi bi-sort-up"></i> Sort</p>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                     <div className='col-12 mt-3'>

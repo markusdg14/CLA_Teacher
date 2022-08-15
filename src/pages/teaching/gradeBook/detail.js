@@ -102,7 +102,14 @@ export default function GradeBookDetail(){
 
     useEffect(()=>{
         if(term_selected !== ''){
-            get_data()
+            if(header_selected === 'report_card_skill'){
+                if(skill_student_selected !== ''){
+                    get_data()
+                }
+            }
+            else if(header_selected === 'report_card_grade'){
+                get_data()
+            }
         }
     }, [term_selected])
 
