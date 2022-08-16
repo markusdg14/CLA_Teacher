@@ -35,14 +35,14 @@ export default function HomeroomDetail(){
     const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}})
     const [header_title, set_header_title] = useState('')
     const [header_menu_arr, set_header_menu_arr] = useState([
-        {id : 'dashboard', title : 'Dashboard', is_selected : true},
-        {id : 'list_student', title : 'List Student', is_selected : false},
-        {id : 'report_card_grade', title : 'Report Card Grade', is_selected : false},
-        {id : 'report_card_skill', title : 'Report Card Skill', is_selected : false},
-        {id : 'attendance_reward', title : 'Attendance & Reward', is_selected : false},
-        {id : 'habit_tracker', title : 'Habit Challenge / Talents', is_selected : false},
+        {id : 'dashboard', title : 'Dashboard', is_selected : (query.get('tab') == null || query.get('tab') === '' || query.get('tab') == 'dashboard' ? true : false)},
+        {id : 'list_student', title : 'List Student', is_selected : (query.get('tab') != null ? (query.get('tab') == 'list_student' ? true : false) : false)},
+        {id : 'report_card_grade', title : 'Report Card Grade', is_selected : (query.get('tab') != null ? (query.get('tab') == 'report_card_grade' ? true : false) : false)},
+        {id : 'report_card_skill', title : 'Report Card Skill', is_selected : (query.get('tab') != null ? (query.get('tab') == 'report_card_skill' ? true : false) : false)},
+        {id : 'attendance-reward', title : 'Attendance & Reward', is_selected : (query.get('tab') != null ? (query.get('tab') == 'attendance-reward' ? true : false) : false)},
+        {id : 'habit_tracker', title : 'Habit Challenge / Talents', is_selected : (query.get('tab') != null ? (query.get('tab') == 'habit_tracker' ? true : false) : false)},
     ])
-    const [header_selected, set_header_selected] = useState('dashboard')
+    const [header_selected, set_header_selected] = useState('')
     const [rank_student_arr, set_rank_student_arr] = useState([])
     const [todo_list_arr, set_todo_list_arr] = useState([])
     const [schedule_lesson_day_arr, set_schedule_lesson_day_arr] = useState([])
@@ -119,6 +119,14 @@ export default function HomeroomDetail(){
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
 
+        var tab_selected = query.get('tab')
+        if(tab_selected != null){
+            set_header_selected(tab_selected)
+        }
+        else{
+            set_header_selected('dashboard')
+        }
+
         base.$('#attendanceRewardModal').on('hidden.bs.modal', function () {
             set_attendance_class_student('')
             set_attendance_start_date('')
@@ -139,13 +147,11 @@ export default function HomeroomDetail(){
 
     useEffect(async ()=>{
         set_term_selected('')
-        if(header_selected !== 'report_card_skill' && header_selected !== 'attendance_reward'){
-            get_data()
-        }
-        else if(header_selected === 'report_card_skill'){
+        get_data()
+        if(header_selected === 'report_card_skill'){
             get_legend()
         }
-        else if(header_selected === 'attendance_reward'){
+        else if(header_selected === 'attendance-reward'){
             get_term()
         }
         if(header_selected === 'report_card_grade'){
@@ -189,7 +195,7 @@ export default function HomeroomDetail(){
         else if(header_selected === 'report_card_skill'){
             url += 'grade-skill'
         }
-        else if(header_selected === 'attendance_reward'){
+        else if(header_selected === 'attendance-reward'){
             url += 'attendance-reward'
         }
         else if(header_selected === 'habit_tracker'){
@@ -203,7 +209,7 @@ export default function HomeroomDetail(){
         if(header_selected === 'report_card_skill'){
             url += '&user_id=' + skill_student_selected
         }
-        else if(header_selected === 'attendance_reward'){
+        else if(header_selected === 'attendance-reward'){
             url += '&term_id=' + term_selected + '&counter=' + attendance_reward_offset
         }
         else if(header_selected === 'report_card_grade'){
@@ -214,9 +220,13 @@ export default function HomeroomDetail(){
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
+                
 
-                if(header_selected === 'dashboard'){
-                    set_header_title(data.grade.name + ' ' + data.name)
+                
+                if(header_selected === ''){
+                    set_header_title(data.grade_name + ' ' + data.name)
+                }
+                else if(header_selected === 'dashboard'){
                     var grade_rank = data.arr_grade_rank
                     for(var x in grade_rank){
                         grade_rank[x].class_student.user.image_display = base.img_no_profile
@@ -280,7 +290,7 @@ export default function HomeroomDetail(){
                     set_skill_grade_arr(data.arr_grade_skill)
                     set_skill_grade_book_arr(data.arr_grade_book_skill)
                 }
-                else if(header_selected === 'attendance_reward'){
+                else if(header_selected === 'attendance-reward'){
                     var data_student = data.arr_class_student
                     for(var x in data_student){
                         
@@ -379,6 +389,7 @@ export default function HomeroomDetail(){
 
         if(header_menu_arr[index].is_selected){
             set_header_selected(header_menu_arr[index].id)
+            window.history.pushState({}, null, '/homeroom/detail?id=' + query.get('id') + '&tab=' + header_menu_arr[index].id)
         }
     }
 
@@ -816,7 +827,7 @@ export default function HomeroomDetail(){
                             skill_grade_book_arr={skill_grade_book_arr}
                         />
                         </>
-                        : header_selected === 'attendance_reward' ?
+                        : header_selected === 'attendance-reward' ?
                         <>
                             <HomeroomAttendanceReward
                                 term_arr={term_arr}

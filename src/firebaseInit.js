@@ -15,6 +15,11 @@ var firebaseConfig = {
 var flag = 1
 var messaging = ''
 
+function getOS(){
+  const os = ['Windows', 'Linux', 'Mac'];
+  return os.find(v=>navigator.appVersion.indexOf(v) >= 0)
+}
+
 if(getOS() === 'Mac'){
   flag = 0
 }
@@ -23,10 +28,6 @@ else{
   messaging = firebase.messaging();
 }
 
-function getOS(){
-  const os = ['Windows', 'Linux', 'Mac'];
-  return os.find(v=>navigator.appVersion.indexOf(v) >= 0)
-}
 
 export const getToken = async (setToken) => {
 

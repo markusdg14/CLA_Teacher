@@ -263,6 +263,8 @@ export default function CheckAssignmentDetail(){
                         const {documentViewer} = instance.Core
                         const annotManager = documentViewer.getAnnotationManager();
 
+                        var flag = 0
+
                         documentViewer.addEventListener('documentLoaded', async ()=>{
                             const doc = documentViewer.getDocument()
                             const xfdfString = await annotManager.exportAnnotations()
@@ -277,7 +279,7 @@ export default function CheckAssignmentDetail(){
                             })
                         })
 
-                        documentViewer.addEventListener('mouseLeave', async ()=>{
+                        documentViewer.addEventListener('mouseMove', async ()=>{
                             const doc = documentViewer.getDocument()
                             const xfdfString = await annotManager.exportAnnotations()
                             const options = { xfdfString };
@@ -290,6 +292,8 @@ export default function CheckAssignmentDetail(){
                                 set_baseFile(result)
                             })
                         })
+
+                        console.log(flag)
 
 
                         // if(data.assessment_status.data != 'done'){
