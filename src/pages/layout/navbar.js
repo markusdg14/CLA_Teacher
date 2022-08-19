@@ -27,11 +27,13 @@ export default function Navbar(){
 	])
 
 	const [unread_notif, set_unread_notif] = useState(0)
+	const [is_unread_chat, set_is_unread_chat] = useState(0)
 
 	useEffect(async ()=>{
 		var token = await localStorage.getItem('token')
 		if(token != null){
 			get_notif_unread()
+			get_chat()
 		}
 	}, [])
 
@@ -71,6 +73,24 @@ export default function Navbar(){
         }
     }
 
+	async function get_chat(){
+		var url = '/chat'
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data.data
+				var is_unread = 0
+				for(var x in data){
+					if(data[x].total_unread){
+						is_unread = 1
+						break
+					}
+				}
+				set_is_unread_chat(is_unread)
+            }
+        }
+	}
+
 	return(
 		<>
 			<nav className="navbar navbar-expand-lg navbar-dark p-0 m-0 py-3">
@@ -85,11 +105,32 @@ export default function Navbar(){
 											{
 												data.dropdown_arr.length > 0 ?
 												<>
-												<a className="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '.9rem'}}>{data.title}</a>
+												<a className="nav-link dropdown-toggle text-primary position-relative" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '.9rem'}}>
+													{data.title}
+													{
+														is_unread_chat ?
+														<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '1rem', top : '.5rem' }}></i>
+														:
+														<></>
+													}
+												</a>
 												<div className="dropdown-menu" aria-labelledby="navbarDropdown">
 													{
 														data.dropdown_arr.map((dataDropdown, indexDropdown)=>(
-															<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '')} href={dataDropdown.nav} key={indexDropdown} style={{fontSize : '.9rem'}}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676'}}></i>{dataDropdown.title}</a>
+															<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '') + (dataDropdown.title === 'Chat' ? ' position-relative' : '')} href={dataDropdown.nav} key={indexDropdown} style={{fontSize : '.9rem'}}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676'}}></i>
+																{dataDropdown.title}
+																{
+																	dataDropdown.title === 'Chat' &&
+																	<>
+																	{
+																		is_unread_chat ?
+																		<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '8.75rem', top : '.25rem' }}></i>
+																		:
+																		<></>
+																	}
+																	</>
+																}
+															</a>
 														))
 													}
 												</div>
@@ -132,7 +173,13 @@ export default function Navbar(){
 							}
 							<i className="bi bi-bell-fill text-primary mr-2" style={{ fontSize: '1.25rem' }}></i>
 						</button>
-						<button className="navbar-toggler navbar-toggler-right border-0 p-0" type="button" onClick={() => sidebar(true)}>
+						<button className="navbar-toggler navbar-toggler-right border-0 p-0 position-relative" type="button" onClick={() => sidebar(true)}>
+							{
+								is_unread_chat ?
+								<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '-.25rem', top : '0rem' }}></i>
+								:
+								<></>
+							}
 							<i className="fas fa-bars text-primary" style={{ fontSize: '1.25rem' }}></i>
 						</button>
 					</div>
@@ -165,11 +212,32 @@ export default function Navbar(){
 																{
 																	data.dropdown_arr.length > 0 ?
 																	<>
-																	<a className="nav-link dropdown-toggle text-primary p-0" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '1.25rem'}}>{data.title}</a>
+																	<a className="nav-link dropdown-toggle text-primary p-0 position-relative" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false" style={{fontSize : '1.25rem'}}>
+																		{data.title}
+																		{
+																			is_unread_chat ?
+																			<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '2.75rem', top : '.25rem' }}></i>
+																			:
+																			<></>
+																		}
+																	</a>
 																	<div className="dropdown-menu" aria-labelledby="navbarDropdown">
 																		{
 																			data.dropdown_arr.map((dataDropdown, indexDropdown)=>(
-																				<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '')} href={dataDropdown.nav} key={indexDropdown}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676', fontSize : '1.25rem'}}></i>{dataDropdown.title}</a>
+																				<a className={"dropdown-item" + (pathname === dataDropdown.nav ? ' bg-secondary text-white' : '') + (dataDropdown.title === 'Chat' ? ' position-relative' : '')} href={dataDropdown.nav} key={indexDropdown}><i className={dataDropdown.icon + ' mr-3' + (pathname === dataDropdown.nav ? ' text-white' : '')} style={{color : '#767676', fontSize : '1.25rem'}}></i>
+																					{dataDropdown.title}
+																					{
+																						dataDropdown.title === 'Chat' &&
+																						<>
+																						{
+																							is_unread_chat ?
+																							<i className="bi bi-circle-fill position-absolute" style={{ fontSize: '.5rem', color : 'red', right : '7.5rem', top : '.75rem' }}></i>
+																							:
+																							<></>
+																						}
+																						</>
+																					}
+																				</a>
 																			))
 																		}
 																	</div>
