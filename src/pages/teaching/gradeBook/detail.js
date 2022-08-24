@@ -236,7 +236,7 @@ export default function GradeBookDetail(){
     }
 
     async function get_grade_skill(){
-        var url = '/skill/category?id=&subject_id=' + query.get('subject_id') + '&assignment_submitted_id=' + edit_score_selected.id
+        var url = '/skill/category?id=&subject_id=' + query.get('subject_id') + '&assignment_submitted_id=' + edit_score_selected.id + '&grade_id=' + query.get('grade_id')
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){

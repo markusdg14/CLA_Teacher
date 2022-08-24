@@ -318,6 +318,8 @@ export default function SubjectLesson(){
     const [selected_student_id, set_selected_student_id] = useState('')
     const [status_activity_selected, set_status_activity_selected] = useState('')
 
+    const [assignment_grade_id, set_assignment_grade_id] = useState('')
+
     useEffect(async ()=>{
         if(lesson_selected != null){
             base.$('#modalConfirm').modal('show')
@@ -383,7 +385,7 @@ export default function SubjectLesson(){
     }
 
     async function get_grade_skill(){
-        var url = '/skill/category?id=&subject_id=' + activity_subject_selected + '&assignment_submitted_id=' + assignment_submitted_id
+        var url = '/skill/category?id=&subject_id=' + activity_subject_selected + '&assignment_submitted_id=' + assignment_submitted_id + '&grade_id=' + assignment_grade_id
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
@@ -406,6 +408,7 @@ export default function SubjectLesson(){
         var status = status_selected.status
         var assignment_agreement = data_arr[index].arr_assignment_agreement[index_assignment]
         var class_student = assignment_agreement.arr_class_student[index_class_student]
+        set_assignment_grade_id(data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].class_model.grade.id)
         set_is_student_online_selected(class_student.is_online)
         if(data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted != null){
             

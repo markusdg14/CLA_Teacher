@@ -29,6 +29,7 @@ export default function CheckAssignmentDetail(){
     const [assignment_status, set_assignment_status] = useState('')
     const [assignment_status_data, set_assignment_status_data] = useState('')
     const [assignment_grade, set_assignment_grade] = useState('')
+    const [assignment_grade_id, set_assignment_grade_id] = useState('')
     const [grade, set_grade] = useState('')
     const [rule_id, set_rule_id] = useState('')
     const [rule, set_rule] = useState('')
@@ -199,6 +200,7 @@ export default function CheckAssignmentDetail(){
                     set_subject_id(data.task_agreement.project_agreement.subject.id)
                     set_subject_selected(data.task_agreement.project_agreement.subject.id)
                     set_grade_selected(data.task_agreement.project_agreement.grade.id)
+                    set_assignment_grade_id(data.task_agreement.project_agreement.grade.id)
 
                     if(data.task_agreement.type === 'presentation'){
                         set_assignment_type('discussion')
@@ -325,7 +327,7 @@ export default function CheckAssignmentDetail(){
     }
 
     async function get_grade_skill(){
-        var url = '/skill/category?id=&subject_id=' + subject_id + '&assignment_submitted_id=' + assignment_submitted_id
+        var url = '/skill/category?id=&subject_id=' + subject_id + '&assignment_submitted_id=' + assignment_submitted_id + '&grade_id=' + assignment_grade_id
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
