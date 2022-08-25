@@ -7,6 +7,7 @@ import ReportGrade from './reportGrade';
 import ReportSkill from './reportSkill';
 import ModalSubmit from '../checkAssignment/modalSubmit';
 import ModalEditScore from './modalEditScore';
+import LoadingData from '../../../components/loading';
 
 export default function GradeBookDetail(){
     var base = new Base()
@@ -63,6 +64,8 @@ export default function GradeBookDetail(){
 
     const [grade_skill_avg, set_grade_skill_avg] = useState(0)
     const [grade_skill_total_score, set_grade_skill_total_score] = useState(0)
+
+    const [is_loading_data, set_is_loading_data] = useState(true)
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -122,6 +125,7 @@ export default function GradeBookDetail(){
             url = '/grade/book/report-card/skill?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&term_id=' + term_selected + '&user_id=' + skill_student_selected
         }
         var response = await base.request(url)
+
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
@@ -154,6 +158,10 @@ export default function GradeBookDetail(){
                     }
                     set_skill_grade_book_arr(grade_book_skill)
                 }
+
+                setTimeout(() => {
+                    set_is_loading_data(false)
+                }, 1000);
             }
         }
     }
@@ -175,6 +183,7 @@ export default function GradeBookDetail(){
     }
 
     function filterStudent(){
+        set_is_loading_data(true)
         if(skill_student_selected !== ''){
             for(var x in student_arr){
                 if(student_arr[x].id === skill_student_selected){
@@ -523,15 +532,24 @@ export default function GradeBookDetail(){
                 {
                     header_selected === 'report_card_grade' ?
                     <>
-                    <ReportGrade
-                        class_student={class_student}
-                        assignment_agreement={assignment_agreement}
-                        grade_book_arr={grade_book_arr}
-                        term_arr={term_arr}
-                        term_selected={term_selected}
-                        changeTerm={(val)=>changeTerm(val)}
-                        editScore={(index, index_agreement)=>editScore(index, index_agreement)}
-                    />
+                    <div className='row'>
+                        {
+                            is_loading_data ?
+                            <LoadingData />
+                            :
+                            <div className='col-12'>
+                                <ReportGrade
+                                    class_student={class_student}
+                                    assignment_agreement={assignment_agreement}
+                                    grade_book_arr={grade_book_arr}
+                                    term_arr={term_arr}
+                                    term_selected={term_selected}
+                                    changeTerm={(val)=>changeTerm(val)}
+                                    editScore={(index, index_agreement)=>editScore(index, index_agreement)}
+                                />
+                            </div>
+                        }
+                    </div>
                     </>
                     :
                     <>
@@ -552,10 +570,12 @@ export default function GradeBookDetail(){
                         changeTerm={(val)=>changeTerm(val)}
                         skill_grade_book_arr={skill_grade_book_arr}
                         editSkillScore={(index_category, index_list, index_assignment)=>editSkillScore(index_category, index_list, index_assignment)}
+                        is_loading_data={is_loading_data}
                     />
                     </>
                 }
             </div>
+
 
             <ModalSubmit
                 assignment_type={edit_score_selected.activity_type}
