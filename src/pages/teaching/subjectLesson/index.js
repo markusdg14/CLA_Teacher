@@ -414,37 +414,36 @@ export default function SubjectLesson(){
             
             var last_submitted = data_index.arr_assignment_agreement[index_assignment].arr_class_student[index_class_student].last_assignment_submitted
             
-            if(last_submitted.assessment_status.data !== 'done'){
-                
-                if(status === 'done'){
-                    set_activity_subject_selected(data_index.subject.id)
-                    set_class_student_id(class_student.id)
-                    if(class_student.last_assignment_submitted != null){
-                        set_assignment_submitted_id(class_student.last_assignment_submitted.id)
-                        set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
-                    }
-                    if(assignment_agreement.data_type === 'assignment'){
-                        set_activity_type_selected(assignment_agreement.assignment_type.data)
-                        set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
-                    }
-                    else if(assignment_agreement.data_type === 'task'){
-                        set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
-                        set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
-                    }
-                    set_status_activity_selected(status)
+            // if(last_submitted.assessment_status.data !== 'done'){  
+            // }
+            if(status === 'done'){
+                set_activity_subject_selected(data_index.subject.id)
+                set_class_student_id(class_student.id)
+                if(class_student.last_assignment_submitted != null){
+                    set_assignment_submitted_id(class_student.last_assignment_submitted.id)
+                    set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
                 }
-                else{
-                    var url = '/assessment/assignment'
-                    var data_upload = {
-                        id : last_submitted.id,
-                        status : status,
-                    }
-            
-                    var response = await base.request(url, 'put', data_upload)
-                    if(response != null){
-                        if(response.status == 'success'){
-                            filterBtn()
-                        }
+                if(assignment_agreement.data_type === 'assignment'){
+                    set_activity_type_selected(assignment_agreement.assignment_type.data)
+                    set_activity_assessment_rule_selected(assignment_agreement.assessment_rule_id)
+                }
+                else if(assignment_agreement.data_type === 'task'){
+                    set_activity_type_selected((assignment_agreement.type === 'presentation' ? 'discussion' : 'upload'))
+                    set_activity_assessment_rule_selected(assignment_agreement.project_agreement.assessment_rule_id)
+                }
+                set_status_activity_selected(status)
+            }
+            else{
+                var url = '/assessment/assignment'
+                var data_upload = {
+                    id : last_submitted.id,
+                    status : status,
+                }
+        
+                var response = await base.request(url, 'put', data_upload)
+                if(response != null){
+                    if(response.status == 'success'){
+                        filterBtn()
                     }
                 }
             }
