@@ -51,6 +51,8 @@ export default function SubjectLesson(){
     const [radio_project_selected, set_radio_project_selected] = useState('major_revision')
     const [class_student_id, set_class_student_id] = useState('')
 
+    const [class_student_arr, set_class_student_arr] = useState([])
+
     const [selected_academic_year, set_selected_academic_year] = useState('')
 
     const [is_student_online_selected, set_is_student_online_selected] = useState(false)
@@ -301,6 +303,8 @@ export default function SubjectLesson(){
 
                     set_data_arr(data)
                     set_is_loading_filter(false)
+
+                    set_class_student_arr(response.arr_class_student)
 
                     setTimeout(() => {
                         set_is_loading_data(false)
@@ -851,145 +855,167 @@ export default function SubjectLesson(){
                                             <div className='row'>
                                                 {
                                                     data_arr.map((data, index)=>(
-                                                        <div className={'col-12 col-lg-6 mb-3' + (index % 2 === 0 ? ' pl-3 pl-lg-0' : ' pr-3 pr-lg-0')} key={index}>
-                                                            <div className='row m-0'>
-                                                                <div className='col-12 rounded p-3 subject_lesson_list title'>
-                                                                    <div className='row'>
-                                                                        <div className='col'>
-                                                                            <h5 className='m-0 text-primary'>{data.lesson.name}</h5>
-                                                                        </div>
-                                                                        <div className='col d-flex align-items-center justify-content-end'>
-                                                                            <div className='row'>
-                                                                                <div className='col d-flex align-items-center'>
+                                                    <div className='col-12 mb-3'>
+                                                        <div className="table-responsive rounded">
+                                                            <table class="table w-100 table-borderless m-0">
+                                                                <thead style={{backgroundColor : '#EAEAEA'}}>
+                                                                    <tr>
+                                                                        <th className='align-middle td-fit-content'>
+                                                                            <div className='row m-0'>
+                                                                                <div className='col-12'>
+                                                                                    <p className='m-0 text-primary'>{data.lesson.name}</p>
+                                                                                </div>
+                                                                                <div className='col-12'>
                                                                                     <p className='m-0' style={{fontSize : '.75rem'}}>Confirmed by {(data.confirmed_user != null ? data.confirmed_user.name : '-')}</p>
                                                                                 </div>
-
-                                                                                {
-                                                                                    data.confirmed_user == null &&
-                                                                                    <div className='col-auto'>
-                                                                                        <button className='btn btn-sm btn-primary shadow-sm rounded px-3' onClick={()=>confirmLesson('list', index)}>Confirm</button>
-                                                                                    </div>
-                                                                                }
+                                                                                <div className='col-12 mt-2'>
+                                                                                    <button className='btn btn-sm btn-primary shadow-sm rounded px-3' onClick={()=>confirmLesson('list', index)}>Confirm</button>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className='col-12 rounded mt-1 subject_lesson_list detail shadow-sm'>
-                                                                    <div className='row'>
-                                                                    {
-                                                                        data.arr_assignment_agreement.map((data_assignment, index_assignment)=>(
-                                                                            <div className='col-12' style={{borderBottom : '1px solid #eaeaea'}} key={index_assignment}>
-                                                                                <div className='row'>
-                                                                                    <div className='col-12 p-3' style={{borderBottom : '1px solid #eaeaea'}}>
-                                                                                        <div className='row'>
-                                                                                            <div className='col-auto d-flex align-items-center pr-2'>
-                                                                                                <h6 className='m-0'><i className={(data_assignment.icon) + " text-primary"} style={{fontSize : 18}}></i></h6>
-                                                                                            </div>
-                                                                                            <div className='col px-0 d-flex align-items-center'>
-                                                                                                <h6 className='m-0'>{data_assignment.activity_name}</h6>
-                                                                                            </div>
-                                                                                            {
-                                                                                                data_assignment.assignment_type != null &&
-                                                                                                <>
-                                                                                                    {
-                                                                                                        data_assignment.assignment_type.data === 'ungraded' &&
-                                                                                                        <>
-                                                                                                        {
-                                                                                                            !data_assignment.is_done ?
-                                                                                                            <div className='col d-flex align-items-center p-0'>
-                                                                                                                <button className='btn btn-sm btn-outline-primary rounded py-2' onClick={()=>doneAll(index, index_assignment)}>Ok All</button>
-                                                                                                            </div>
-                                                                                                            : <></>
-                                                                                                        }
-                                                                                                        </>
-                                                                                                    }
-                                                                                                </>
-                                                                                            }
-                                                                                            <div className='col pl-0'>
-                                                                                                <div className='row'>
-                                                                                                    <div className='col pr-2'>
-                                                                                                        <div>
-                                                                                                            <p className='m-0 text-right' style={{fontFamily : 'InterBold', fontSize : '.75rem'}}>Terkumpul {data_assignment.total_submitted}/{data_assignment.total_student} Student</p>
-                                                                                                            <p className='m-0 text-right' style={{fontSize : '.7rem'}}>DUE : {data_assignment.deadline_date != null ? base.moment(data_assignment.deadline_date).format('DD/MM/YYYY HH:mm') : '-'}</p>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div className='col-auto pl-0 d-flex align-items-center'>
-                                                                                                        <h5 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-pencil-square" style={{color : '#0085FF'}} onClick={()=>editActivity(index, index_assignment)}></i></h5>
-                                                                                                    </div>
+                                                                        </th>
+                                                                        {
+                                                                            data.arr_assignment_agreement.map((data_assignment, index_assignment)=>(
+                                                                                <th className='align-middle' key={index_assignment}>
+                                                                                    <div className='row m-0'>
+                                                                                        <div className='col-12'>
+                                                                                            <p className='m-0 text-center'>{data_assignment.activity_name}</p>
+                                                                                        </div>
+                                                                                        <div className='col-12'>
+                                                                                            <div className='d-flex justify-content-center'>
+                                                                                                <div className='py-1 px-3' style={{borderRadius : '5rem', backgroundColor : '#EBF8FF'}}>
+                                                                                                    <p className='m-0 text-center' style={{fontSize : '.75rem'}}>{data_assignment.total_submitted} / {data_assignment.total_student}</p>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className='col-12 px-3 py-0' style={{backgroundColor : '#D9D9D91A'}}>
-                                                                                        <div className='row m-0'>
-                                                                                            {
-                                                                                                data_assignment.arr_class_student.map((data_class_student, index_class_student)=>(
-                                                                                                    <div className='col-12 px-0 py-3' style={{borderBottom : '1px solid #EAEAEA'}} key={index_class_student}>
-                                                                                                        <div className='row m-0'>
-                                                                                                            <div className='col p-0'>
-                                                                                                                <div>
-                                                                                                                    <p className='m-0' style={{fontSize : '.9rem', fontFamily : 'InterBold'}}>{data_class_student.user.name}</p>
-                                                                                                                    <p className='m-0' style={{fontSize : '.7rem'}}>{data_class_student.is_online ? 'Online' : 'Offline'}</p>
-                                                                                                                </div>
+                                                                                </th>
+                                                                            ))
+                                                                        }
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody className='bg-white'>
+                                                                    <tr>
+                                                                        <td></td>
+                                                                        {
+                                                                            data.arr_assignment_agreement.map((data_assignment, index_assignment)=>(
+                                                                                <td className='align-middle'>
+                                                                                    <div className='row m-0'>
+                                                                                        <div className='col-12 d-flex justify-content-center'>
+                                                                                            <div className='row'>
+                                                                                                <div className='col px-2'>
+                                                                                                    <h5 className='m-0' style={{cursor : 'pointer'}}><i className="bi bi-pencil-square" style={{color : '#0085FF'}} onClick={()=>editActivity(index, index_assignment)}></i></h5>
+                                                                                                </div>
+                                                                                                {
+                                                                                                    data_assignment.assignment_type != null &&
+                                                                                                    <>
+                                                                                                        {
+                                                                                                            data_assignment.assignment_type.data === 'ungraded' &&
+                                                                                                            <>
+                                                                                                            <div className='col px-2'>
+                                                                                                            {
+                                                                                                                !data_assignment.is_done ?
+                                                                                                                    <h5 className='m-0' style={{cursor : 'pointer'}} onClick={()=>doneAll(index, index_assignment)}>
+                                                                                                                        <i class="bi bi-check-square-fill" style={{color : '#999999'}}></i>
+                                                                                                                    </h5>
+                                                                                                                : 
+                                                                                                                <>
+                                                                                                                <h5 className='m-0' style={{cursor : 'pointer'}}>
+                                                                                                                    <i class="bi bi-check-square-fill" style={{color : '#0085FF'}}></i>
+                                                                                                                </h5>
+                                                                                                                </>
+                                                                                                            }
                                                                                                             </div>
-                                                                                                            <div className='col'>
-                                                                                                                <div className='row'>
-                                                                                                                    {
-                                                                                                                        data_class_student.status_activity_arr.map((data_status, index_status)=>(
+                                                                                                            </>
+                                                                                                        }
+                                                                                                    </>
+                                                                                                }
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            ))
+                                                                        }
+                                                                    </tr>
+
+                                                                    {
+                                                                        class_student_arr.map((data_class_student, index_class_student)=>(
+                                                                            <tr key={index_class_student}>
+                                                                                <td>{data_class_student.user.name}</td>
+                                                                                {
+                                                                                    data.arr_assignment_agreement.map((data_assignment, index_assignment)=>(
+                                                                                        <td className='align-middle'>
+                                                                                            <div className='row m-0'>
+                                                                                                <div className='col-12 d-flex justify-content-center'>
+                                                                                                    <div className='row'>
+                                                                                                        <div className='col-12'>
+                                                                                                            <div className='row'>
+                                                                                                                {
+                                                                                                                    data_assignment.arr_class_student.map((data_class, index_class)=>(
+                                                                                                                        <>
+                                                                                                                        {
+                                                                                                                            data_class.id === data_class_student.id &&
                                                                                                                             <>
-                                                                                                                                {
-                                                                                                                                    data_status.data_arr.map((data_arr_status, index_arr_status)=>(
-                                                                                                                                        <div className={'col-4 pr-0 pl-2' + (index_status == 0 ? ' mb-1' : '')} key={index_arr_status}>
-                                                                                                                                            <div className='row m-0'>
-                                                                                                                                                <div className='col-auto' style={{cursor : 'pointer'}} onClick={()=>changeStatus(index, index_assignment, index_class_student, index_status, index_arr_status)}>
-                                                                                                                                                    <div className='row'>
-                                                                                                                                                        <div className='col-auto p-0 d-flex align-items-center'>
-                                                                                                                                                            <p className='m-0' style={{fontSize : '.7rem'}}>
-                                                                                                                                                                {
-                                                                                                                                                                    data_arr_status.is_checked ?
-                                                                                                                                                                    <i class="bi bi-record-circle-fill"></i>
-                                                                                                                                                                    :
-                                                                                                                                                                    <i class="bi bi-circle"></i>
-                                                                                                                                                                }
-                                                                                                                                                            </p>
-                                                                                                                                                        </div>
-                                                                                                                                                        <div className='col pl-1 pr-0 d-flex align-items-center'>
-                                                                                                                                                            <div className='rounded px-2 text-center' style={{backgroundColor : data_arr_status.bg_color}}>
-                                                                                                                                                                <p className='m-0 text-white' style={{fontSize : '.7rem'}}>{data_arr_status.title}</p>
+
+                                                                                                                            <div className='col-12'>
+                                                                                                                                <div className='row'>
+                                                                                                                                    {
+                                                                                                                                        data_class.status_activity_arr.map((data_status, index_status)=>(
+                                                                                                                                        <>
+                                                                                                                                            {
+                                                                                                                                                data_status.data_arr.map((data_arr_status, index_arr_status)=>(
+                                                                                                                                                    <div className={'col-4 pr-0 pl-2' + (index_status == 0 ? ' mb-1' : '')} key={index_arr_status}>
+                                                                                                                                                        <div className='row m-0'>
+                                                                                                                                                            <div className='col-auto' style={{cursor : 'pointer'}} onClick={()=>changeStatus(index, index_assignment, index_class_student, index_status, index_arr_status)}>
+                                                                                                                                                                <div className='row'>
+                                                                                                                                                                    <div className='col-auto p-0 d-flex align-items-center'>
+                                                                                                                                                                        <p className='m-0' style={{fontSize : '.7rem'}}>
+                                                                                                                                                                            {
+                                                                                                                                                                                data_arr_status.is_checked ?
+                                                                                                                                                                                <i class="bi bi-record-circle-fill"></i>
+                                                                                                                                                                                :
+                                                                                                                                                                                <i class="bi bi-circle"></i>
+                                                                                                                                                                            }
+                                                                                                                                                                        </p>
+                                                                                                                                                                    </div>
+                                                                                                                                                                    <div className='col pl-1 pr-0 d-flex align-items-center'>
+                                                                                                                                                                        <div className='rounded px-2 text-center' style={{backgroundColor : data_arr_status.bg_color}}>
+                                                                                                                                                                            <p className='m-0 text-white' style={{fontSize : '.7rem'}}>{data_arr_status.title}</p>
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>
                                                                                                                                                             </div>
                                                                                                                                                         </div>
                                                                                                                                                     </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
+                                                                                                                                                ))
+                                                                                                                                            }
+                                                                                                                                        </>
                                                                                                                                     ))
-                                                                                                                                }
+                                                                                                                                    }
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div className='col-12 mt-2'>
+                                                                                                                                <p className='m-0 text-center' style={{fontSize : '.75rem'}}>Last Updated : {(data_class.last_assignment_submitted != null ? base.moment(data_class.last_assignment_submitted.updated_at).format('DD/MM/YYYY HH:mm') : '-')}</p>
+                                                                                                                            </div>
                                                                                                                             </>
-                                                                                                                        ))
-                                                                                                                    }
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                            <div className='col p-0 d-flex align-items-center justify-content-end'>
-                                                                                                                <div>
-                                                                                                                    <p className='m-0 text-right' style={{fontSize : '.75rem'}}>Last Updated at</p>
-                                                                                                                    <p className='m-0 text-right' style={{fontSize : '.75rem'}}>{(data_class_student.last_assignment_submitted != null ? base.moment(data_class_student.last_assignment_submitted.updated_at).format('DD/MM/YYYY HH:mm') : '-')}</p>
-                                                                                                                </div>
+                                                                                                                        }
+                                                                                                                        </>
+                                                                                                                    ))
+                                                                                                                }
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                                ))
-                                                                                            }
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    ))
+                                                                                }
+                                                                            </tr>
                                                                         ))
-                                                                    }
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                                    }                                                                
+                                                                </tbody>
+                                                            </table>
                                                         </div>
+                                                    </div>
                                                     ))
                                                 }
                                             </div>

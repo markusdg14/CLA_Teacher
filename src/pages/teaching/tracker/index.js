@@ -45,6 +45,10 @@ export default function TrackerIndex(){
 	const [is_prev, set_is_prev] = useState(false)
 	const [is_next, set_is_next] = useState(false)
 
+	const [arr_pagination, set_arr_pagination] = useState([])
+	const [arr_pagination_selected, set_arr_pagination_selected] = useState('')
+	const [today_page, set_today_page] = useState('')
+
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
 		set_user_data(check_user.user_data)
@@ -155,6 +159,20 @@ export default function TrackerIndex(){
 				set_activity_submitted(assignment_submitted)
 				set_activity_agreement(assignment_agreement)
 
+				var pagination_arr = data.arr_lesson_schedule.arr_pagination
+
+				for(var x in pagination_arr){
+					pagination_arr[x].name = pagination_arr[x].start.lesson.name + ' - ' + pagination_arr[x].end.lesson.name
+				}
+				set_arr_pagination(pagination_arr)
+				set_today_page(data.arr_lesson_schedule.today_page)
+
+				if(counter === 0){
+					var pagination_selected = ''
+					pagination_selected = lessonDate_arr[0].lesson + ' - ' + lessonDate_arr[lessonDate_arr.length - 1].lesson
+					set_arr_pagination_selected(pagination_selected)
+				}
+
 				
 				setTimeout(() => {
 					set_is_loading_data(false)
@@ -190,6 +208,19 @@ export default function TrackerIndex(){
 				set_counter(parseInt(counter)+1)
 			}
 		}
+	}
+
+	function changePaginationLesson(value){
+		var pagination_arr = arr_pagination
+		var selected_counter = 0
+		for(var x in pagination_arr){
+			if(pagination_arr[x].name === value){
+				selected_counter = parseInt(x) + 1
+				set_counter(parseInt(selected_counter) - today_page)
+				break
+			}
+		}
+		set_arr_pagination_selected(value)
 	}
 
 	return(
@@ -248,6 +279,9 @@ export default function TrackerIndex(){
 											<div className='d-flex align-items-center h-100'>
 												<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('prev')} disabled={!is_prev}><i className="bi bi-arrow-left-short"></i> Prev Lesson</button>
 											</div>
+										</div>
+										<div className='col-auto pl-1'>
+											<SelectOption data_arr={arr_pagination} selected={arr_pagination_selected} title={'Lesson'} changeInput={(value)=>changePaginationLesson(value)} />
 										</div>
 										<div className='col-auto pl-1'>
 											<div className='d-flex align-items-center h-100'>
