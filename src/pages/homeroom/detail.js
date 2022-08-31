@@ -184,6 +184,29 @@ export default function HomeroomDetail(){
         }
     }, [habit_student_selected])
 
+    async function get_student(){
+        var url = '/class/homeroom?id=' + query.get('id')
+        var response = await base.request(url)
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                var student_data = data.student
+                var student_arr = []
+                for(var x in student_data){
+                    student_data[x].user.image_display = base.img_no_profile
+                    student_data[x].user.class_student_id = student_data[x].id
+                    if(student_data[x].user.file_name != null){
+                        student_data[x].user.image_display = base.url_photo('user', student_data[x].user.file_name)
+                    }
+                    student_arr.push(student_data[x].user)
+                }
+
+                set_student_arr(student_arr)
+                set_student_arr_temp(student_arr)
+            }
+        }
+    }
+
     async function get_data(){
         var url = '/class/'
         if(header_selected === 'dashboard' || header_selected === 'list_student'){
@@ -604,6 +627,7 @@ export default function HomeroomDetail(){
 
     async function addAttendanceReward(){
         set_attendance_reward_student_selected('')
+        get_student()
         base.$('#attendanceRewardModal').modal('show')
     }
 

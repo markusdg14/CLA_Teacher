@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
-export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes, set_radio_project, viewFrom, is_student_online, grade_skill_avg, grade_skill_total_score}){
+export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes, set_radio_project, viewFrom, is_student_online, grade_skill_avg, grade_skill_total_score, is_grade_skill_notes_empty}){
 	var base = new Base()
 
 	const [modal_radio_arr, set_modal_radio_arr] = useState([
@@ -70,20 +70,6 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 											}
 										</div>
 
-										<div className='col-12 mb-3'>
-											{
-												assignment_type === 'discussion' &&
-												<>
-													<p className='m-0'>5 : Advanced</p>
-													<p className='m-0'>4 : Accomplished</p>
-													<p className='m-0'>3 : Well-developed</p>
-													<p className='m-0'>2 : Need to put more effort</p>
-													<p className='m-0'>1 : Need an encouragement and help</p>
-												</>
-											}
-										</div>
-
-
 										{
 											assignment_type === 'quiz' ?
 											<>
@@ -143,6 +129,13 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 											</>
 											: assignment_type === 'discussion' ?
 											<>
+											<div className='col-12 mb-3'>
+												<p className='m-0'>5 : Advanced</p>
+												<p className='m-0'>4 : Accomplished</p>
+												<p className='m-0'>3 : Well-developed</p>
+												<p className='m-0'>2 : Need to put more effort</p>
+												<p className='m-0'>1 : Need an encouragement and help</p>
+											</div>
 											<div className='col-12 mt-3'>
 												<div className='row m-0'>
 													{
@@ -217,7 +210,13 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 														<p className='m-0' style={{color : 'black'}}>{assignment_status_data !== 'done' ? 'Input ' : ''}Notes</p>
 														{
 															assignment_status_data !== 'done' ?
-															<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+															<>
+															<textarea className={"form-control rounded mt-2" + (is_grade_skill_notes_empty && ' border-danger')} rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+															{
+																is_grade_skill_notes_empty &&
+																<small className='text-danger'>Notes cannot be empty</small>
+															}
+															</>
 															:
 															<p className='m-0 mt-2'>{teacher_notes}</p>
 														}

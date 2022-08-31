@@ -33,7 +33,7 @@ export default function NotificationIndex(){
                 var data = response.data.data
                 for(var x in data){
                     data[x].data_payload = JSON.parse(data[x].data)
-                    console.log(data[x])
+                    console.log(data[0].data_payload)
                     data[x].url = data[x].data_payload.url
                 }
                 set_data_arr(data)
