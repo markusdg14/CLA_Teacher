@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import LoadingData from '../../../components/loading';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
-export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes, set_radio_project, viewFrom, is_student_online, grade_skill_avg, grade_skill_total_score, is_grade_skill_notes_empty}){
+export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput, submitGrading, notes, is_modal_btn_disable, assignment_type, grade_skill_arr, changeScore, rule, numerical_score, changeNumerical, assignment_status_data, teacher_notes, set_radio_project, viewFrom, is_student_online, grade_skill_avg, grade_skill_total_score, is_grade_skill_notes_empty, is_loading_grade_skill}){
 	var base = new Base()
 
 	const [modal_radio_arr, set_modal_radio_arr] = useState([
@@ -144,83 +145,88 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 															<p className='m-0' style={{color : 'black'}}>Input Student Grade for their skill</p>
 														</div>
 													}
-													<div className='col-12'>
-														<div className='row'>
-															{/* <div className='col-12'>
-																<p className='m-0' style={{fontFamily : 'InterBold'}}>Grade Skill</p>
-															</div> */}
-															<div className='col-12'>                                                                
-																<div className='table-responsive'>
-																	<table class="table table-striped table-borderless">
-																		<thead>
-																			<tr>
-																				<th colSpan={2}>Grade Skill</th>
-																			</tr>
-																		</thead>
-																		<tbody>
-																			{
-																				grade_skill_arr.map((data, index)=>(
-																					<>
-																						<tr>
-																							<td colSpan={2}>{data.name}</td>
-																						</tr>
-																						{
-																							data.arr_skill.map((data_skill, index_skill)=>(
+
+													{
+														is_loading_grade_skill ?
+														<LoadingData />
+														:
+														<>
+															<div className='col-12'>
+																<div className='row'>
+																	<div className='col-12'>                                                                
+																		<div className='table-responsive'>
+																			<table class="table table-striped table-borderless">
+																				<thead>
+																					<tr>
+																						<th colSpan={2}>Grade Skill</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					{
+																						grade_skill_arr.map((data, index)=>(
+																							<>
 																								<tr>
-																									<td className='align-middle'>
-																										<p className='m-0'>{index_skill + 1}. {data_skill.name}</p>
-																									</td>
-																									<td className='w-25'>
-																										{
-																											assignment_status_data !== 'done' ?
-																											<input className='form-control form-control-sm rounded' placeholder='0' value={data_skill.score} onChange={(e)=>changeScore(index, index_skill, e.target.value)} />
-																											:
-																											<p className='m-0 text-right'>{data_skill.score}</p>
-																										}
-																									</td>
+																									<td colSpan={2}>{data.name}</td>
 																								</tr>
-																							))
-																						}
-																					</>
-																				))
-																			}
-																			<tr>
-																				<td className='align-middle'>
-																					<p className='m-0'>Average</p>
-																				</td>
-																				<td className='w-25'>
-																					<p className='m-0 text-right'>{parseFloat(grade_skill_avg).toFixed(2)}</p>
-																				</td>
-																			</tr>
-																			<tr>
-																				<td className='align-middle'>
-																					<p className='m-0'>Score</p>
-																				</td>
-																				<td className='w-25'>
-																					<p className='m-0 text-right'>{parseFloat(grade_skill_total_score).toFixed(2)}</p>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
+																								{
+																									data.arr_skill.map((data_skill, index_skill)=>(
+																										<tr>
+																											<td className='align-middle'>
+																												<p className='m-0'>{index_skill + 1}. {data_skill.name}</p>
+																											</td>
+																											<td className='w-25'>
+																												{
+																													assignment_status_data !== 'done' ?
+																													<input className='form-control form-control-sm rounded' placeholder='0' value={data_skill.score} onChange={(e)=>changeScore(index, index_skill, e.target.value)} />
+																													:
+																													<p className='m-0 text-right'>{data_skill.score}</p>
+																												}
+																											</td>
+																										</tr>
+																									))
+																								}
+																							</>
+																						))
+																					}
+																					<tr>
+																						<td className='align-middle'>
+																							<p className='m-0'>Average</p>
+																						</td>
+																						<td className='w-25'>
+																							<p className='m-0 text-right'>{parseFloat(grade_skill_avg).toFixed(2)}</p>
+																						</td>
+																					</tr>
+																					<tr>
+																						<td className='align-middle'>
+																							<p className='m-0'>Score</p>
+																						</td>
+																						<td className='w-25'>
+																							<p className='m-0 text-right'>{parseFloat(grade_skill_total_score).toFixed(2)}</p>
+																						</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																	</div>
 																</div>
 															</div>
-														</div>
-													</div>
-													<div className='col-12 mt-3'>
-														<p className='m-0' style={{color : 'black'}}>{assignment_status_data !== 'done' ? 'Input ' : ''}Notes</p>
-														{
-															assignment_status_data !== 'done' ?
-															<>
-															<textarea className={"form-control rounded mt-2" + (is_grade_skill_notes_empty && ' border-danger')} rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
-															{
-																is_grade_skill_notes_empty &&
-																<small className='text-danger'>Notes cannot be empty</small>
-															}
-															</>
-															:
-															<p className='m-0 mt-2'>{teacher_notes}</p>
-														}
-													</div>
+															<div className='col-12 mt-3'>
+																<p className='m-0' style={{color : 'black'}}>{assignment_status_data !== 'done' ? 'Input ' : ''}Notes</p>
+																{
+																	assignment_status_data !== 'done' ?
+																	<>
+																	<textarea className={"form-control rounded mt-2" + (is_grade_skill_notes_empty && ' border-danger')} rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+																	{
+																		is_grade_skill_notes_empty &&
+																		<small className='text-danger'>Notes cannot be empty</small>
+																	}
+																	</>
+																	:
+																	<p className='m-0 mt-2'>{teacher_notes}</p>
+																}
+															</div>
+														</>
+													}
 												</div>
 											</div>
 											</>

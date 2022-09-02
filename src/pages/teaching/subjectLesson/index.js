@@ -61,6 +61,7 @@ export default function SubjectLesson(){
 	const [is_loading_filter, set_is_loading_filter] = useState(true)
 	const [is_loading_data, set_is_loading_data] = useState(false)
 	const [is_grade_skill_notes_empty, set_is_grade_skill_notes_empty] = useState(false)
+	const [is_loading_grade_skill, set_is_loading_grade_skill] = useState(true)
 
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
@@ -365,6 +366,7 @@ export default function SubjectLesson(){
 	useEffect(async()=>{
 		if(activity_type_selected !== ''){
 			if(activity_assessment_rule_selected !== ''){
+				set_is_loading_grade_skill(true)
 				get_grade_skill()
 				get_rule()
 				set_grade_skill_avg(0)
@@ -403,6 +405,10 @@ export default function SubjectLesson(){
 					}
 				}
 				set_grade_skill_arr(data)
+
+				setTimeout(() => {
+					set_is_loading_grade_skill(false)
+				}, 1000);
 			}
 		}
 	}
@@ -1075,6 +1081,7 @@ export default function SubjectLesson(){
 				grade_skill_avg={grade_skill_avg}
 				grade_skill_total_score={grade_skill_total_score}
 				is_grade_skill_notes_empty={is_grade_skill_notes_empty}
+				is_loading_grade_skill={is_loading_grade_skill}
 			/>
 			
 			<ModalSubmitAll okAll={()=>okAll()} disable_all_btn={disable_all_btn} />
