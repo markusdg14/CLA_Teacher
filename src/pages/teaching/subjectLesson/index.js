@@ -241,7 +241,7 @@ export default function SubjectLesson(){
 			var response = await base.request(url)
 			if(response != null){
 				if(response.status == 'success'){
-					var data = response.data.data
+					var data = response.data
 					for(var x in data){
 						for(var y in data[x].arr_assignment_agreement){
 							data[x].arr_assignment_agreement[y].icon = 'bi bi-puzzle-fill'
