@@ -77,7 +77,7 @@ export default function AttendanceRewardModal({submission, changeAttendance, cha
                                                                                         <>
                                                                                         <div className='row m-0'>
                                                                                             {
-                                                                                                data_reward.name !== 'Goal Achieved' && data_reward.name !== 'Spiritual Growth' ?
+                                                                                                data_reward.name !== 'Spiritual Growth' ?
                                                                                                 <>
                                                                                                     {
                                                                                                         data_reward.name === 'Attendance' ?

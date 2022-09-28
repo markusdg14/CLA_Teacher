@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import LoadingData from '../../../components/loading';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
 
 
-export default function HomeroomAttendanceReward({term_arr, term_selected, changeTerm, reward_arr, date_arr, attendance_reward_month, class_student_arr, arr_point, toggleStudent, attendance_reward_nav_btn, changeOffset, addAttendanceReward}){
+export default function HomeroomAttendanceReward({term_arr, term_selected, changeTerm, reward_arr, date_arr, attendance_reward_month, class_student_arr, arr_point, toggleStudent, attendance_reward_nav_btn, changeOffset, addAttendanceReward, loading_attendance_reward}){
 	var base = new Base()
 
 	return(
@@ -44,108 +45,116 @@ export default function HomeroomAttendanceReward({term_arr, term_selected, chang
 											</div>
 										</div>
 									</div>
-									<div className='col-12'>
-										<div className="table-responsive">
-											<table className="table w-100 table-borderless">
-												<thead>
-													<tr style={{backgroundColor : '#EBEFE2'}}>
-														<td style={{width : '6rem'}}></td>
-														<td></td>
-														<td className='text-center' colSpan={date_arr.length + 1}>{attendance_reward_month}</td>
-													</tr>
-													<tr style={{backgroundColor : '#EBEFE2'}}>
-														<td style={{width : '6rem'}}></td>
-														<td className='text-center'>Total</td>
-														{
-															date_arr.length > 0 ?
-															<>
-															{
-																date_arr.map((data_date, index_date)=>(
-																	<td className='text-center' key={index_date}>{base.moment(data_date.date).format('D')}</td>
-																))
-															}
-															</>
-															:
-															<>
+
+									{
+										loading_attendance_reward ?
+										<>
+											<LoadingData />
+										</>
+										:
+										<div className='col-12'>
+											<div className="table-responsive">
+												<table className="table w-100 table-borderless">
+													<thead>
+														<tr style={{backgroundColor : '#EBEFE2'}}>
+															<td style={{width : '6rem'}}></td>
 															<td></td>
-															</>
-														}
-													</tr>
-												</thead>
-												<tbody>
-													{
-														class_student_arr.map((data_student, index_student)=>(
-															<>
-																<tr style={{backgroundColor : '#F3F4F6', cursor : 'pointer'}} onClick={()=>toggleStudent(index_student)}>
-																	<td className='td-fit-content py-0'>
-																		<div className='d-flex align-items-center' style={{height : '3rem', color : '9FA2B4'}}>
-																			{data_student.user.name}
-																			<i className={"ml-3 fas fa-chevron-" + (data_student.is_show ? 'up' : 'down')}></i>
-																		</div>
-																	</td>
-																	<td className='py-0' colSpan={date_arr.length + 2}></td>
-																</tr>
+															<td className='text-center' colSpan={date_arr.length + 1}>{attendance_reward_month}</td>
+														</tr>
+														<tr style={{backgroundColor : '#EBEFE2'}}>
+															<td style={{width : '6rem'}}></td>
+															<td className='text-center'>Total</td>
+															{
+																date_arr.length > 0 ?
+																<>
 																{
-																	data_student.is_show &&
-																	<>
+																	date_arr.map((data_date, index_date)=>(
+																		<td className='text-center' key={index_date}>{base.moment(data_date.date).format('D')}</td>
+																	))
+																}
+																</>
+																:
+																<>
+																<td></td>
+																</>
+															}
+														</tr>
+													</thead>
+													<tbody>
+														{
+															class_student_arr.map((data_student, index_student)=>(
+																<>
+																	<tr style={{backgroundColor : '#F3F4F6', cursor : 'pointer'}} onClick={()=>toggleStudent(index_student)}>
+																		<td className='td-fit-content py-0'>
+																			<div className='d-flex align-items-center' style={{height : '3rem', color : '9FA2B4'}}>
+																				{data_student.user.name}
+																				<i className={"ml-3 fas fa-chevron-" + (data_student.is_show ? 'up' : 'down')}></i>
+																			</div>
+																		</td>
+																		<td className='py-0' colSpan={date_arr.length + 2}></td>
+																	</tr>
 																	{
-																		reward_arr.map((data_reward, index_reward)=>(
-																			<tr key={index_reward}>
-																				<td className=''>{data_reward.name}</td>
-																				<td className='text-center'>
-																					{
-																						arr_point[data_student.id] != null &&
-																						<>
-																							{
-																								arr_point[data_student.id][data_reward.id] != null &&
-																								<>
+																		data_student.is_show &&
+																		<>
+																		{
+																			reward_arr.map((data_reward, index_reward)=>(
+																				<tr key={index_reward}>
+																					<td className=''>{data_reward.name}</td>
+																					<td className='text-center'>
+																						{
+																							arr_point[data_student.id] != null &&
+																							<>
 																								{
-																									arr_point[data_student.id][data_reward.id]['total'] != null &&
+																									arr_point[data_student.id][data_reward.id] != null &&
 																									<>
-																									<span className={"badge badge-pill p-1 px-2 rounded badge-success"}>{arr_point[data_student.id][data_reward.id]['total']}</span>
-																									</>
-																								}
-																								</>
-																							}
-																						</>
-																					}
-																				</td>
-																				{
-																					date_arr.map((data_date, index_date)=>(
-																						<td className='text-center' key={index_date}>
-																							{
-																								arr_point[data_student.id] != null &&
-																								<>
 																									{
-																										arr_point[data_student.id][data_reward.id] != null &&
+																										arr_point[data_student.id][data_reward.id]['total'] != null &&
 																										<>
-																										{
-																											arr_point[data_student.id][data_reward.id][data_date.id] != null ?
-																											<>
-																											<span className={"badge badge-pill p-1 px-2 rounded badge-" + (arr_point[data_student.id][data_reward.id][data_date.id].amount === '0' ? 'danger' : arr_point[data_student.id][data_reward.id][data_date.id].amount === '1' ? 'success' : arr_point[data_student.id][data_reward.id][data_date.id].amount === 'P' ? 'info' : '')}>{arr_point[data_student.id][data_reward.id][data_date.id].amount}</span>
-																											</>
-																											:
-																											<span className={"badge badge-pill p-1 px-2 rounded badge-danger"}>{0}</span>
-																										}
+																										<span className={"badge badge-pill p-1 px-2 rounded badge-success"}>{arr_point[data_student.id][data_reward.id]['total']}</span>
 																										</>
 																									}
-																								</>
-																							}
-																						</td>
-																					))
-																				}
-																			</tr>
-																		))
+																									</>
+																								}
+																							</>
+																						}
+																					</td>
+																					{
+																						date_arr.map((data_date, index_date)=>(
+																							<td className='text-center' key={index_date}>
+																								{
+																									arr_point[data_student.id] != null &&
+																									<>
+																										{
+																											arr_point[data_student.id][data_reward.id] != null &&
+																											<>
+																											{
+																												arr_point[data_student.id][data_reward.id][data_date.id] != null ?
+																												<>
+																												<span className={"badge badge-pill p-1 px-2 rounded badge-" + (arr_point[data_student.id][data_reward.id][data_date.id].amount === '0' ? 'danger' : arr_point[data_student.id][data_reward.id][data_date.id].amount === '1' ? 'success' : arr_point[data_student.id][data_reward.id][data_date.id].amount === 'P' ? 'info' : '')}>{arr_point[data_student.id][data_reward.id][data_date.id].amount}</span>
+																												</>
+																												:
+																												<span className={"badge badge-pill p-1 px-2 rounded badge-danger"}>{0}</span>
+																											}
+																											</>
+																										}
+																									</>
+																								}
+																							</td>
+																						))
+																					}
+																				</tr>
+																			))
+																		}
+																		</>
 																	}
-																	</>
-																}
-															</>
-														))
-													}
-												</tbody>
-											</table>
+																</>
+															))
+														}
+													</tbody>
+												</table>
+											</div>
 										</div>
-									</div>
+									}
 								</div>
 							</div>
 						</div>

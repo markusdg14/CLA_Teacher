@@ -6,6 +6,7 @@ import Select from 'react-select'
 import SelectOption from '../../../components/selectOption';
 import WebViewer from '@pdftron/webviewer'
 import ModalSubmit from './modalSubmit';
+import LoadingData from '../../../components/loading';
 
 export default function CheckAssignmentDetail(){
     var base = new Base()
@@ -826,9 +827,7 @@ export default function CheckAssignmentDetail(){
 
                                                         {
                                                             is_loading_list ?
-                                                            <div className='col-12 text-center'>
-                                                                <h4>Loading...</h4>
-                                                            </div>
+                                                            <LoadingData />
                                                             :
                                                             <>
                                                                 {

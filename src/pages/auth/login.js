@@ -53,9 +53,6 @@ export default function AuthLogin(){
     }
 
     async function signInBtn(){
-        // localStorage.setItem('token', 'Bearer 2148|9d8zJFeTJk25a2qDvOIIOtScEgegKwzwHet8CnK4')
-        // window.location.href = '/'
-
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         var flag = 1
         var data_login = {email : '', password : '', token : firebaseToken}

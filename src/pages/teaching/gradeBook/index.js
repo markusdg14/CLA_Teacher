@@ -43,7 +43,7 @@ export default function GradeBook(){
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
-                var data = response.data.data
+                var data = response.data
                 if(type === 'current'){
                     set_data_active_arr(data)
                 }

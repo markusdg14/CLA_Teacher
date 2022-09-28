@@ -32,7 +32,7 @@ export default function HomeroomDetail(){
     const [view_type, set_view_type] = useState('view')
     const [detail_type, set_detail_type] = useState('')
 
-    const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}})
+    const [user_data, set_user_data] = useState({name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_academic_year : {id : '', name : ''}, current_term : {id : ''}})
     const [header_title, set_header_title] = useState('')
     const [header_menu_arr, set_header_menu_arr] = useState([
         {id : 'dashboard', title : 'Dashboard', is_selected : (query.get('tab') == null || query.get('tab') === '' || query.get('tab') == 'dashboard' ? true : false)},
@@ -115,6 +115,8 @@ export default function HomeroomDetail(){
     const [attendance_reward_arr, set_attendance_reward_arr] = useState([])
     const [point_transaction_arr, set_point_transaction_arr] = useState([])
 
+    const [loading_attendance_reward, set_loading_attendance_reward] = useState(true)
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -142,12 +144,21 @@ export default function HomeroomDetail(){
     useEffect(async ()=>{
         if(user_data.id !== ''){
             // get_data()
+            set_term_selected(user_data.current_term.id)
         }
     }, [user_data])
 
     useEffect(async ()=>{
-        set_term_selected('')
-        get_data()
+        // set_term_selected('')
+        if(header_selected !== 'report_card_skill'){
+            get_data()
+        }
+        else{
+            if(skill_student_selected !== ''){
+                get_data()
+            }
+        }
+
         if(header_selected === 'report_card_skill'){
             get_legend()
         }
@@ -158,15 +169,28 @@ export default function HomeroomDetail(){
             get_term()
         }
 
+
     }, [header_selected])
 
     useEffect(async ()=>{
-        if(term_selected !== '')
+        var flag_get_data = 1
+        if(term_selected !== ''){
+            if(header_selected === 'report_card_skill'){
+                if(skill_student_selected === ''){
+                    flag_get_data = 0
+                }
+            }
+        }
+
+        if(flag_get_data){
             get_data()
+        }
     }, [term_selected])
 
     useEffect(async ()=>{
-        get_data()
+        if(header_selected === 'attendance-reward'){
+            get_data()
+        }
     }, [attendance_reward_offset])
 
     useEffect(async ()=>{
@@ -234,6 +258,7 @@ export default function HomeroomDetail(){
         }
         else if(header_selected === 'attendance-reward'){
             url += '&term_id=' + term_selected + '&counter=' + attendance_reward_offset
+            set_loading_attendance_reward(true)
         }
         else if(header_selected === 'report_card_grade'){
             url += '&term_id=' + term_selected
@@ -243,8 +268,6 @@ export default function HomeroomDetail(){
         if(response != null){
             if(response.status == 'success'){
                 var data = response.data
-                
-
                 
                 if(header_selected === ''){
                     set_header_title(data.grade_name + ' ' + data.name)
@@ -333,8 +356,8 @@ export default function HomeroomDetail(){
                     for(var x in arr_reward){
                         arr_reward[x].score = ''
                     }
-                    set_reward_score(arr_reward)
 
+                    set_reward_score(arr_reward)
                     set_reward_arr(data.arr_reward)
                     set_date_arr(data.arr_lesson_schedule.arr)
                     set_attendance_reward_month(base.moment(data.arr_date.arr[0]).format('MMMM'))
@@ -343,6 +366,10 @@ export default function HomeroomDetail(){
 
                     set_is_prev_offset(data.arr_lesson_schedule.previous_page)
                     set_is_next_offset(data.arr_lesson_schedule.next_page)
+
+                    setTimeout(() => {
+                        set_loading_attendance_reward(false)
+                    }, 1000);
                 }
                 else if(header_selected === 'habit_tracker'){
                     set_to_be_confirm_habit_arr(data.data)
@@ -371,12 +398,18 @@ export default function HomeroomDetail(){
             if(response.status == 'success'){
                 var data = response.data.data
                 set_term_arr(data)
-                set_term_selected(data[0].id)
             }
         }
     }
 
     function changeTerm(val){
+        set_reward_score([])
+        set_reward_arr([])
+        set_date_arr([])
+        set_attendance_reward_month([])
+        set_class_student_arr([])
+        set_arr_point([])
+
         set_attendance_reward_offset(0)
         set_term_selected(val)
     }
@@ -397,7 +430,6 @@ export default function HomeroomDetail(){
         set_attendance_reward_month([])
         set_class_student_arr([])
         set_arr_point({})
-        set_term_selected('')
         set_view_type('view')
         set_detail_type('')
         set_habit_student_selected({id : '', name : '', talent_balance : 0, talent_rate : {rate : 0}, image_display : '', class_student_id : ''})
@@ -866,6 +898,7 @@ export default function HomeroomDetail(){
                                 attendance_reward_nav_btn={attendance_reward_nav_btn}
                                 changeOffset={(type)=>changeOffset(type)}
                                 addAttendanceReward={()=>addAttendanceReward()}
+                                loading_attendance_reward={loading_attendance_reward}
                             />
                         </>
                         : header_selected === 'habit_tracker' ?
