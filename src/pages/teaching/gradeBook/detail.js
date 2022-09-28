@@ -19,7 +19,7 @@ export default function GradeBookDetail(){
     
     let query = useQuery()
 
-    const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}})
+    const [user_data, set_user_data] = useState({id : '', name : '', email : '', phone : '', image : {image_display : base.img_no_profile}, current_term : {id : ''}})
     const [header_menu_arr, set_header_menu_arr] = useState([
         {id : 'report_card_grade', title : 'Report Card Grade', is_selected : true},
         {id : 'report_card_skill', title : 'Report Card Skill', is_selected : false},
@@ -67,6 +67,10 @@ export default function GradeBookDetail(){
 
     const [is_loading_data, set_is_loading_data] = useState(true)
 
+    const [edit_type, set_edit_type] = useState('')
+
+    const [grade_book_selected, set_grade_book_selected] = useState({id : ''})
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -74,11 +78,26 @@ export default function GradeBookDetail(){
         base.$('#modalSubmit').on('hidden.bs.modal', function (event) {
             set_edit_score_selected({id : '', score : '', comment : '', activity_type : ''})
         })
+
+        if(query.get('tab') != null){
+            for(var x in header_menu_arr){
+                header_menu_arr[x].is_selected = false
+                if(header_menu_arr[x].id === query.get('tab')){
+                    header_menu_arr[x].is_selected = true
+                    break
+                }
+            }
+            set_header_selected(query.get('tab'))
+        }
+        if(query.get('student_id') != null){
+            set_skill_student_selected(query.get('student_id'))
+        }
     }, [])
 
     useEffect(()=>{
         if(user_data.id !== ''){
             get_term()
+            set_term_selected(user_data.current_term.id)
         }
     }, [user_data])
 
@@ -90,7 +109,6 @@ export default function GradeBookDetail(){
             if(response.status == 'success'){
                 var data = response.data.data
                 set_term_arr(data)
-                set_term_selected(data[0].id)
             }
         }
     }
@@ -99,12 +117,12 @@ export default function GradeBookDetail(){
         if(header_selected === 'report_card_skill'){
             get_legend()
         }
-        set_term_selected('')
         get_term()
     }, [header_selected])
 
     useEffect(()=>{
         if(term_selected !== ''){
+            get_student()
             if(header_selected === 'report_card_skill'){
                 if(skill_student_selected !== ''){
                     get_data()
@@ -114,7 +132,26 @@ export default function GradeBookDetail(){
                 get_data()
             }
         }
-    }, [term_selected])
+    }, [term_selected, skill_student_selected, header_selected])
+
+    async function get_student(){
+        var url = '/grade/book/report-card?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&term_id=' + term_selected
+        var response = await base.request(url)
+
+        if(response != null){
+            if(response.status == 'success'){
+                var data = response.data
+                
+                var class_student = data.arr_class_student
+                var arr_student = []
+                for(var x in class_student){
+                    arr_student.push(class_student[x].user)
+                }
+                
+                set_student_arr(arr_student)
+            }
+        }
+    }
 
     async function get_data(){
         var url = ''
@@ -191,6 +228,10 @@ export default function GradeBookDetail(){
                 }
             }
             get_data()
+
+            // grade-book/detail?subject_id=SUBJECT_0043&grade_id=GRADE_20220224_000005
+
+            window.history.pushState({}, null, '/grade-book/detail?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&tab=' + header_selected + '&student_id=' + skill_student_selected)
         }
     }
 
@@ -205,6 +246,7 @@ export default function GradeBookDetail(){
 
         if(header_menu_arr[index].is_selected){
             set_header_selected(header_menu_arr[index].id)
+            window.history.pushState({}, null, '/grade-book/detail?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&tab=' + header_menu_arr[index].id)
         }
     }
 
@@ -421,7 +463,7 @@ export default function GradeBookDetail(){
             var arr_skill = grade_skill_arr[x].arr_skill
             for(var y in arr_skill){
                 if(arr_skill[y].score !== ''){
-                    total_score += parseInt(arr_skill[y].score)
+                    total_score += parseFloat(arr_skill[y].score)
                 }
             }
             total_data += arr_skill.length
@@ -456,15 +498,21 @@ export default function GradeBookDetail(){
 
     useEffect(async ()=>{
         if(grade_skill_selected.id != ''){
-            base.$('#modalEditScore').modal('show')
+            if(edit_type === 'score'){
+                base.$('#modalEditScore').modal('show')
+            }
         }
-    }, [grade_skill_selected])
+        if(grade_book_selected.id != ''){
+            if(edit_type === 'notes'){
+                base.$('#modalEditNotes').modal('show')
+            }
+        }
+    }, [grade_skill_selected, edit_type, grade_book_selected])
 
     function editSkillScore(index_category, index_list, index_assignment){
         var data_grade_skill = skill_grade_arr[skill_ctg_arr[index_category].id][skill_list_arr[index_list].id][skill_assignment[index_assignment].id]
 
-        console.log(data_grade_skill)
-
+        set_edit_type('score')
         set_grade_skill_selected(data_grade_skill)
     }
 
@@ -479,6 +527,10 @@ export default function GradeBookDetail(){
         base.update_object(grade_skill_selected, set_grade_skill_selected, score, 'score')
     }
 
+    function changeNotes(value){
+        base.update_object(grade_book_selected, set_grade_book_selected, value, 'comment')
+    }
+
     async function submitGradeSkillNew(){
         if(grade_skill_selected.score != ''){
             var url = '/grade/skill'
@@ -490,6 +542,25 @@ export default function GradeBookDetail(){
                 }
             }
         }
+    }
+
+    async function submitNotesNew(){
+        if(grade_book_selected.comment != ''){
+            var url = '/grade/skill/notes'
+            grade_book_selected.notes = grade_book_selected.comment
+    
+            var response = await base.request(url, 'put', grade_book_selected)
+            if(response != null){
+                if(response.status == 'success'){
+                    window.location.reload()
+                }
+            }
+        }
+    }
+
+    async function editNotes(index_assignment){
+        set_edit_type('notes')
+        set_grade_book_selected(skill_grade_book_arr[skill_assignment[index_assignment].id].grade_book)
     }
 
     return(
@@ -571,6 +642,7 @@ export default function GradeBookDetail(){
                         skill_grade_book_arr={skill_grade_book_arr}
                         editSkillScore={(index_category, index_list, index_assignment)=>editSkillScore(index_category, index_list, index_assignment)}
                         is_loading_data={is_loading_data}
+                        editNotes={(index_assignment)=>editNotes(index_assignment)}
                     />
                     </>
                 }
@@ -598,7 +670,7 @@ export default function GradeBookDetail(){
                 grade_skill_total_score={grade_skill_total_score}
             />
 
-            <ModalEditScore grade_skill_selected={grade_skill_selected} changeGradeSkillScore={(value)=>changeGradeSkillScore(value)} submitGradeSkillNew={()=>submitGradeSkillNew()} />
+            <ModalEditScore grade_skill_selected={grade_skill_selected} changeGradeSkillScore={(value)=>changeGradeSkillScore(value)} submitGradeSkillNew={()=>submitGradeSkillNew()} submitNotesNew={()=>submitNotesNew()} grade_book_selected={grade_book_selected} changeNotes={(value)=>changeNotes(value)} />
             
         </div>
     )

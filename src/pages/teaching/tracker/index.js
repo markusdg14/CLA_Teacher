@@ -281,7 +281,7 @@ export default function TrackerIndex(){
 												<button className='btn btn-secondary shadow-sm px-3' style={{borderRadius : '5rem', color : '#4F4CD4'}} onClick={()=>navBtn('prev')} disabled={!is_prev}><i className="bi bi-arrow-left-short"></i> Prev Lesson</button>
 											</div>
 										</div>
-										<div className='col-auto pl-1'>
+										<div className='col-auto px-1'>
 											<SelectOption data_arr={arr_pagination} selected={arr_pagination_selected} title={'Lesson'} changeInput={(value)=>changePaginationLesson(value)} />
 										</div>
 										<div className='col-auto pl-1'>
@@ -370,7 +370,7 @@ export default function TrackerIndex(){
 																																				{
 																																					activity_submitted[data_student.class_student_id][data_subject.id] != null &&
 																																					<>
-																																					<div className='col-12' key={index_activity} style={{backgroundColor : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].status_color : '')}}>
+																																					<div className='col-12 p-1' key={index_activity}>
 																																					{
 																																						activity_submitted[data_student.class_student_id][data_subject.id] != null &&
 																																						<>
@@ -379,13 +379,13 @@ export default function TrackerIndex(){
 																																							<>
 																																							{
 																																								activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id] != null &&
-																																								<>
+																																								<div className='p-2' style={{borderRadius : '.25rem', backgroundColor : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].status_color : '')}}>
 																																								<p className='m-0' style={{color : (activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id] != null ? activity_submitted[data_student.class_student_id][data_subject.id][data_lesson.id][data_activity.id].text_color : '')}}>
 																																									{
 																																										data_activity.type === 'assignment' ? data_activity.name : data_activity.title
 																																									}
 																																								</p>
-																																								</>
+																																								</div>
 																																							}
 																																							</>
 																																						}

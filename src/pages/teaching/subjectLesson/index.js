@@ -696,7 +696,7 @@ export default function SubjectLesson(){
 			var arr_skill = grade_skill_arr[x].arr_skill
 			for(var y in arr_skill){
 				if(arr_skill[y].score !== ''){
-					total_score += parseInt(arr_skill[y].score)
+					total_score += parseFloat(arr_skill[y].score)
 				}
 			}
 			total_data += arr_skill.length

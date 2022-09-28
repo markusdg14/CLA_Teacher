@@ -6,7 +6,7 @@ import SelectOption from '../../../components/selectOption';
 import LoadingData from '../../../components/loading';
 
 
-export default function ReportSkill({student_arr, student_arr_temp, skill_student_selected, skill_student_name_selected, skill_ctg_arr, skill_list_arr, skill_assignment, skill_grade_arr, legend_arr, changeStudent, filterBtn, term_arr, term_selected, changeTerm, skill_grade_book_arr, editSkillScore, is_loading_data}){
+export default function ReportSkill({student_arr, student_arr_temp, skill_student_selected, skill_student_name_selected, skill_ctg_arr, skill_list_arr, skill_assignment, skill_grade_arr, legend_arr, changeStudent, filterBtn, term_arr, term_selected, changeTerm, skill_grade_book_arr, editSkillScore, is_loading_data, editNotes}){
 	var base = new Base()
 
 	return(
@@ -221,7 +221,7 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																						skill_grade_book_arr[data_assignment.id] != null &&
 																						<>
 																							<p className={"m-0"}>
-																								{skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-'}
+																								{skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-'} <i className="bi bi-pencil-fill ml-2" style={{cursor : 'pointer', fontSize : '.75rem'}} onClick={()=>editNotes(index_assignment)}></i>
 																							</p>
 																						</>
 																					}
