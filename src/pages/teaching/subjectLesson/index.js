@@ -63,6 +63,8 @@ export default function SubjectLesson(){
 	const [is_grade_skill_notes_empty, set_is_grade_skill_notes_empty] = useState(false)
 	const [is_loading_grade_skill, set_is_loading_grade_skill] = useState(true)
 
+	const [submit_type, set_submit_type] = useState('')
+
 	useEffect(async ()=>{
 		var check_user = await base.checkAuth()
 		set_user_data(check_user.user_data)
@@ -515,6 +517,14 @@ export default function SubjectLesson(){
 		}
 	}
 
+	useEffect(()=>{
+		if(submit_type === 'post_grade'){
+			if(assignment_submitted_id !== ''){
+				submitGrading()
+			}
+		}
+	}, [submit_type, assignment_submitted_id])
+
 	async function submitGrading(){
 		set_is_modal_btn_disable(true)
 		var url = ''
@@ -608,17 +618,19 @@ export default function SubjectLesson(){
 			}
 
 			url = '/grade/skill'
-			data_upload = {
-				class_student : {id : class_student_id},
-				comment : teacher_notes,
-				arr_skill : arr_skill
-			}
-
+			
 			if(assignment_submitted_id !== ''){
 				data_upload.assignment_submitted = {id : assignment_submitted_id}
+				data_upload.class_student = {id : class_student_id}
+				data_upload.comment = teacher_notes
+				data_upload.arr_skill = arr_skill
 			}
 			else{
+				url = '/assessment/assignment'
 				data_upload.task_agreement = {id : selected_agreement_id}
+				data_upload.user_id = selected_student_id
+				data_upload.type = 'new'
+				data_upload.status = 'on_checking'
 			}
 			
 			method = 'post'
@@ -666,8 +678,14 @@ export default function SubjectLesson(){
 			var response = await base.request(url, method, data_upload)
 			if(response != null){
 				if(response.status == 'success'){
-					filterBtn()
-					base.$('#modalSubmit').modal('hide')
+					if(assignment_submitted_id !== ''){
+						filterBtn()
+						base.$('#modalSubmit').modal('hide')
+					}
+					else{
+						set_assignment_submitted_id(response.data.id)
+						set_submit_type('post_grade')
+					}
 				}
 			}
 		}
