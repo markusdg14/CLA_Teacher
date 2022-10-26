@@ -39,7 +39,7 @@ export default function GradeBook(){
     }, [user_data])
 
     async function get_data(type){
-        var url = '/assignment/group?type=' + type + '_academic_year'
+        var url = '/assignment/group/all?type=' + type + '_academic_year'
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
