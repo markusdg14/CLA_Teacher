@@ -17,6 +17,7 @@ import HomeroomHabitChallengeTalent from './components/habitChallenge_talents';
 import HomeroomStudentHabitDetail from './components/studentDetailHabit';
 import HomeroomStudentHabitOnGoing from './components/onGoingHabit';
 import AttendanceRewardModal from './components/AttendanceRewardModal';
+import TeacherComment from './components/teacherComment';
 
 
 export default function HomeroomDetail(){
@@ -41,6 +42,7 @@ export default function HomeroomDetail(){
         {id : 'report_card_skill', title : 'Report Card Skill', is_selected : (query.get('tab') != null ? (query.get('tab') == 'report_card_skill' ? true : false) : false)},
         {id : 'attendance-reward', title : 'Attendance & Reward', is_selected : (query.get('tab') != null ? (query.get('tab') == 'attendance-reward' ? true : false) : false)},
         {id : 'habit_tracker', title : 'Habit Challenge / Talents', is_selected : (query.get('tab') != null ? (query.get('tab') == 'habit_tracker' ? true : false) : false)},
+        {id : 'teacher_comment', title : 'Teacher Comment', is_selected : (query.get('tab') != null ? (query.get('tab') == 'teacher_comment' ? true : false) : false), marginTop : 'mt-3'},
     ])
     const [header_selected, set_header_selected] = useState('')
     const [rank_student_arr, set_rank_student_arr] = useState([])
@@ -115,6 +117,8 @@ export default function HomeroomDetail(){
     const [attendance_reward_arr, set_attendance_reward_arr] = useState([])
     const [point_transaction_arr, set_point_transaction_arr] = useState([])
 
+    const [class_student_id, set_class_student_id] = useState('')
+
     const [loading_attendance_reward, set_loading_attendance_reward] = useState(true)
 
     useEffect(async ()=>{
@@ -128,6 +132,8 @@ export default function HomeroomDetail(){
         else{
             set_header_selected('dashboard')
         }
+
+        get_student()
 
         base.$('#attendanceRewardModal').on('hidden.bs.modal', function () {
             set_attendance_class_student('')
@@ -150,7 +156,7 @@ export default function HomeroomDetail(){
 
     useEffect(async ()=>{
         // set_term_selected('')
-        if(header_selected !== 'report_card_skill'){
+        if(header_selected !== 'report_card_skill' || header_selected !== 'teacher_comment'){
             get_data()
         }
         else{
@@ -182,10 +188,14 @@ export default function HomeroomDetail(){
             }
         }
 
+        if(class_student_id == ''){
+            flag_get_data = 0
+        }
+
         if(flag_get_data){
             get_data()
         }
-    }, [term_selected])
+    }, [term_selected, class_student_id])
 
     useEffect(async ()=>{
         if(header_selected === 'attendance-reward'){
@@ -222,8 +232,11 @@ export default function HomeroomDetail(){
                     if(student_data[x].user.file_name != null){
                         student_data[x].user.image_display = base.url_photo('user', student_data[x].user.file_name)
                     }
+                    student_data[x].user.arr_grade_book = student_data[x].arr_grade_book
                     student_arr.push(student_data[x].user)
                 }
+
+                set_class_student_id(student_arr[0].class_student_id)
 
                 set_student_arr(student_arr)
                 set_student_arr_temp(student_arr)
@@ -374,6 +387,7 @@ export default function HomeroomDetail(){
                 else if(header_selected === 'habit_tracker'){
                     set_to_be_confirm_habit_arr(data.data)
                 }
+
             }
         }
     }
@@ -820,7 +834,7 @@ export default function HomeroomDetail(){
                                 <div className='row m-0'>
                                     {
                                         header_menu_arr.map((data, index)=>(
-                                            <div className='col-auto p-0 mr-2' key={index}>
+                                            <div className={'col-auto p-0 mr-2 ' + (data.marginTop != null ? data.marginTop : '')} key={index}>
                                                 <div className={(data.is_selected ? 'bg-primary' : '') + ' p-2 px-3'} style={{borderRadius : '1.5rem', cursor : 'pointer'}} onClick={()=>changeMenu(index)}>
                                                     <p className={'m-0' + (data.is_selected ? ' text-white' : '')}>{data.title}</p>
                                                 </div>
@@ -913,8 +927,11 @@ export default function HomeroomDetail(){
                                 // modal_habit_redeem_btn_disable={modal_habit_redeem_btn_disable}
                             />
                         </>
-                        :
-                        <></>
+                        : header_selected === 'teacher_comment' ?
+                        <>
+                            <TeacherComment student_arr={student_arr} search={search} changeSearch={(value)=>changeSearch(value, 'student')} />
+                        </>
+                        : <></>
                     }
                 </div>
                 : view_type === 'detail' ?
