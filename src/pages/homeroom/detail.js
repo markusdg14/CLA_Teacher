@@ -84,9 +84,9 @@ export default function HomeroomDetail(){
     const [class_student_arr, set_class_student_arr] = useState([])
     const [arr_point, set_arr_point] = useState({})
 
-    const [attendance_reward_nav_btn] = useState([
-        {icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2'},
-        {icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'ml-2'},
+    const [attendance_reward_nav_btn, set_attendance_reward_nav_btn] = useState([
+        {icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2', color : 'text-secondary'},
+        {icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'ml-2', color : 'text-secondary'},
     ])
     const [attendance_reward_offset, set_attendance_reward_offset] = useState(0)
     const [is_prev_offset, set_is_prev_offset] = useState(true)
@@ -373,12 +373,32 @@ export default function HomeroomDetail(){
                     set_reward_score(arr_reward)
                     set_reward_arr(data.arr_reward)
                     set_date_arr(data.arr_lesson_schedule.arr)
-                    set_attendance_reward_month(base.moment(data.arr_date.arr[0]).format('MMMM'))
+                    
+                    set_attendance_reward_month(data.arr_lesson_schedule.arr[0].selected_month)
                     set_class_student_arr(data_student)
                     set_arr_point(data.arr_point)
 
                     set_is_prev_offset(data.arr_lesson_schedule.previous_page)
                     set_is_next_offset(data.arr_lesson_schedule.next_page)
+
+                    var data_btn = {}
+                    if(!data.arr_lesson_schedule.previous_page){
+                        data_btn = {icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2', color : 'text-light'}
+                        base.update_array(attendance_reward_nav_btn, set_attendance_reward_nav_btn, data_btn, 0)
+                    }
+                    else{
+                        data_btn = {icon : 'fas fa-chevron-circle-left', type : 'prev', margin : 'mr-2', color : 'text-secondary'}
+                        base.update_array(attendance_reward_nav_btn, set_attendance_reward_nav_btn, data_btn, 0)
+                    }
+
+                    if(!data.arr_lesson_schedule.next_page){
+                        data_btn = {icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'mr-2', color : 'text-light'}
+                        base.update_array(attendance_reward_nav_btn, set_attendance_reward_nav_btn, data_btn, 1)
+                    }
+                    else{
+                        data_btn = {icon : 'fas fa-chevron-circle-right', type : 'next', margin : 'mr-2', color : 'text-secondary'}
+                        base.update_array(attendance_reward_nav_btn, set_attendance_reward_nav_btn, data_btn, 1)
+                    }
 
                     setTimeout(() => {
                         set_loading_attendance_reward(false)

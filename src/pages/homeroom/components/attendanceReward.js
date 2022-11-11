@@ -31,9 +31,12 @@ export default function HomeroomAttendanceReward({term_arr, term_selected, chang
 												<div className='row h-100'>
 													{
 														attendance_reward_nav_btn.map((data, index)=>(
-															<div className={'col-auto p-0 ' + data.margin}>
+															<div className={'col-auto p-0 ' + data.margin} key={index}>
+															{
+																console.log(data)
+															}
 																	<div className='d-flex align-items-center h-100'>
-																		<h4 className='m-0' style={{cursor : 'pointer'}} onClick={()=>changeOffset(data.type)}><i className={data.icon + " text-secondary"}></i></h4>
+																		<h4 className='m-0' style={{cursor : 'pointer'}} onClick={()=>changeOffset(data.type)}><i className={data.icon + " " + data.color}></i></h4>
 																	</div>
 															</div>
 														))
