@@ -121,6 +121,8 @@ export default function HomeroomDetail(){
 
     const [loading_attendance_reward, set_loading_attendance_reward] = useState(true)
 
+    const [attendance_error, set_attendance_error] = useState('')
+
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
@@ -748,10 +750,14 @@ export default function HomeroomDetail(){
         var response = await base.request(url)
         if(response != null){
             if(response.status == 'success'){
+                set_attendance_error('')
                 var data = response.data
                 set_attendance_date_arr(data.arr_date)
                 set_attendance_reward_arr(data.arr_reward)
                 set_attendance_point_data(data.arr_point_transaction)
+            }
+            else{
+                set_attendance_error(response.message)
             }
         }
     }
@@ -996,6 +1002,7 @@ export default function HomeroomDetail(){
                 point_transaction_arr={point_transaction_arr}
                 attendance_point_data={attendance_point_data}
                 changeRadio={(index_score, index_date, index_reward)=>changeRadioAttendance(index_score, index_date, index_reward)}
+                attendance_error={attendance_error}
             />
 
         </div>
