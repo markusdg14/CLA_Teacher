@@ -6,6 +6,40 @@ import Base from '../../../utils/base';
 export default function TeacherComment({student_arr, search, changeSearch}){
 	var base = new Base()
 
+    const [semester_selected, set_semester_selected] = useState('')
+    const [data_selected, set_data_selected] = useState({id : ''})
+    const [student_selected, set_student_selected] = useState({id : '', name : ''})
+    const [input_notes, set_input_notes] = useState('')
+
+    async function addTeacherComment(index, index_grade_book){
+        set_student_selected(student_arr[index])
+        set_data_selected(student_arr[index].arr_grade_book[index_grade_book])
+        set_semester_selected(index_grade_book === 0 ? 1 : 2)
+    }
+
+    useEffect(()=>{
+        if(data_selected.id !== '' && student_selected.id !== ''){
+            base.$('#teacherCommentModal').modal('show')
+        }
+    }, [data_selected, student_selected])
+
+    async function changeInput(value){
+        set_input_notes(value)
+    }
+
+    async function submitNotes(){
+        var url = '/grade/book'
+        var data = {
+            id : data_selected.id,
+            comment : input_notes
+        }
+
+        var response = await base.request(url, 'put', data)
+        if(response != null){
+            window.location.reload()
+        }
+    }
+
 	return(
 		<div className='row'>
 
@@ -48,7 +82,7 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                         <th>L/P</th>
                                                         <th>Semester 1</th>
                                                         <th>Semester 2</th>
-                                                        <th></th>
+                                                        {/* <th></th> */}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -60,12 +94,21 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                                 <td className='align-middle'>{(data.gender === 1 ? 'L' : 'P')}</td>
                                                                 {
                                                                     data.arr_grade_book.map((data_grade_book, index_grade_book)=>(
-                                                                        <td className='align-middle' key={index_grade_book}>{data_grade_book.comment != null ? data_grade_book.comment : '-'}</td>
+                                                                        <td className='align-middle' key={index_grade_book}>
+                                                                        {
+                                                                            data_grade_book.comment != null ?
+                                                                            data_grade_book.comment
+                                                                            :
+                                                                            <button className='btn btn-primary d-flex justify-content-center align-items-center' style={{height : '2.5rem', width : '2.5rem', borderRadius : '2.5rem'}} onClick={()=>addTeacherComment(index, index_grade_book)}>
+                                                                                <i className="bi bi-pencil-fill"></i>
+                                                                            </button>
+                                                                        }
+                                                                        </td>
                                                                     ))
                                                                 }
-                                                                <td>
+                                                                {/* <td>
                                                                     <button className='btn btn-primary d-flex justify-content-center align-items-center' style={{height : '2.5rem', width : '2.5rem', borderRadius : '2.5rem'}}><i className="bi bi-pencil-fill"></i></button>
-                                                                </td>
+                                                                </td> */}
                                                             </tr>
                                                         ))
                                                     }
@@ -80,6 +123,41 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                     </div>
                 </div>
 
+            </div>
+
+            <div className="modal fade" id="teacherCommentModal" tabIndex="-1" aria-labelledby="teacherCommentModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content rounded border-0 shadow-sm">
+                        <div className="modal-body p-0">
+                            <div className={'row m-0'}>
+                                <div className='col-12 p-3 pt-4 pb-5'>
+                                    <div className='row m-0'>
+                                        <div className='col-12 mb-3'>
+                                            <h5 className='m-0'><i className="bi bi-chat-square-dots-fill mr-3" style={{color : '#00000066'}}></i>Teacher's Comment</h5>
+                                        </div>
+
+                                        <div className='col-12 mt-3 pb-3'>
+                                            <div className='row m-0'>
+                                                <div className='col-12'>
+                                                    <p className='m-0'>{student_selected.name}</p>
+                                                </div>
+                                                <div className='col-12 mt-3'>
+                                                    <label>Semester {semester_selected}</label>
+                                                    <textarea className='form-control' rows={5} onChange={(e)=>changeInput(e.target.value)} value={input_notes}></textarea>
+                                                </div>
+
+                                                <div className='col-12 mt-4'>
+                                                    <button className='btn btn-primary' onClick={()=>submitNotes()}>Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>

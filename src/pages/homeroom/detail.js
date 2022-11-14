@@ -234,7 +234,12 @@ export default function HomeroomDetail(){
                     if(student_data[x].user.file_name != null){
                         student_data[x].user.image_display = base.url_photo('user', student_data[x].user.file_name)
                     }
-                    student_data[x].user.arr_grade_book = student_data[x].arr_grade_book
+                    
+                    student_data[x].user.arr_grade_book = []
+
+                    if(student_data[x].arr_grade_book != null){
+                        student_data[x].user.arr_grade_book = student_data[x].arr_grade_book
+                    }
                     student_arr.push(student_data[x].user)
                 }
 
@@ -307,8 +312,8 @@ export default function HomeroomDetail(){
                         }
                         student_arr.push(student_data[x].user)
                     }
-                    set_student_arr(student_arr)
-                    set_student_arr_temp(student_arr)
+                    // set_student_arr(student_arr)
+                    // set_student_arr_temp(student_arr)
 
                     set_schedule_lesson_day_arr(data.arr_day)
                     set_schedule_lesson_time_arr(data.arr_time)
