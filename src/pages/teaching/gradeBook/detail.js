@@ -92,6 +92,10 @@ export default function GradeBookDetail(){
         if(query.get('student_id') != null){
             set_skill_student_selected(query.get('student_id'))
         }
+
+        if(query.get('term_id') != null){
+            set_term_selected(query.get('term_id'))
+        }
     }, [])
 
     useEffect(()=>{
@@ -256,6 +260,7 @@ export default function GradeBookDetail(){
 
     function changeTerm(val){
         set_term_selected(val)
+        window.history.pushState({}, null, '/grade-book/detail?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&tab=' + header_selected + '&student_id=' + skill_student_selected + '&term_id=' + val)
     }
 
     useEffect(async ()=>{
