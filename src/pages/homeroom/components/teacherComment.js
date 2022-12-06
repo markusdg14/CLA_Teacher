@@ -114,14 +114,10 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                                 {
                                                                     data.arr_grade_book.map((data_grade_book, index_grade_book)=>(
                                                                         <td className='align-middle' key={index_grade_book}>
-                                                                        {
-                                                                            data_grade_book.comment != null ?
-                                                                            data_grade_book.comment
-                                                                            :
+                                                                            <p className='' style={{color : 'black'}}>{data_grade_book.comment}</p>
                                                                             <button className='btn btn-primary d-flex justify-content-center align-items-center' style={{height : '2.5rem', width : '2.5rem', borderRadius : '2.5rem'}} onClick={()=>addTeacherComment(index, index_grade_book)}>
                                                                                 <i className="bi bi-pencil-fill"></i>
                                                                             </button>
-                                                                        }
                                                                         </td>
                                                                     ))
                                                                 }
