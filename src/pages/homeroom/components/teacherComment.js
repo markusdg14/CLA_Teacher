@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import SelectOption from '../../../components/selectOption';
 import Base from '../../../utils/base';
-
+import 'summernote'
 
 export default function TeacherComment({student_arr, search, changeSearch}){
 	var base = new Base()
@@ -16,6 +16,25 @@ export default function TeacherComment({student_arr, search, changeSearch}){
         set_data_selected(student_arr[index].arr_grade_book[index_grade_book])
         set_semester_selected(index_grade_book === 0 ? 1 : 2)
     }
+
+    useEffect(()=>{
+        base.$('#teacherCommentModal').on('show.bs.modal', function (event) {
+            const summernote = base.$('#summernote')
+            summernote.summernote({
+                height : 200,
+                callbacks: {
+                    onChange: function(contents, $editable) {
+                        changeInput(contents)
+                    }
+                }
+            })
+        })
+
+        base.$('#teacherCommentModal').on('hidden.bs.modal', function (event) {
+            set_input_notes('')
+            base.$('#summernote').summernote('destroy');
+        })
+    }, [])
 
     useEffect(()=>{
         if(data_selected.id !== '' && student_selected.id !== ''){
@@ -126,7 +145,7 @@ export default function TeacherComment({student_arr, search, changeSearch}){
             </div>
 
             <div className="modal fade" id="teacherCommentModal" tabIndex="-1" aria-labelledby="teacherCommentModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-lg">
                     <div className="modal-content rounded border-0 shadow-sm">
                         <div className="modal-body p-0">
                             <div className={'row m-0'}>
@@ -143,7 +162,8 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                 </div>
                                                 <div className='col-12 mt-3'>
                                                     <label>Semester {semester_selected}</label>
-                                                    <textarea className='form-control' rows={5} onChange={(e)=>changeInput(e.target.value)} value={input_notes}></textarea>
+                                                    {/* <textarea className='form-control' rows={5} onChange={(e)=>changeInput(e.target.value)} value={input_notes}></textarea> */}
+                                                    <div id='summernote'>{input_notes}</div>
                                                 </div>
 
                                                 <div className='col-12 mt-4'>

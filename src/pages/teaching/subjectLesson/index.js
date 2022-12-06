@@ -12,6 +12,7 @@ import ModalSubmit from '../checkAssignment/modalSubmit';
 import NotAssigned from '../../../components/NotAssigned';
 import LoadingData from '../../../components/loading';
 import ModalSubmitAll from './components/modalSubmitAll';
+import 'summernote'
 
 export default function SubjectLesson(){
 	var base = new Base()
@@ -61,7 +62,7 @@ export default function SubjectLesson(){
 	const [is_loading_filter, set_is_loading_filter] = useState(true)
 	const [is_loading_data, set_is_loading_data] = useState(false)
 	const [is_grade_skill_notes_empty, set_is_grade_skill_notes_empty] = useState(false)
-	const [is_loading_grade_skill, set_is_loading_grade_skill] = useState(true)
+	const [is_loading_grade_skill, set_is_loading_grade_skill] = useState(false)
 
 	const [submit_type, set_submit_type] = useState('')
 
@@ -74,7 +75,9 @@ export default function SubjectLesson(){
 			set_activity_type_selected('')
 			set_teacher_notes('')
 			set_activity_assessment_rule_selected('')
+			base.$('.summernote').summernote('destroy');
 		})
+
 	}, [])
 
 	useEffect(async ()=>{
@@ -368,11 +371,23 @@ export default function SubjectLesson(){
 	useEffect(async()=>{
 		if(activity_type_selected !== ''){
 			if(activity_assessment_rule_selected !== ''){
-				set_is_loading_grade_skill(true)
+				set_is_loading_grade_skill(false)
 				get_grade_skill()
 				get_rule()
 				set_grade_skill_avg(0)
 				set_grade_skill_total_score(0)
+
+				const summernote = base.$('.summernote')
+				console.log(summernote)
+				summernote.summernote({
+					height : 200,
+					callbacks: {
+						onChange: function(contents, $editable) {
+							changeInputModal(contents, 'notes')
+						}
+					}
+				})
+
 				base.$('#modalSubmit').modal('show')
 			}
 		}
@@ -435,6 +450,9 @@ export default function SubjectLesson(){
 				if(class_student.last_assignment_submitted != null){
 					set_assignment_submitted_id(class_student.last_assignment_submitted.id)
 					set_assignment_status_data(class_student.last_assignment_submitted.assessment_status.data)
+				}
+				else{
+					set_assignment_status_data('not_done')
 				}
 				if(assignment_agreement.data_type === 'assignment'){
 					set_activity_type_selected(assignment_agreement.assignment_type.data)

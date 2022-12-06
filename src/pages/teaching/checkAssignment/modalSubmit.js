@@ -121,7 +121,8 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 																</div>
 																:
 																<>
-																<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+																{/* <textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea> */}
+																<div className='summernote'>{teacher_notes}</div>
 																</>
 															}
 														</div>
@@ -215,7 +216,8 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 																{
 																	assignment_status_data !== 'done' ?
 																	<>
-																	<textarea className={"form-control rounded mt-2" + (is_grade_skill_notes_empty && ' border-danger')} rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+																	{/* <textarea className={"form-control rounded mt-2" + (is_grade_skill_notes_empty && ' border-danger')} rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea> */}
+																	<div className='summernote'>{teacher_notes}</div>
 																	{
 																		is_grade_skill_notes_empty &&
 																		<small className='text-danger'>Notes cannot be empty</small>
@@ -264,7 +266,8 @@ export default function ModalSubmit({rule_detail_arr, rule_selected, changeInput
 												<div className='col-12 mt-4'>
 													<div className='row m-0'>
 														<div className='col-12'>
-															<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+															{/* <textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeInput(e.target.value, 'notes')} value={teacher_notes} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea> */}
+															<div className='summernote'>{teacher_notes}</div>
 														</div>
 													</div>
 												</div>

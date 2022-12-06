@@ -30,6 +30,7 @@
     "react-scripts": "5.0.0",
     "react-select": "^5.2.2",
     "socket.io-client": "^2.3.0",
+    "summernote": "^0.8.18",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",

@@ -9,6 +9,8 @@ import ModalSubmit from '../checkAssignment/modalSubmit';
 import ModalEditScore from './modalEditScore';
 import LoadingData from '../../../components/loading';
 
+import 'summernote'
+
 export default function GradeBookDetail(){
     var base = new Base()
 
@@ -69,7 +71,7 @@ export default function GradeBookDetail(){
 
     const [edit_type, set_edit_type] = useState('')
 
-    const [grade_book_selected, set_grade_book_selected] = useState({id : ''})
+    const [grade_book_selected, set_grade_book_selected] = useState({id : '', comment : ''})
 
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
@@ -96,6 +98,13 @@ export default function GradeBookDetail(){
         if(query.get('term_id') != null){
             set_term_selected(query.get('term_id'))
         }
+
+        base.$('#modalEditNotes').on('hidden.bs.modal', function (event) {
+            set_grade_book_selected({id : '', comment : ''})
+            base.$('#summernote').summernote('destroy');
+        })
+
+
     }, [])
 
     useEffect(()=>{
@@ -235,7 +244,12 @@ export default function GradeBookDetail(){
 
             // grade-book/detail?subject_id=SUBJECT_0043&grade_id=GRADE_20220224_000005
 
-            window.history.pushState({}, null, '/grade-book/detail?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&tab=' + header_selected + '&student_id=' + skill_student_selected)
+            var url = '/grade-book/detail?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&tab=' + header_selected + '&student_id=' + skill_student_selected
+            if(query.get('term_id') != null){
+                url += '&term_id=' + query.get('term_id')
+            }
+
+            window.history.pushState({}, null, url)
         }
     }
 
@@ -509,6 +523,15 @@ export default function GradeBookDetail(){
         }
         if(grade_book_selected.id != ''){
             if(edit_type === 'notes'){
+                const summernote = base.$('#summernote')
+                summernote.summernote({
+                    height : 200,
+                    callbacks: {
+                        onChange: function(contents, $editable) {
+                          changeNotes(contents)
+                        }
+                    }
+                })
                 base.$('#modalEditNotes').modal('show')
             }
         }
@@ -552,8 +575,7 @@ export default function GradeBookDetail(){
     async function submitNotesNew(){
         if(grade_book_selected.comment != ''){
             var url = '/grade/skill/notes'
-            grade_book_selected.notes = grade_book_selected.comment
-    
+            grade_book_selected.notes = grade_book_selected.comment    
             var response = await base.request(url, 'put', grade_book_selected)
             if(response != null){
                 if(response.status == 'success'){

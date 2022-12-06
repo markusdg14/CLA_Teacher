@@ -7,6 +7,7 @@ import SelectOption from '../../../components/selectOption';
 import WebViewer from '@pdftron/webviewer'
 import ModalSubmit from './modalSubmit';
 import LoadingData from '../../../components/loading';
+import 'summernote'
 
 export default function CheckAssignmentDetail(){
     var base = new Base()
@@ -77,6 +78,11 @@ export default function CheckAssignmentDetail(){
     useEffect(async ()=>{
         var check_user = await base.checkAuth()
         set_user_data(check_user.user_data)
+
+        base.$('#modalSubmit').on('hidden.bs.modal', function (event) {
+            set_teacher_notes('')
+            base.$('.summernote').summernote('destroy');
+        })
     }, [])
 
     useEffect(async ()=>{
@@ -652,12 +658,29 @@ export default function CheckAssignmentDetail(){
         get_grade_skill()
         set_grade_skill_avg(0)
         set_grade_skill_total_score(0)
+
+        console.log('123')
+
+        set_summernote()
         base.$('#modalSubmit').modal('show')
     }
 
     function viewGradeSkill(){
         // get_grade_skill()
+        set_summernote()
         base.$('#modalSubmit').modal('show')
+    }
+
+    function set_summernote(){
+        const summernote = base.$('.summernote')
+        summernote.summernote({
+            height : 200,
+            callbacks: {
+                onChange: function(contents, $editable) {
+                    changeInputModal(contents, 'notes')
+                }
+            }
+        })
     }
 
     function changeRadioProject(value){

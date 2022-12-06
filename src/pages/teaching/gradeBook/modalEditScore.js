@@ -52,7 +52,8 @@ export default function ModalEditScore({grade_skill_selected, changeGradeSkillSc
 										</div>
 
                                         <div className='col-12 mb-3'>
-											<textarea className="form-control rounded mt-2" rows={3} onChange={(e)=>changeNotes(e.target.value)} value={grade_book_selected.comment} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea>
+											{/* <textarea className="form-control rounded mt-2" id='summernote' rows={3} onChange={(e)=>changeNotes(e.target.value)} value={grade_book_selected.comment} style={{resize : 'none', border : '1px solid #EAEAEA'}} placeholder=""></textarea> */}
+											<div id='summernote'>{grade_book_selected.comment}</div>
                                         </div>
 
                                         <div className='col-12 mt-4 text-right'>

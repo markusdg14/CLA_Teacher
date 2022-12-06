@@ -491,7 +491,7 @@ export default function HomeroomDetail(){
 
     function backBtn(){
         if(view_type === 'view'){
-            window.history.back()
+            window.location.replace('/homeroom')
         }
         else if(view_type === 'detail'){
             if(detail_type === 'student_habit'){
