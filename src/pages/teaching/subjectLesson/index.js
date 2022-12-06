@@ -906,6 +906,10 @@ export default function SubjectLesson(){
 																					<div className='row m-0'>
 																						<div className='col-12'>
 																							<p className='m-0 text-center'>{data_assignment.activity_name}</p>
+																							{
+																								data_assignment.project_agreement != null &&
+																								<p className='m-0 text-center'>{data_assignment.project_agreement.name}</p>
+																							}
 																						</div>
 																						<div className='col-12'>
 																							<div className='d-flex justify-content-center'>

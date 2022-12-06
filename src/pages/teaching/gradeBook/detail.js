@@ -255,7 +255,7 @@ export default function GradeBookDetail(){
     }
 
     function backBtn(){
-        window.history.back()
+        window.location.replace('/grade-book')
     }
 
     function changeTerm(val){
