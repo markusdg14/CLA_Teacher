@@ -15,6 +15,8 @@ export default function TeacherComment({student_arr, search, changeSearch}){
         set_student_selected(student_arr[index])
         set_data_selected(student_arr[index].arr_grade_book[index_grade_book])
         set_semester_selected(index_grade_book === 0 ? 1 : 2)
+
+        set_input_notes(student_arr[index].arr_grade_book[index_grade_book].comment)
     }
 
     useEffect(()=>{
@@ -114,7 +116,7 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                                 {
                                                                     data.arr_grade_book.map((data_grade_book, index_grade_book)=>(
                                                                         <td className='align-middle' key={index_grade_book}>
-                                                                            <p className='' style={{color : 'black'}}>{data_grade_book.comment}</p>
+                                                                            <div className={'teacher_comment'} dangerouslySetInnerHTML={{__html: data_grade_book.comment}}></div>
                                                                             <button className='btn btn-primary d-flex justify-content-center align-items-center' style={{height : '2.5rem', width : '2.5rem', borderRadius : '2.5rem'}} onClick={()=>addTeacherComment(index, index_grade_book)}>
                                                                                 <i className="bi bi-pencil-fill"></i>
                                                                             </button>
@@ -159,7 +161,7 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                 <div className='col-12 mt-3'>
                                                     <label>Semester {semester_selected}</label>
                                                     {/* <textarea className='form-control' rows={5} onChange={(e)=>changeInput(e.target.value)} value={input_notes}></textarea> */}
-                                                    <div id='summernote'>{input_notes}</div>
+                                                    <div id='summernote' dangerouslySetInnerHTML={{__html: input_notes}}></div>
                                                 </div>
 
                                                 <div className='col-12 mt-4'>

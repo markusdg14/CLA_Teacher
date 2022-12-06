@@ -378,7 +378,6 @@ export default function SubjectLesson(){
 				set_grade_skill_total_score(0)
 
 				const summernote = base.$('.summernote')
-				console.log(summernote)
 				summernote.summernote({
 					height : 200,
 					callbacks: {

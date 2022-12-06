@@ -659,8 +659,6 @@ export default function CheckAssignmentDetail(){
         set_grade_skill_avg(0)
         set_grade_skill_total_score(0)
 
-        console.log('123')
-
         set_summernote()
         base.$('#modalSubmit').modal('show')
     }
