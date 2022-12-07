@@ -53,8 +53,8 @@ export default function AuthLogin(){
     }
 
     async function signInBtn(){
-        localStorage.setItem('token', 'Bearer 3004|EmSNyvama3UwJA3OsEVCqV8fdLbWDCfPg45HcHzR')
-        window.location.href = '/'
+        // localStorage.setItem('token', 'Bearer 3004|EmSNyvama3UwJA3OsEVCqV8fdLbWDCfPg45HcHzR')
+        // window.location.href = '/'
 
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         var flag = 1
