@@ -138,7 +138,8 @@ export default function GradeBookDetail(){
             get_student()
             if(header_selected === 'report_card_skill'){
                 if(skill_student_selected !== ''){
-                    get_data()
+                    // get_data()
+                    filterStudent()
                 }
             }
             else if(header_selected === 'report_card_grade'){
@@ -242,11 +243,10 @@ export default function GradeBookDetail(){
             }
             get_data()
 
-            // grade-book/detail?subject_id=SUBJECT_0043&grade_id=GRADE_20220224_000005
-
             var url = '/grade-book/detail?subject_id=' + query.get('subject_id') + '&grade_id=' + query.get('grade_id') + '&tab=' + header_selected + '&student_id=' + skill_student_selected
-            if(query.get('term_id') != null){
-                url += '&term_id=' + query.get('term_id')
+
+            if(term_selected != ''){
+                url += '&term_id=' + term_selected
             }
 
             window.history.pushState({}, null, url)

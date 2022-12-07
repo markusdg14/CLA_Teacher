@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 // import '../App.css'
 import axios from 'axios'
 import moment from 'moment'
@@ -9,65 +9,71 @@ import 'bootstrap'
 
 import io from 'socket.io-client'
 
-export default class Base extends Component{
-    
+export default class Base extends Component {
+
 	// host = 'https://lms-admin.quantumtri.com'
 	host = 'https://admin.christianlifeacademy-id.com'
 
 	// socket_port = 6003
 	socket_port = 6004
-	
-    base_url = this.host + '/api';
-    url_image = this.host + '/image';
-	
-    timeoutAxios = 300000
-    currencyFormat = 'id-ID'
 
-    axios = axios
-    moment = moment
-    $ = Jquery
+	base_url = this.host + '/api';
+	url_image = this.host + '/image';
+
+	timeoutAxios = 300000
+	currencyFormat = 'id-ID'
+
+	axios = axios
+	moment = moment
+	$ = Jquery
 
 	io = io
 
-    constructor(props){
+	constructor(props) {
 		super(props)
 		axios.defaults.headers.common['Content-Type'] = 'application/json'
 		axios.defaults.headers.common['Accept'] = 'application/json'
 		axios.defaults.timeout = this.timeoutAxios
 	}
 
-    async request(url, method = "get", data = {}, onUploadProgress = response => {}){
+	async request(url, method = "get", data = {}, onUploadProgress = response => { }) {
 		var token = await localStorage.getItem('token')
-		if(token != null){
+		if (token != null) {
 			axios.defaults.headers.common['Authorization'] = token
 		}
 
-		try{
-		  var response
-		  if(method === 'get'){
-			  response = await axios.get(this.base_url + url)
-		  }
-		  else if(method === 'post'){
-			  response = await axios.post(this.base_url + url, data, {
-				  headers: {"Content-Type": "application/json"},
-				onUploadProgress
-			  })
-		  }
-		  else if(method === 'put'){
-			  response = await axios.put(this.base_url + url, data, {
-				headers: {"Content-Type": "application/json"},
-				onUploadProgress
-			  })
-		  }
-		  else if(method === 'delete'){
-			  response = await axios.delete(this.base_url + url)
-		  }
+		try {
+			var response
+			if (method === 'get') {
+				response = await axios.get(this.base_url + url)
+			}
+			else if (method === 'post') {
+				response = await axios.post(this.base_url + url, data, {
+					headers: { "Content-Type": "application/json" },
+					onUploadProgress
+				})
+			}
+			else if (method === 'put') {
+				response = await axios.put(this.base_url + url, data, {
+					headers: { "Content-Type": "application/json" },
+					onUploadProgress
+				})
+			}
+			else if (method === 'delete') {
+				response = await axios.delete(this.base_url + url)
+			}
 
-		  return response.data
+			if (response.status !== 401) {
+				return response.data
+			}
+			else {
+				localStorage.clear()
+				window.location.href = '/auth/login'
+			}
 		} catch (e) {
-		  setTimeout(() => {
-			console.log(this.base_url + url, e)
-		  }, 500)
+			setTimeout(() => {
+				console.log(this.base_url + url, e)
+			}, 500)
 		}
 	}
 
@@ -99,69 +105,69 @@ export default class Base extends Component{
 	img_under_construction = require('../assets/img/under_construction.png')
 	img_learn = require('../assets/img/img_learn.png')
 
-	async update_array(arr, set_state, data = {}, index = 0){
+	async update_array(arr, set_state, data = {}, index = 0) {
 		var temp = [...arr]
 		temp[index] = data
 		set_state(temp)
 	}
-	
-	add_array(arr, set_state, data = {}){
+
+	add_array(arr, set_state, data = {}) {
 		var temp = [...arr]
 		temp.push(data)
 		set_state(temp)
 	}
 
-	unshift_array(arr, set_state, data = {}){
+	unshift_array(arr, set_state, data = {}) {
 		var temp = [...arr]
 		temp.unshift(data)
 		set_state(temp)
 	}
 
-	update_object(data, set_state, variable = null, key = ''){
+	update_object(data, set_state, variable = null, key = '') {
 		var temp = JSON.parse(JSON.stringify(data))
 		temp[key] = variable
 		set_state(temp)
 	}
 
 
-	url_photo(type, file_name){
+	url_photo(type, file_name) {
 		var image_url = this.url_image + '/' + type + '?file_name=' + file_name + '&rnd=' + moment().format('HHmmss')
 		return image_url
 	}
 
-	async checkAuth(){
+	async checkAuth() {
 		var token = localStorage.getItem('token')
-        if(token == null){
+		if (token == null) {
 			localStorage.clear()
 			window.location.href = '/auth/login'
-        }
-		else{
+		}
+		else {
 			var url = '/auth/profile'
 			var response = await this.request(url)
-			if(response != null){
-				if(response.status == 'success'){
-					if(response.data.type.name !== 'teacher'){
+			if (response != null) {
+				if (response.status == 'success') {
+					if (response.data.type.name !== 'teacher') {
 						localStorage.clear()
 						window.location.href = '/auth/login'
 					}
 
 					var image_display = this.img_no_profile
-					
-					if(response.data.file_name != null){
+
+					if (response.data.file_name != null) {
 						image_display = this.url_photo('user', response.data.file_name)
 					}
-					response.data.image = {image_display : image_display, image : '', original_rotation : 0, type : ''}
-					return {user_data : response.data}
+					response.data.image = { image_display: image_display, image: '', original_rotation: 0, type: '' }
+					return { user_data: response.data }
 				}
-				else{
-					localStorage.clear()
-					window.location.href = '/auth/login'	
-				}
+				// else{
+				// 	localStorage.clear()
+				// 	window.location.href = '/auth/login'
+				// }
 			}
-			else{
-				localStorage.clear()
-				window.location.href = '/auth/login'
-			}
+			// else{
+			// 	localStorage.clear()
+			// 	window.location.href = '/auth/login'
+			// }
 		}
 	}
 }

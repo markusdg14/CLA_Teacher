@@ -220,9 +220,8 @@ export default function ReportSkill({student_arr, student_arr_temp, skill_studen
 																					{
 																						skill_grade_book_arr[data_assignment.id] != null &&
 																						<>
-																							<p className={"m-0"}>
-																								{skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-'} <i className="bi bi-pencil-fill ml-2" style={{cursor : 'pointer', fontSize : '.75rem'}} onClick={()=>editNotes(index_assignment)}></i>
-																							</p>
+																							<div id='summernote' dangerouslySetInnerHTML={{__html: (skill_grade_book_arr[data_assignment.id].grade_book != null ? skill_grade_book_arr[data_assignment.id].grade_book.comment : '-')}}></div>
+																							<i className="bi bi-pencil-fill" style={{cursor : 'pointer', fontSize : '.75rem'}} onClick={()=>editNotes(index_assignment)}></i>
 																						</>
 																					}
 																				</td>
