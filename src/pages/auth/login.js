@@ -53,7 +53,7 @@ export default function AuthLogin(){
     }
 
     async function signInBtn(){
-        // localStorage.setItem('token', 'Bearer 3004|EmSNyvama3UwJA3OsEVCqV8fdLbWDCfPg45HcHzR')
+        // localStorage.setItem('token', 'Bearer 3118|QRfV15S8bpdnmNQlOcesG9GMTTlAxtJeUmRWd8Nc')
         // window.location.href = '/'
 
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/

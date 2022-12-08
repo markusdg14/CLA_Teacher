@@ -34,6 +34,8 @@ export default function TeacherComment({student_arr, search, changeSearch}){
 
         base.$('#teacherCommentModal').on('hidden.bs.modal', function (event) {
             set_input_notes('')
+            set_student_selected({id : ''})
+            set_data_selected({id : ''})
             base.$('#summernote').summernote('destroy');
         })
     }, [])
@@ -161,7 +163,7 @@ export default function TeacherComment({student_arr, search, changeSearch}){
                                                 <div className='col-12 mt-3'>
                                                     <label>Semester {semester_selected}</label>
                                                     {/* <textarea className='form-control' rows={5} onChange={(e)=>changeInput(e.target.value)} value={input_notes}></textarea> */}
-                                                    <div id='summernote' dangerouslySetInnerHTML={{__html: input_notes}}></div>
+                                                    <div className='teacher_comment' id='summernote' dangerouslySetInnerHTML={{__html: input_notes}}></div>
                                                 </div>
 
                                                 <div className='col-12 mt-4'>

@@ -219,7 +219,7 @@ export default function HomeroomReportSkill({skill_student_arr, skill_student_se
 																									{
 																										skill_grade_book_arr[data.id][data_assignment.id] != null &&
 																										<>
-																										<p className={"m-0"}>{skill_grade_book_arr[data.id][data_assignment.id].grade_book != null ? skill_grade_book_arr[data.id][data_assignment.id].grade_book.comment : '-'}</p>
+																										<div className='teacher_comment' dangerouslySetInnerHTML={{__html: (skill_grade_book_arr[data.id][data_assignment.id].grade_book != null ? skill_grade_book_arr[data.id][data_assignment.id].grade_book.comment : '-')}}></div>
 																										</>
 																									}
 																								</>
