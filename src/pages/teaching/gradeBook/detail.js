@@ -202,11 +202,11 @@ export default function GradeBookDetail(){
 
                     var assignment = data.arr_assignment.data
                     var grade_book_skill = data.arr_grade_book_skill
-                    for(var x in assignment){
-                        grade_book_skill[assignment[x].id].total_score = (grade_book_skill[assignment[x].id].average / 5) * 100
+                    // for(var x in assignment){
+                    //     grade_book_skill[assignment[x].id].total_score = (grade_book_skill[assignment[x].id].average / 5) * 100
 
-                        grade_book_skill[assignment[x].id].total_score = parseFloat(grade_book_skill[assignment[x].id].total_score).toFixed(2)
-                    }
+                    //     grade_book_skill[assignment[x].id].total_score = parseFloat(grade_book_skill[assignment[x].id].total_score).toFixed(2)
+                    // }
                     set_skill_grade_book_arr(grade_book_skill)
                 }
 
