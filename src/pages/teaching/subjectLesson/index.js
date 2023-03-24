@@ -999,7 +999,7 @@ export default function SubjectLesson(){
 																					data.arr_assignment_agreement.map((data_assignment, index_assignment)=>(
 																						<td className='align-middle'>
 																							<div className='row m-0'>
-																								<div className='col-12 d-flex justify-content-center'>
+																								<div className='col-12'>
 																									<div className='row'>
 																										<div className='col-12'>
 																											<div className='row'>
@@ -1010,12 +1010,12 @@ export default function SubjectLesson(){
 																															data_class.id === data_class_student.id &&
 																															<>
 
-																															<div className='col-12' key={index_class}>
+																															<div className='col-12 d-flex justify-content-center' key={index_class}>
 																																<div className='row'>
 																																	{
 																																		data_class.status_activity_arr.map((data_status, index_status)=>(
 																																		<>
-																																			<div className={'col-12 col-md-6 col-lg-4 pr-0 pl-2 mb-1'} key={index_status}>
+																																			<div className={'col-12 col-md-6 col-lg-4 pr-0 pl-2 mb-1 d-flex justify-content-center'} key={index_status}>
 																																				<div className='row m-0'>
 																																					<div className='col-auto' style={{cursor : 'pointer'}} onClick={()=>changeStatus(index, index_assignment, index_class_student, index_status)}>
 																																						<div className='row'>
