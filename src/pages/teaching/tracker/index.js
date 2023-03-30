@@ -167,12 +167,9 @@ export default function TrackerIndex(){
 				set_arr_pagination(pagination_arr)
 				set_today_page(data.arr_lesson_schedule.today_page)
 
-				if(counter === 0){
-					var pagination_selected = ''
-					pagination_selected = lessonDate_arr[0].lesson + ' - ' + lessonDate_arr[lessonDate_arr.length - 1].lesson
-					console.log(pagination_selected)
-					set_arr_pagination_selected(pagination_selected)
-				}
+				var pagination_selected = ''
+				pagination_selected = lessonDate_arr[0].lesson + ' - ' + lessonDate_arr[lessonDate_arr.length - 1].lesson
+				set_arr_pagination_selected(pagination_selected)
 
 				
 				setTimeout(() => {
